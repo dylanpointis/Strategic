@@ -31,5 +31,15 @@ namespace Strategic
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+
+        /// <summary>
+        /// Control navLogin.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navLogin;
+
+        /// <summary>
+        /// Control navLogout.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navLogout;
     }
 }
