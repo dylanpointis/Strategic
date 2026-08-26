@@ -1,12 +1,35 @@
 //------------------------------------------------------------------------------
-// <generado automaticamente>
-//     Este codigo fue generado por una herramienta.
-// </generado automaticamente>
+// <generado automáticamente>
+//     Este código fue generado por una herramienta.
+//
+//     Los cambios en este archivo podrían causar un comportamiento incorrecto y se perderán si
+//     se vuelve a generar el código. 
+// </generado automáticamente>
 //------------------------------------------------------------------------------
 
 namespace Strategic
 {
+
+
     public partial class Logout
     {
+
+        /// <summary>
+        /// Control btnConfirmarLogout.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarLogout;
+
+        /// <summary>
+        /// Control btnCancelarLogout.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelarLogout;
     }
 }
