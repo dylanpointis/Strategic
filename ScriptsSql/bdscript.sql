@@ -7,6 +7,7 @@ BEGIN
 END
 GO
 
+
 USE [Strategic]
 GO
 

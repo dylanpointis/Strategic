@@ -16,6 +16,8 @@
     <webopt:bundlereference runat="server" path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
+    
+    <link href="<%= ResolveUrl("~/Content/site.css") %>" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -38,22 +40,91 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" runat="server" href="~/">Strategic</a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
+        <nav class="navbar navbar-expand-lg navbar-light strategic-navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand strategic-logo" href="~/">
+                    <img src="/Content/images/Strategic_LOGO_PNG.png" alt="Strategic" class="strategic-logo-img" />
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar" title="Alternar navegación" aria-controls="mainNavbar"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <div id="mainNavbar" class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/About">Acerca de</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contacto</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navAnalisis" role="button" data-bs-toggle="dropdown" aria-expanded="false">Análisis</a>
+                            <ul class="dropdown-menu" aria-labelledby="navAnalisis">
+                                <li><a class="dropdown-item" data-permission="Dashboard" href="Dashboard.aspx">Dashboard</a></li>
+                                <li><a class="dropdown-item" data-permission="Recomendaciones" href="Recomendaciones.aspx">Recomendaciones</a></li>
+                                <li><a class="dropdown-item" data-permission="Predicciones" href="Predicciones.aspx">Predicciones</a></li>
+                                <li><a class="dropdown-item" data-permission="CompararPrecios" href="CompararPrecios.aspx">Comparar precios</a></li>
+                                <li><a class="dropdown-item" data-permission="Reportes" href="Reportes.aspx">Reportes</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navAutomatizaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Automatizaciones</a>
+                            <ul class="dropdown-menu" aria-labelledby="navAutomatizaciones">
+                                <li><a class="dropdown-item" data-permission="ConsultarAutomatizaciones" href="ConsultarAutomatizaciones.aspx">Consultar automatizaciones</a></li>
+                                <li><a class="dropdown-item" data-permission="HistorialAutomatizaciones" href="HistorialAutomatizaciones.aspx">Historial</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navCatalogo" role="button" data-bs-toggle="dropdown" aria-expanded="false">Catálogo</a>
+                            <ul class="dropdown-menu" aria-labelledby="navCatalogo">
+                                <li><a class="dropdown-item" data-permission="ProductosSincronizados" href="ProductosSincronizados.aspx">Productos sincronizados</a></li>
+                                <li><a class="dropdown-item" data-permission="HistorialPrecios" href="HistorialPrecios.aspx">Historial de precios</a></li>
+                                <li><a class="dropdown-item" data-permission="HistorialStock" href="HistorialStock.aspx">Historial de stock</a></li>
+                                <li><a class="dropdown-item" data-permission="HistorialVentas" href="HistorialVentas.aspx">Historial de ventas</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navUsuariosPermisos" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuarios y permisos</a>
+                            <ul class="dropdown-menu" aria-labelledby="navUsuariosPermisos">
+                                <li><a class="dropdown-item" data-permission="ConsultarUsuarios" href="ConsultarUsuarios.aspx">Consultar usuarios</a></li>
+                                <li><a class="dropdown-item" data-permission="ConsultarRoles" href="ConsultarRoles.aspx">Consultar roles</a></li>
+                                <li><a class="dropdown-item" data-permission="ConsultarFamilias" href="ConsultarFamilias.aspx">Consultar familias</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navIntegraciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Integraciones</a>
+                            <ul class="dropdown-menu" aria-labelledby="navIntegraciones">
+                                <li><a class="dropdown-item" data-permission="ImportarDatos" href="ImportarDatos.aspx">Importar datos</a></li>
+                                <li><a class="dropdown-item" data-permission="HistorialSincronizaciones" href="HistorialSincronizaciones.aspx">Historial de sincronizaciones</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navCompetencia" role="button" data-bs-toggle="dropdown" aria-expanded="false">Competencia</a>
+                            <ul class="dropdown-menu" aria-labelledby="navCompetencia">
+                                <li><a class="dropdown-item" data-permission="ConsultarCompetidores" href="ConsultarCompetidores.aspx">Consultar competidores</a></li>
+                                <li><a class="dropdown-item" data-permission="MapearProductosCompetencia" href="MapearProductosCompetencia.aspx">Mapear productos</a></li>
+                                <li><a class="dropdown-item" data-permission="MonitoreoPublicacionesCompetidoras" href="MonitoreoPublicacionesCompetidoras.aspx">Monitoreo</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navAuditoria" role="button" data-bs-toggle="dropdown" aria-expanded="false">Auditoría</a>
+                            <ul class="dropdown-menu" aria-labelledby="navAuditoria">
+                                <li><a class="dropdown-item" data-permission="ConsultarEventosSistema" href="ConsultarEventosSistema.aspx">Eventos del sistema</a></li>
+                                <li><a class="dropdown-item" data-permission="RealizarBackup" href="RealizarBackup.aspx">Backup</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" data-permission="RenovarSuscripcion" href="RenovarSuscripcion.aspx">Suscripción</a></li>
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav auth-nav">
                         <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login">Ingresar</a></li>
-                        <li id="navLogout" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Logout">Salir</a></li>
+                        <li id="navProfile" runat="server" class="nav-item dropdown profile-menu">
+                            <a class="nav-link profile-toggle" href="#" id="navPerfil" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Perfil">
+                                <svg class="profile-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
+                                </svg>
+                                <span class="visually-hidden">Perfil</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navPerfil">
+                                <li id="navCambiarClave" runat="server"><a class="dropdown-item" runat="server" href="~/CambiarClave">Cambiar clave</a></li>
+                                <li id="navLogout" runat="server"><a class="dropdown-item logout-item" runat="server" href="~/Logout">Salir</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -68,7 +139,7 @@
         </div>
     </form>
     <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+        <%: Scripts.Render("~/Scripts/bootstrap.bundle.js") %>
     </asp:PlaceHolder>
 </body>
 </html>

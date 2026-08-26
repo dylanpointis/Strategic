@@ -13,6 +13,8 @@ namespace Strategic
         protected void Page_Load(object sender, EventArgs e)
         {
             navLogin.Visible = !SessionManager.HayUsuarioLogueado;
+            navProfile.Visible = SessionManager.HayUsuarioLogueado;
+            navCambiarClave.Visible = SessionManager.HayUsuarioLogueado;
             navLogout.Visible = SessionManager.HayUsuarioLogueado;
         }
     }
