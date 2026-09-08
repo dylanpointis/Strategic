@@ -80,24 +80,14 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Label lblError;
 
         /// <summary>
-        /// Control gvEventos.
+        /// Control grillaEventos.
         /// </summary>
-        protected global::System.Web.UI.WebControls.GridView gvEventos;
+        protected global::Strategic.Componentes.GrillaGenerica grillaEventos;
 
         /// <summary>
         /// Control lblCantidad.
         /// </summary>
         protected global::System.Web.UI.WebControls.Label lblCantidad;
-
-        /// <summary>
-        /// Control pnlSinResultados.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Panel pnlSinResultados;
-
-        /// <summary>
-        /// Control litSinResultados.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litSinResultados;
 
         /// <summary>
         /// Control pnlDetalleUsuario.

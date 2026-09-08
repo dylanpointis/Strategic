@@ -1,6 +1,7 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace Strategic
     {
         private readonly BLLEvento bllEvento = new BLLEvento();
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
+
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            // Las columnas se arman en el Init para que la grilla pueda reconstruirse
+            // en cada postback a partir de su ViewState
+            ConfigurarGrilla();
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -69,14 +77,14 @@ namespace Strategic
             CargarGrilla(eventos, "No existen eventos registrados en el sistema");
         }
 
-        protected void gvEventos_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void grillaEventos_AccionSeleccionada(object sender, AccionGrillaEventArgs e)
         {
-            if (e.CommandName != "VerUsuario")
+            if (e.Comando != "VerUsuario")
             {
                 return;
             }
 
-            string nombreUsuario = Convert.ToString(e.CommandArgument);
+            string nombreUsuario = e.ObtenerClave("NombreUsuario");
 
             if (string.IsNullOrWhiteSpace(nombreUsuario))
             {
@@ -109,25 +117,29 @@ namespace Strategic
             OcultarDetalle();
         }
 
+        private void ConfigurarGrilla()
+        {
+            grillaEventos.ClavePrimaria = "CodEvento,NombreUsuario";
+            grillaEventos.FilasPorPagina = 10;
+            grillaEventos.MostrarSelectorFilas = true;
+
+            grillaEventos.AgregarColumna("CodEvento", "Código", "celda-codigo");
+            grillaEventos.AgregarColumna("Fecha", "Fecha", "celda-fecha");
+            grillaEventos.AgregarColumna("Hora", "Hora", "celda-fecha");
+            grillaEventos.AgregarColumna("NombreUsuario", "Usuario", "celda-usuario");
+            grillaEventos.AgregarColumna("Modulo", "Módulo");
+            grillaEventos.AgregarColumna("Descripcion", "Evento");
+            grillaEventos.AgregarColumna("Criticidad", "Criticidad");
+            grillaEventos.AgregarColumnaAccion("Detalle", "VerUsuario", "Ver usuario");
+        }
+
         private void CargarGrilla(List<Evento> eventos, string mensajeVacio)
         {
-            gvEventos.DataSource = eventos;
-            gvEventos.DataBind();
+            grillaEventos.Cargar(eventos, mensajeVacio);
 
-            if (gvEventos.HeaderRow != null)
-            {
-                gvEventos.HeaderRow.TableSection = TableRowSection.TableHeader;
-            }
-
-            bool hayEventos = eventos.Count > 0;
-
-            gvEventos.Visible = hayEventos;
-            pnlSinResultados.Visible = !hayEventos;
-            litSinResultados.Text = mensajeVacio;
-
-            lblCantidad.Text = eventos.Count == 1
+            lblCantidad.Text = grillaEventos.CantidadRegistros == 1
                 ? "1 evento"
-                : string.Format("{0} eventos", eventos.Count);
+                : string.Format("{0} eventos", grillaEventos.CantidadRegistros);
         }
 
         private void CargarModulos(List<Evento> eventos)

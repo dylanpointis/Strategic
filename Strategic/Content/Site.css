@@ -698,6 +698,105 @@ textarea {
 }
 
 
+.celda-accion {
+    width: 1%;
+    white-space: nowrap;
+}
+
+
+/* ---------- Paginado de la grilla generica ---------- */
+
+.grilla-paginado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    padding: 14px 22px;
+    background-color: #fdf5fa;
+    border-top: 1px solid #f0c5e2;
+}
+
+.grilla-paginado-info {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #8a6d80;
+}
+
+.grilla-paginado-controles {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.grilla-paginado-filas {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grilla-paginado-etiqueta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #8a6d80;
+    margin: 0;
+}
+
+.grilla-paginado .form-select {
+    width: auto;
+    min-width: 72px;
+    padding: 0.3rem 1.6rem 0.3rem 0.6rem;
+    font-size: 0.82rem;
+    border: 1px solid #f0c5e2;
+    border-radius: 8px;
+    color: #493442;
+    background-color: #ffffff;
+}
+
+.pagina-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 9px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #c6128f;
+    background-color: #ffffff;
+    border: 1px solid #f0c5e2;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+    .pagina-boton:hover,
+    .pagina-boton:focus {
+        color: #ffffff;
+        background-color: #c6128f;
+        border-color: #c6128f;
+        text-decoration: none;
+    }
+
+    .pagina-boton.pagina-actual {
+        color: #ffffff;
+        background-color: #c6128f;
+        border-color: #c6128f;
+        cursor: default;
+    }
+
+    .pagina-boton.aspNetDisabled {
+        color: #c9b6c3;
+        background-color: #fdf5fa;
+        border-color: #f5e3ef;
+        cursor: default;
+        pointer-events: none;
+    }
+
+
 /* ---------- Estados vacios y mensajes ---------- */
 
 .estado-vacio {

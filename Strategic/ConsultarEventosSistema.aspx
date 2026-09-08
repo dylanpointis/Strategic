@@ -58,40 +58,7 @@
             </div>
 
             <div class="strategic-card-body sin-padding">
-                <div class="tabla-scroll">
-                    <asp:GridView ID="gvEventos" runat="server" AutoGenerateColumns="false" CssClass="strategic-table"
-                        GridLines="None" UseAccessibleHeader="true" DataKeyNames="CodEvento"
-                        OnRowCommand="gvEventos_RowCommand">
-                        <Columns>
-                            <asp:TemplateField HeaderText="Código" ItemStyle-CssClass="celda-codigo">
-                                <ItemTemplate><%# Eval("CodEvento") %></ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="Fecha" HeaderText="Fecha" ItemStyle-CssClass="celda-fecha" />
-                            <asp:BoundField DataField="Hora" HeaderText="Hora" ItemStyle-CssClass="celda-fecha" />
-                            <asp:BoundField DataField="NombreUsuario" HeaderText="Usuario" ItemStyle-CssClass="celda-usuario" />
-                            <asp:BoundField DataField="Modulo" HeaderText="Módulo" />
-                            <asp:BoundField DataField="Descripcion" HeaderText="Evento" />
-                            <asp:BoundField DataField="Criticidad" HeaderText="Criticidad" />
-                            <asp:TemplateField HeaderText="Detalle">
-                                <ItemTemplate>
-                                    <asp:LinkButton ID="lnkVerUsuario" runat="server" CssClass="btn-fila"
-                                        Text="Ver usuario" CausesValidation="false"
-                                        CommandName="VerUsuario" CommandArgument='<%# Eval("NombreUsuario") %>'></asp:LinkButton>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
-                </div>
-
-                <asp:Panel ID="pnlSinResultados" runat="server" CssClass="estado-vacio" Visible="false">
-                    <span class="estado-vacio-icono">
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <circle cx="11" cy="11" r="7"></circle>
-                            <path d="M20 20l-3.5-3.5"></path>
-                        </svg>
-                    </span>
-                    <p><asp:Literal ID="litSinResultados" runat="server"></asp:Literal></p>
-                </asp:Panel>
+                <sc:GrillaGenerica ID="grillaEventos" runat="server" OnAccionSeleccionada="grillaEventos_AccionSeleccionada" />
             </div>
         </section>
 
