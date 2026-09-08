@@ -31,15 +31,7 @@
                         <asp:TextBox ID="txtEvento" runat="server" CssClass="form-control" MaxLength="100" placeholder="Todos"></asp:TextBox>
                     </div>
 
-                    <div class="filtro">
-                        <asp:Label ID="lblFechaDesde" runat="server" Text="Fecha desde" AssociatedControlID="txtFechaDesde" CssClass="form-label"></asp:Label>
-                        <asp:TextBox ID="txtFechaDesde" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
-                    </div>
-
-                    <div class="filtro">
-                        <asp:Label ID="lblFechaHasta" runat="server" Text="Fecha hasta" AssociatedControlID="txtFechaHasta" CssClass="form-label"></asp:Label>
-                        <asp:TextBox ID="txtFechaHasta" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
-                    </div>
+                    <sc:FiltroFechas ID="filtroFechas" runat="server" MostrarBoton="false" />
                 </div>
 
                 <div class="filtros-acciones">

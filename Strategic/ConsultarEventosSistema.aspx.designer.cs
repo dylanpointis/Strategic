@@ -45,24 +45,9 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.TextBox txtEvento;
 
         /// <summary>
-        /// Control lblFechaDesde.
+        /// Control filtroFechas.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblFechaDesde;
-
-        /// <summary>
-        /// Control txtFechaDesde.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.TextBox txtFechaDesde;
-
-        /// <summary>
-        /// Control lblFechaHasta.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblFechaHasta;
-
-        /// <summary>
-        /// Control txtFechaHasta.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.TextBox txtFechaHasta;
+        protected global::Strategic.Componentes.FiltroFechas filtroFechas;
 
         /// <summary>
         /// Control btnFiltrar.

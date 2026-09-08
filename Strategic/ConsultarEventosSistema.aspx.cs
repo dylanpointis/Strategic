@@ -50,8 +50,8 @@ namespace Strategic
                     txtUsuario.Text.Trim(),
                     ddlModulo.SelectedValue,
                     txtEvento.Text.Trim(),
-                    ObtenerFecha(txtFechaDesde.Text),
-                    ObtenerFecha(txtFechaHasta.Text));
+                    filtroFechas.FechaDesde,
+                    filtroFechas.FechaHasta);
 
                 OcultarDetalle();
                 CargarGrilla(eventos, "No se encontraron eventos para los filtros aplicados");
@@ -66,9 +66,8 @@ namespace Strategic
         {
             txtUsuario.Text = string.Empty;
             txtEvento.Text = string.Empty;
-            txtFechaDesde.Text = string.Empty;
-            txtFechaHasta.Text = string.Empty;
             ddlModulo.SelectedIndex = 0;
+            filtroFechas.Limpiar();
 
             List<Evento> eventos = bllEvento.TraerListaEventos();
 
@@ -184,18 +183,6 @@ namespace Strategic
             }
 
             return usuario.Bloqueado ? "Bloqueado" : "Activo";
-        }
-
-        private DateTime? ObtenerFecha(string valor)
-        {
-            DateTime fecha;
-
-            if (DateTime.TryParse(valor, out fecha))
-            {
-                return fecha;
-            }
-
-            return null;
         }
     }
 }

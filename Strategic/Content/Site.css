@@ -549,6 +549,27 @@ textarea {
         color: #b9a6b3;
     }
 
+/* Boton propio del componente FiltroFechas dentro de la grilla de filtros */
+.filtro-accion {
+    justify-content: flex-end;
+}
+
+    .filtro-accion .btn {
+        width: 100%;
+    }
+
+/* Mensaje de rango invalido del componente FiltroFechas */
+.filtro-error {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #b02a52;
+    background-color: #fff0f4;
+    border: 1px solid #f3c2d2;
+    border-radius: 8px;
+    padding: 8px 14px;
+}
+
 .filtros-acciones {
     display: flex;
     gap: 12px;
