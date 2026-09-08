@@ -205,3 +205,48 @@ BEGIN
       AND P.Activo = 1
 END
 GO
+CREATE PROCEDURE [dbo].[TraerListaEventos]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        E.CodEvento,
+        E.NombreUsuario,
+        E.Modulo,
+        E.Evento,
+        E.Criticidad,
+        E.Fecha,
+        E.Hora
+    FROM [dbo].[Eventos] E
+    ORDER BY E.CodEvento DESC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarEventos]
+    @NombreUsuario VARCHAR(50) = NULL,
+    @Modulo VARCHAR(50) = NULL,
+    @Evento VARCHAR(100) = NULL,
+    @FechaInicio VARCHAR(11) = NULL,
+    @FechaFin VARCHAR(11) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        E.CodEvento,
+        E.NombreUsuario,
+        E.Modulo,
+        E.Evento,
+        E.Criticidad,
+        E.Fecha,
+        E.Hora
+    FROM [dbo].[Eventos] E
+    WHERE (@NombreUsuario IS NULL OR E.NombreUsuario LIKE '%' + @NombreUsuario + '%')
+      AND (@Modulo IS NULL OR E.Modulo = @Modulo)
+      AND (@Evento IS NULL OR E.Evento LIKE '%' + @Evento + '%')
+      AND (@FechaInicio IS NULL OR E.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR E.Fecha <= @FechaFin)
+    ORDER BY E.CodEvento DESC
+END
+GO
