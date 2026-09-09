@@ -872,6 +872,86 @@ textarea {
 }
 
 
+/* Aviso de que todavia no hay datos sincronizados (CU-002-004, alternativa 2.1) */
+.aviso-sincronizacion {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    border: 1px solid #ffe0a3;
+    border-radius: 12px;
+    background-color: #fffaf0;
+}
+
+    .aviso-sincronizacion strong {
+        display: block;
+        color: #8a6100;
+        font-size: 0.95rem;
+    }
+
+    .aviso-sincronizacion p {
+        margin: 2px 0 0;
+        font-size: 0.88rem;
+        color: #6c757d;
+    }
+
+    .aviso-sincronizacion .btn {
+        margin-left: auto;
+    }
+
+.aviso-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 50%;
+    background-color: #fff3d6;
+    border: 1px solid #ffe0a3;
+    color: #b98300;
+}
+
+    .aviso-icono svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+/* Mensaje informativo, mas suave que .mensaje-error */
+.mensaje-aviso {
+    display: block;
+    font-size: 0.9rem;
+}
+
+    .mensaje-aviso:not(:empty) {
+        margin-top: 18px;
+        background-color: #fffaf0;
+        border: 1px solid #ffe0a3;
+        border-radius: 8px;
+        color: #8a6100;
+        padding: 10px 14px;
+    }
+
+/* La torta necesita menos alto que un grafico de ejes y deja lugar a la leyenda */
+.grafico-torta {
+    height: 280px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+/* Grafico con mas alto, para rankings con varias barras horizontales */
+.grafico-alto {
+    height: 420px;
+}
+
+
 /* ---------- Estados vacios y mensajes ---------- */
 
 .estado-vacio {

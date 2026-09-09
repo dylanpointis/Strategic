@@ -17,96 +17,172 @@ namespace Strategic
         /// <summary>
         /// Control lblUsuario.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUsuario;
 
         /// <summary>
         /// Control txtUsuario.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUsuario;
 
         /// <summary>
         /// Control lblModulo.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblModulo;
 
         /// <summary>
         /// Control ddlModulo.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlModulo;
 
         /// <summary>
         /// Control lblEvento.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEvento;
 
         /// <summary>
         /// Control txtEvento.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtEvento;
 
         /// <summary>
         /// Control filtroFechas.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::Strategic.Componentes.FiltroFechas filtroFechas;
 
         /// <summary>
         /// Control btnFiltrar.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
 
         /// <summary>
         /// Control btnLimpiar.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
         /// <summary>
         /// Control lblError.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblError;
-
-        /// <summary>
-        /// Control grillaEventos.
-        /// </summary>
-        protected global::Strategic.Componentes.GrillaGenerica grillaEventos;
 
         /// <summary>
         /// Control lblCantidad.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCantidad;
+
+        /// <summary>
+        /// Control grillaEventos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::Strategic.Componentes.GrillaGenerica grillaEventos;
 
         /// <summary>
         /// Control pnlDetalleUsuario.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlDetalleUsuario;
 
         /// <summary>
-        /// Control litNombreUsuario.
+        /// Control lblNombreUsuario.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litNombreUsuario;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNombreUsuario;
 
         /// <summary>
-        /// Control litNombreApellido.
+        /// Control lblNombreApellido.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litNombreApellido;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNombreApellido;
 
         /// <summary>
-        /// Control litEmail.
+        /// Control lblEmail.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litEmail;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEmail;
 
         /// <summary>
-        /// Control litRol.
+        /// Control lblRol.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litRol;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRol;
 
         /// <summary>
-        /// Control litEstado.
+        /// Control lblEstado.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litEstado;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEstado;
 
         /// <summary>
         /// Control btnCerrarDetalle.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCerrarDetalle;
     }
 }

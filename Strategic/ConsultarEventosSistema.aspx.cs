@@ -161,11 +161,11 @@ namespace Strategic
 
         private void MostrarDetalle(BEUsuario usuario)
         {
-            litNombreUsuario.Text = Server.HtmlEncode(usuario.NombreUsuario);
-            litNombreApellido.Text = Server.HtmlEncode(usuario.Nombre + " " + usuario.Apellido);
-            litEmail.Text = Server.HtmlEncode(usuario.Email);
-            litRol.Text = Server.HtmlEncode(usuario.Rol != null ? usuario.Rol.Nombre : string.Empty);
-            litEstado.Text = ObtenerEstado(usuario);
+            lblNombreUsuario.Text = Server.HtmlEncode(usuario.NombreUsuario);
+            lblNombreApellido.Text = Server.HtmlEncode(usuario.Nombre + " " + usuario.Apellido);
+            lblEmail.Text = Server.HtmlEncode(usuario.Email);
+            lblRol.Text = Server.HtmlEncode(usuario.Rol != null ? usuario.Rol.Nombre : string.Empty);
+            lblEstado.Text = Server.HtmlEncode(ObtenerEstado(usuario));
 
             pnlDetalleUsuario.Visible = true;
         }

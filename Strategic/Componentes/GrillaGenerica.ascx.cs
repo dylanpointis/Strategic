@@ -327,7 +327,7 @@ namespace Strategic.Componentes
 
             gvDatos.Visible = hayDatos;
             pnlSinResultados.Visible = !hayDatos;
-            litSinResultados.Text = Server.HtmlEncode(MensajeVacio);
+            lblSinResultados.Text = Server.HtmlEncode(MensajeVacio);
 
             ActualizarPaginado(hayDatos);
         }
@@ -345,7 +345,7 @@ namespace Strategic.Componentes
             int desde = PaginaActual * FilasPorPagina + 1;
             int hasta = Math.Min((PaginaActual + 1) * FilasPorPagina, CantidadRegistros);
 
-            litRango.Text = string.Format("Mostrando {0} - {1} de {2} registros", desde, hasta, CantidadRegistros);
+            lblRango.Text = string.Format("Mostrando {0} - {1} de {2} registros", desde, hasta, CantidadRegistros);
 
             lnkPrimera.Enabled = PaginaActual > 0;
             lnkAnterior.Enabled = PaginaActual > 0;

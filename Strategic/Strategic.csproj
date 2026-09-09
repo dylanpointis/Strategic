@@ -103,6 +103,7 @@
     <Content Include="CambiarClave.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
     <Content Include="Contact.aspx" />
+    <Content Include="Dashboard.aspx" />
     <Content Include="HistorialPrecios.aspx" />
     <Content Include="HistorialStock.aspx" />
     <Content Include="HistorialVentas.aspx" />
@@ -262,6 +263,13 @@
     </Compile>
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="HistorialPrecios.aspx.cs">
       <DependentUpon>HistorialPrecios.aspx</DependentUpon>

@@ -71,47 +71,47 @@
                 <dl class="detalle-grid">
                     <div class="detalle-item">
                         <dt>Código</dt>
-                        <dd><asp:Literal ID="litCodigo" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleCodigo" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Nombre</dt>
-                        <dd><asp:Literal ID="litNombre" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleNombre" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Marca</dt>
-                        <dd><asp:Literal ID="litMarca" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleMarca" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Categoría</dt>
-                        <dd><asp:Literal ID="litCategoria" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleCategoria" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Estado</dt>
-                        <dd><asp:Literal ID="litEstado" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleEstado" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Precio actual</dt>
-                        <dd><asp:Literal ID="litPrecio" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetallePrecio" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Stock disponible</dt>
-                        <dd><asp:Literal ID="litStock" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleStock" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Stock mínimo / máximo</dt>
-                        <dd><asp:Literal ID="litStockMinimoMaximo" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleStockMinimoMaximo" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Última sincronización</dt>
-                        <dd><asp:Literal ID="litFechaSincronizacion" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblDetalleFechaSincronizacion" runat="server"></asp:Label></dd>
                     </div>
                 </dl>
 

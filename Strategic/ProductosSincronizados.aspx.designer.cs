@@ -3,7 +3,7 @@
 //     Este código fue generado por una herramienta.
 //
 //     Los cambios en este archivo podrían causar un comportamiento incorrecto y se perderán si
-//     se vuelve a generar el código.
+//     se vuelve a generar el código. 
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
@@ -17,131 +17,235 @@ namespace Strategic
         /// <summary>
         /// Control lblNombre.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNombre;
 
         /// <summary>
         /// Control txtNombre.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
         /// Control lblCategoria.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCategoria;
 
         /// <summary>
         /// Control ddlCategoria.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
 
         /// <summary>
         /// Control lblEstado.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEstado;
 
         /// <summary>
         /// Control ddlEstado.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
         /// <summary>
         /// Control lblPrecioDesde.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblPrecioDesde;
 
         /// <summary>
         /// Control txtPrecioDesde.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPrecioDesde;
 
         /// <summary>
         /// Control lblPrecioHasta.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblPrecioHasta;
 
         /// <summary>
         /// Control txtPrecioHasta.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPrecioHasta;
 
         /// <summary>
         /// Control btnFiltrar.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
 
         /// <summary>
         /// Control btnLimpiar.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
         /// <summary>
         /// Control lblError.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblError;
 
         /// <summary>
         /// Control lblCantidad.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCantidad;
 
         /// <summary>
         /// Control grillaProductos.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::Strategic.Componentes.GrillaGenerica grillaProductos;
 
         /// <summary>
         /// Control pnlDetalleProducto.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlDetalleProducto;
 
         /// <summary>
-        /// Control litCodigo.
+        /// Control lblDetalleCodigo.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litCodigo;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleCodigo;
 
         /// <summary>
-        /// Control litNombre.
+        /// Control lblDetalleNombre.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litNombre;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleNombre;
 
         /// <summary>
-        /// Control litMarca.
+        /// Control lblDetalleMarca.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litMarca;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleMarca;
 
         /// <summary>
-        /// Control litCategoria.
+        /// Control lblDetalleCategoria.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litCategoria;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleCategoria;
 
         /// <summary>
-        /// Control litEstado.
+        /// Control lblDetalleEstado.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litEstado;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleEstado;
 
         /// <summary>
-        /// Control litPrecio.
+        /// Control lblDetallePrecio.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litPrecio;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetallePrecio;
 
         /// <summary>
-        /// Control litStock.
+        /// Control lblDetalleStock.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litStock;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleStock;
 
         /// <summary>
-        /// Control litStockMinimoMaximo.
+        /// Control lblDetalleStockMinimoMaximo.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litStockMinimoMaximo;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleStockMinimoMaximo;
 
         /// <summary>
-        /// Control litFechaSincronizacion.
+        /// Control lblDetalleFechaSincronizacion.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litFechaSincronizacion;
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleFechaSincronizacion;
 
         /// <summary>
         /// Control btnCerrarDetalle.
         /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCerrarDetalle;
     }
 }

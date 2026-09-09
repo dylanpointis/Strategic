@@ -187,13 +187,13 @@ namespace Strategic.Componentes
 
         private void MostrarError(string mensaje)
         {
-            litErrorRango.Text = Server.HtmlEncode(mensaje);
+            lblErrorRango.Text = Server.HtmlEncode(mensaje);
             pnlErrorRango.Visible = true;
         }
 
         private void OcultarError()
         {
-            litErrorRango.Text = string.Empty;
+            lblErrorRango.Text = string.Empty;
             pnlErrorRango.Visible = false;
         }
 

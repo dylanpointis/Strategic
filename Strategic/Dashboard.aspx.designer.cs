@@ -11,23 +11,23 @@ namespace Strategic
 {
 
 
-    public partial class HistorialVentas
+    public partial class Dashboard
     {
+
+        /// <summary>
+        /// Control pnlSinDatos.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Panel pnlSinDatos;
+
+        /// <summary>
+        /// Control lblPeriodo.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblPeriodo;
 
         /// <summary>
         /// Control filtroFechas.
         /// </summary>
         protected global::Strategic.Componentes.FiltroFechas filtroFechas;
-
-        /// <summary>
-        /// Control lblProducto.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblProducto;
-
-        /// <summary>
-        /// Control ddlProducto.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.DropDownList ddlProducto;
 
         /// <summary>
         /// Control lblCategoria.
@@ -38,16 +38,6 @@ namespace Strategic
         /// Control ddlCategoria.
         /// </summary>
         protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
-
-        /// <summary>
-        /// Control lblEstado.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblEstado;
-
-        /// <summary>
-        /// Control ddlEstado.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
         /// <summary>
         /// Control btnFiltrar.
@@ -65,6 +55,11 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Label lblError;
 
         /// <summary>
+        /// Control lblAvisoFiltros.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblAvisoFiltros;
+
+        /// <summary>
         /// Control lblFacturacionTotal.
         /// </summary>
         protected global::System.Web.UI.WebControls.Label lblFacturacionTotal;
@@ -75,38 +70,48 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Label lblCantidadVentas;
 
         /// <summary>
-        /// Control lblTicketPromedio.
+        /// Control pnlGraficoCategoria.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblTicketPromedio;
+        protected global::System.Web.UI.WebControls.Panel pnlGraficoCategoria;
 
         /// <summary>
-        /// Control lblUnidadesVendidas.
+        /// Control pnlSinCategoria.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblUnidadesVendidas;
+        protected global::System.Web.UI.WebControls.Panel pnlSinCategoria;
 
         /// <summary>
-        /// Control pnlGrafico.
+        /// Control lblSinCategoria.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Panel pnlGrafico;
+        protected global::System.Web.UI.WebControls.Label lblSinCategoria;
 
         /// <summary>
-        /// Control pnlSinGrafico.
+        /// Control lblTopMeta.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Panel pnlSinGrafico;
+        protected global::System.Web.UI.WebControls.Label lblTopMeta;
 
         /// <summary>
-        /// Control lblSinGrafico.
+        /// Control pnlGraficoTop.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblSinGrafico;
+        protected global::System.Web.UI.WebControls.Panel pnlGraficoTop;
 
         /// <summary>
-        /// Control lblCantidad.
+        /// Control pnlSinTop.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblCantidad;
+        protected global::System.Web.UI.WebControls.Panel pnlSinTop;
 
         /// <summary>
-        /// Control grillaVentas.
+        /// Control lblSinTop.
         /// </summary>
-        protected global::Strategic.Componentes.GrillaGenerica grillaVentas;
+        protected global::System.Web.UI.WebControls.Label lblSinTop;
+
+        /// <summary>
+        /// Control lblCantidadBajoStock.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCantidadBajoStock;
+
+        /// <summary>
+        /// Control grillaBajoStock.
+        /// </summary>
+        protected global::Strategic.Componentes.GrillaGenerica grillaBajoStock;
     }
 }

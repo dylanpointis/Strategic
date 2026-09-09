@@ -50,8 +50,8 @@ namespace Strategic.Componentes
         protected global::System.Web.UI.WebControls.Panel pnlErrorRango;
 
         /// <summary>
-        /// Control litErrorRango.
+        /// Control lblErrorRango.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litErrorRango;
+        protected global::System.Web.UI.WebControls.Label lblErrorRango;
     }
 }

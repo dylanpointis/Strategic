@@ -16,5 +16,5 @@
 </asp:Panel>
 
 <asp:Panel ID="pnlErrorRango" runat="server" CssClass="filtro-error" Visible="false" EnableViewState="false">
-    <asp:Literal ID="litErrorRango" runat="server"></asp:Literal>
+    <asp:Label ID="lblErrorRango" runat="server"></asp:Label>
 </asp:Panel>

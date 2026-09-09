@@ -25,9 +25,9 @@ namespace Strategic.Componentes
         protected global::System.Web.UI.WebControls.Panel pnlSinResultados;
 
         /// <summary>
-        /// Control litSinResultados.
+        /// Control lblSinResultados.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litSinResultados;
+        protected global::System.Web.UI.WebControls.Label lblSinResultados;
 
         /// <summary>
         /// Control pnlPaginado.
@@ -35,9 +35,9 @@ namespace Strategic.Componentes
         protected global::System.Web.UI.WebControls.Panel pnlPaginado;
 
         /// <summary>
-        /// Control litRango.
+        /// Control lblRango.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Literal litRango;
+        protected global::System.Web.UI.WebControls.Label lblRango;
 
         /// <summary>
         /// Control lnkPrimera.

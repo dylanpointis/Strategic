@@ -1,4 +1,4 @@
-USE [master]
+﻿USE [master]
 GO
 
 IF DB_ID(N'Strategic') IS NULL
@@ -645,5 +645,117 @@ BEGIN
               WHERE IV.IdVenta = V.IdVenta
                 AND P.Categoria = @Categoria))
     ORDER BY V.Fecha DESC
+END
+GO
+
+/* ============================================================
+   002. Analisis - CU-002-004 Visualizar Dashboard Principal
+   ------------------------------------------------------------
+   La facturacion se calcula sobre ItemVenta y no sobre
+   Venta.MontoTotal, para que el filtro por categoria no sume de
+   mas cuando una venta tiene productos de varias categorias.
+   Las ventas canceladas quedan fuera de todas las metricas.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerResumenDashboard]
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL,
+    @Categoria NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        ISNULL(SUM(IV.Cantidad * IV.PrecioVenta), 0) AS FacturacionTotal,
+        COUNT(DISTINCT V.IdVenta)                    AS CantidadVentas,
+        ISNULL(SUM(IV.Cantidad), 0)                  AS UnidadesVendidas
+    FROM [dbo].[Venta] V
+    INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = IV.IdProducto
+    WHERE V.Estado <> 'Cancelada'
+      AND (@FechaInicio IS NULL OR V.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR V.Fecha < DATEADD(DAY, 1, @FechaFin))
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerVentasPorCategoria]
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL,
+    @Categoria NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        ISNULL(P.Categoria, N'Sin categoria')     AS Categoria,
+        SUM(IV.Cantidad)                          AS Unidades,
+        SUM(IV.Cantidad * IV.PrecioVenta)         AS Monto
+    FROM [dbo].[Venta] V
+    INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = IV.IdProducto
+    WHERE V.Estado <> 'Cancelada'
+      AND (@FechaInicio IS NULL OR V.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR V.Fecha < DATEADD(DAY, 1, @FechaFin))
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+    GROUP BY ISNULL(P.Categoria, N'Sin categoria')
+    ORDER BY Unidades DESC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerTopProductos]
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL,
+    @Categoria NVARCHAR(100) = NULL,
+    @Cantidad INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (@Cantidad)
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        ISNULL(P.Categoria, N'')          AS Categoria,
+        SUM(IV.Cantidad)                  AS Unidades,
+        SUM(IV.Cantidad * IV.PrecioVenta) AS Monto
+    FROM [dbo].[Venta] V
+    INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = IV.IdProducto
+    WHERE V.Estado <> 'Cancelada'
+      AND (@FechaInicio IS NULL OR V.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR V.Fecha < DATEADD(DAY, 1, @FechaFin))
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+    GROUP BY P.IdProducto, P.Codigo, P.Nombre, P.Categoria
+    ORDER BY Unidades DESC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerProductosBajoStock]
+    @Categoria NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- No depende del rango de fechas: es la foto actual del stock
+    SELECT
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        P.Estado,
+        P.Precio,
+        P.Stock,
+        P.StockMaximo,
+        P.StockMinimo,
+        P.Categoria,
+        P.BorradoLogico,
+        P.FechaSincronizacion,
+        P.Marca
+    FROM [dbo].[Producto] P
+    WHERE P.BorradoLogico = 0
+      AND P.StockMinimo IS NOT NULL
+      AND P.Stock <= P.StockMinimo
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+    ORDER BY (P.Stock - P.StockMinimo) ASC, P.Nombre ASC
 END
 GO

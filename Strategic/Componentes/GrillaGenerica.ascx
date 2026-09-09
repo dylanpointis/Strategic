@@ -17,13 +17,13 @@
                 <path d="M20 20l-3.5-3.5"></path>
             </svg>
         </span>
-        <p><asp:Literal ID="litSinResultados" runat="server"></asp:Literal></p>
+        <p><asp:Label ID="lblSinResultados" runat="server"></asp:Label></p>
     </asp:Panel>
 
     <asp:Panel ID="pnlPaginado" runat="server" CssClass="grilla-paginado" Visible="false">
 
         <div class="grilla-paginado-info">
-            <asp:Literal ID="litRango" runat="server"></asp:Literal>
+            <asp:Label ID="lblRango" runat="server"></asp:Label>
         </div>
 
         <div class="grilla-paginado-controles">

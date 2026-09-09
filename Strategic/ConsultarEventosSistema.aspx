@@ -63,27 +63,27 @@
                 <dl class="detalle-grid">
                     <div class="detalle-item">
                         <dt>Usuario</dt>
-                        <dd><asp:Literal ID="litNombreUsuario" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblNombreUsuario" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Nombre y apellido</dt>
-                        <dd><asp:Literal ID="litNombreApellido" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblNombreApellido" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Email</dt>
-                        <dd><asp:Literal ID="litEmail" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblEmail" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Rol</dt>
-                        <dd><asp:Literal ID="litRol" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblRol" runat="server"></asp:Label></dd>
                     </div>
 
                     <div class="detalle-item">
                         <dt>Estado</dt>
-                        <dd><asp:Literal ID="litEstado" runat="server"></asp:Literal></dd>
+                        <dd><asp:Label ID="lblEstado" runat="server"></asp:Label></dd>
                     </div>
                 </dl>
 

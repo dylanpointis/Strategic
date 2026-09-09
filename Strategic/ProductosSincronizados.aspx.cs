@@ -161,17 +161,17 @@ namespace Strategic
 
         private void MostrarDetalle(BEProducto producto)
         {
-            litCodigo.Text = Server.HtmlEncode(producto.Codigo);
-            litNombre.Text = Server.HtmlEncode(producto.Nombre);
-            litMarca.Text = Server.HtmlEncode(TextoOGuion(producto.Marca));
-            litCategoria.Text = Server.HtmlEncode(TextoOGuion(producto.Categoria));
-            litEstado.Text = Server.HtmlEncode(producto.Estado);
-            litPrecio.Text = Server.HtmlEncode(string.Format("${0:N2}", producto.Precio));
-            litStock.Text = Server.HtmlEncode(ObtenerTextoStock(producto));
-            litStockMinimoMaximo.Text = Server.HtmlEncode(string.Format("{0} / {1}",
+            lblDetalleCodigo.Text = Server.HtmlEncode(producto.Codigo);
+            lblDetalleNombre.Text = Server.HtmlEncode(producto.Nombre);
+            lblDetalleMarca.Text = Server.HtmlEncode(TextoOGuion(producto.Marca));
+            lblDetalleCategoria.Text = Server.HtmlEncode(TextoOGuion(producto.Categoria));
+            lblDetalleEstado.Text = Server.HtmlEncode(producto.Estado);
+            lblDetallePrecio.Text = Server.HtmlEncode(string.Format("${0:N2}", producto.Precio));
+            lblDetalleStock.Text = Server.HtmlEncode(ObtenerTextoStock(producto));
+            lblDetalleStockMinimoMaximo.Text = Server.HtmlEncode(string.Format("{0} / {1}",
                 producto.StockMinimo.HasValue ? producto.StockMinimo.Value.ToString() : "-",
                 producto.StockMaximo.HasValue ? producto.StockMaximo.Value.ToString() : "-"));
-            litFechaSincronizacion.Text = Server.HtmlEncode(producto.FechaSincronizacion.HasValue
+            lblDetalleFechaSincronizacion.Text = Server.HtmlEncode(producto.FechaSincronizacion.HasValue
                 ? producto.FechaSincronizacion.Value.ToString("dd/MM/yyyy HH:mm")
                 : "Sin sincronizar");
 

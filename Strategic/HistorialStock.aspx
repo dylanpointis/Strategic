@@ -53,7 +53,7 @@
                             <path d="M7 15l4-5 3 3 4-6"></path>
                         </svg>
                     </span>
-                    <p><asp:Literal ID="litSinGrafico" runat="server"></asp:Literal></p>
+                    <p><asp:Label ID="lblSinGrafico" runat="server"></asp:Label></p>
                 </asp:Panel>
             </div>
         </section>

@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="DALConexion.cs" />
     <Compile Include="DALEvento.cs" />
+    <Compile Include="DALDashboard.cs" />
     <Compile Include="DALProducto.cs" />
     <Compile Include="DALVenta.cs" />
     <Compile Include="DALUsuario.cs" />

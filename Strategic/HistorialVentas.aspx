@@ -52,22 +52,22 @@
                 <div class="indicadores-grid">
                     <div class="indicador">
                         <span class="indicador-titulo">Facturación total</span>
-                        <span class="indicador-valor"><asp:Literal ID="litFacturacionTotal" runat="server"></asp:Literal></span>
+                        <span class="indicador-valor"><asp:Label ID="lblFacturacionTotal" runat="server"></asp:Label></span>
                     </div>
 
                     <div class="indicador">
                         <span class="indicador-titulo">Ventas registradas</span>
-                        <span class="indicador-valor"><asp:Literal ID="litCantidadVentas" runat="server"></asp:Literal></span>
+                        <span class="indicador-valor"><asp:Label ID="lblCantidadVentas" runat="server"></asp:Label></span>
                     </div>
 
                     <div class="indicador">
                         <span class="indicador-titulo">Ticket promedio</span>
-                        <span class="indicador-valor"><asp:Literal ID="litTicketPromedio" runat="server"></asp:Literal></span>
+                        <span class="indicador-valor"><asp:Label ID="lblTicketPromedio" runat="server"></asp:Label></span>
                     </div>
 
                     <div class="indicador">
                         <span class="indicador-titulo">Unidades vendidas</span>
-                        <span class="indicador-valor"><asp:Literal ID="litUnidadesVendidas" runat="server"></asp:Literal></span>
+                        <span class="indicador-valor"><asp:Label ID="lblUnidadesVendidas" runat="server"></asp:Label></span>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                             <path d="M7 15l4-5 3 3 4-6"></path>
                         </svg>
                     </span>
-                    <p><asp:Literal ID="litSinGrafico" runat="server"></asp:Literal></p>
+                    <p><asp:Label ID="lblSinGrafico" runat="server"></asp:Label></p>
                 </asp:Panel>
             </div>
         </section>

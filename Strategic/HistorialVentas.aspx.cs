@@ -127,10 +127,10 @@ namespace Strategic
                 unidades = unidades + venta.UnidadesVendidas;
             }
 
-            litFacturacionTotal.Text = Server.HtmlEncode(string.Format("${0:N2}", bllVenta.CalcularFacturacionTotal(ventas)));
-            litCantidadVentas.Text = Server.HtmlEncode(ventas.Count.ToString("N0"));
-            litTicketPromedio.Text = Server.HtmlEncode(string.Format("${0:N2}", bllVenta.CalcularTicketPromedio(ventas)));
-            litUnidadesVendidas.Text = Server.HtmlEncode(unidades.ToString("N0"));
+            lblFacturacionTotal.Text = string.Format("${0:N2}", bllVenta.CalcularFacturacionTotal(ventas));
+            lblCantidadVentas.Text = ventas.Count.ToString("N0");
+            lblTicketPromedio.Text = string.Format("${0:N2}", bllVenta.CalcularTicketPromedio(ventas));
+            lblUnidadesVendidas.Text = unidades.ToString("N0");
         }
 
         private void ArmarGrafico(List<BEVenta> ventas, string mensajeVacio)
@@ -152,7 +152,7 @@ namespace Strategic
 
             pnlGrafico.Visible = hayDatos;
             pnlSinGrafico.Visible = !hayDatos;
-            litSinGrafico.Text = Server.HtmlEncode(mensajeVacio);
+            lblSinGrafico.Text = mensajeVacio;
         }
 
         private void CargarCombos(List<BEVenta> ventas)

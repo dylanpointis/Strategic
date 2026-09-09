@@ -36,6 +36,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BEResumenDashboard.cs" />
+    <Compile Include="BEVentaPorCategoria.cs" />
+    <Compile Include="BETopProducto.cs" />
     <Compile Include="BEProducto.cs" />
     <Compile Include="BEHistorialPrecio.cs" />
     <Compile Include="BEHistorialStock.cs" />

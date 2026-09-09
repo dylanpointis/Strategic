@@ -121,7 +121,9 @@ namespace Strategic
                 ? "1 registro de precio"
                 : string.Format("{0} registros de precio", historial.Count);
 
-            lblProductoElegido.Text = ddlProducto.SelectedItem != null ? ddlProducto.SelectedItem.Text : string.Empty;
+            lblProductoElegido.Text = ddlProducto.SelectedItem != null
+                ? Server.HtmlEncode(ddlProducto.SelectedItem.Text)
+                : string.Empty;
 
             ArmarGrafico(historial, mensajeVacio);
         }
@@ -143,7 +145,7 @@ namespace Strategic
 
             pnlGrafico.Visible = hayDatos;
             pnlSinGrafico.Visible = !hayDatos;
-            litSinGrafico.Text = Server.HtmlEncode(mensajeVacio);
+            lblSinGrafico.Text = mensajeVacio;
         }
 
         private void LimpiarHistorial(string mensaje)
