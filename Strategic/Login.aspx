@@ -1,4 +1,4 @@
-<%@ Page Title="Inicio de sesion" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="Strategic.Login" %>
+﻿<%@ Page Title="Inicio de sesion" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="Strategic.Login" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
         <style>
@@ -31,7 +31,7 @@
             </div>
 
             <div class="login-heading">
-                <h1>Inicio de sesi�n</h1>
+                <h1>Inicio de sesión</h1>
                 <p>Ingresa con tu usuario para acceder al sistema.</p>
             </div>
 
@@ -47,7 +47,7 @@
                 <asp:RequiredFieldValidator ID="rfvClave" runat="server" ControlToValidate="txtClave" ErrorMessage="Debe escribir la clave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
             </div>
 
-            <asp:Button ID="btnLogin" runat="server" Text="Ingresar" CssClass="btn btn-primary w-100" OnClick="btnLogin_Click" />
+            <asp:Button ID="btnLogin" runat="server" Text="Ingresar" CssClass="btn btn-strategic w-100" OnClick="btnLogin_Click" />
             <asp:Label ID="lblError" runat="server" CssClass="text-danger login-error" EnableViewState="false"></asp:Label>
         </section>
     </main>

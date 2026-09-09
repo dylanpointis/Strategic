@@ -103,6 +103,11 @@
     <Content Include="CambiarClave.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
     <Content Include="Contact.aspx" />
+    <Content Include="HistorialPrecios.aspx" />
+    <Content Include="HistorialStock.aspx" />
+    <Content Include="HistorialVentas.aspx" />
+    <Content Include="ProductosSincronizados.aspx" />
+    <Content Include="Scripts\strategic-graficos.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -258,6 +263,35 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="HistorialPrecios.aspx.cs">
+      <DependentUpon>HistorialPrecios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HistorialPrecios.aspx.designer.cs">
+      <DependentUpon>HistorialPrecios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HistorialStock.aspx.cs">
+      <DependentUpon>HistorialStock.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HistorialStock.aspx.designer.cs">
+      <DependentUpon>HistorialStock.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HistorialVentas.aspx.cs">
+      <DependentUpon>HistorialVentas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HistorialVentas.aspx.designer.cs">
+      <DependentUpon>HistorialVentas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProductosSincronizados.aspx.cs">
+      <DependentUpon>ProductosSincronizados.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProductosSincronizados.aspx.designer.cs">
+      <DependentUpon>ProductosSincronizados.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Componentes\DatosGrafico.cs" />
     <Compile Include="Componentes\FiltroFechas.ascx.cs">
       <DependentUpon>Componentes\FiltroFechas.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

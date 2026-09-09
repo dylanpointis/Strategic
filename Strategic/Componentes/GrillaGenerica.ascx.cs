@@ -124,6 +124,32 @@ namespace Strategic.Componentes
             if (!string.IsNullOrEmpty(claseCss))
             {
                 columna.ItemStyle.CssClass = claseCss;
+
+                // El encabezado lleva la misma clase para que acompanie la alineacion de la celda
+                columna.HeaderStyle.CssClass = claseCss;
+            }
+
+            gvDatos.Columns.Add(columna);
+        }
+
+        /// <summary>
+        /// Agrega una columna de datos aplicando un formato de salida.
+        /// El formato usa la sintaxis de DataFormatString, por ejemplo "{0:dd/MM/yyyy}".
+        /// </summary>
+        public void AgregarColumna(string campo, string titulo, string claseCss, string formato)
+        {
+            BoundField columna = new BoundField();
+            columna.DataField = campo;
+            columna.HeaderText = titulo;
+            columna.HtmlEncode = true;
+            columna.DataFormatString = formato;
+
+            if (!string.IsNullOrEmpty(claseCss))
+            {
+                columna.ItemStyle.CssClass = claseCss;
+
+                // El encabezado lleva la misma clase para que acompanie la alineacion de la celda
+                columna.HeaderStyle.CssClass = claseCss;
             }
 
             gvDatos.Columns.Add(columna);

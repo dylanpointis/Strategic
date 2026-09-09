@@ -1,4 +1,4 @@
-<%@ Page Title="Cerrar sesion" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Logout.aspx.cs" Inherits="Strategic.Logout" %>
+ï»¿<%@ Page Title="Cerrar sesion" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Logout.aspx.cs" Inherits="Strategic.Logout" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -72,13 +72,13 @@
             </div>
 
             <div class="login-heading">
-                <h1>Cerrar sesión</h1>
-                <p>¿Estás seguro de que querés cerrar la sesión actual?</p>
+                <h1>Cerrar sesiÃ³n</h1>
+                <p>Â¿EstÃ¡s seguro de que querÃ©s cerrar la sesiÃ³n actual?</p>
             </div>
 
             <div class="auth-actions">
-                <asp:Button ID="btnConfirmarLogout" runat="server" Text="Sí, cerrar sesión" CssClass="btn btn-danger" OnClick="btnConfirmarLogout_Click" />
-                <asp:Button ID="btnCancelarLogout" runat="server" Text="Cancelar" CssClass="btn btn-outline-secondary" CausesValidation="false" OnClick="btnCancelarLogout_Click" />
+                <asp:Button ID="btnConfirmarLogout" runat="server" Text="SÃ­, cerrar sesiÃ³n" CssClass="btn btn-danger" OnClick="btnConfirmarLogout_Click" />
+                <asp:Button ID="btnCancelarLogout" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelarLogout_Click" />
             </div>
         </section>
     </main>

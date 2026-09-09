@@ -1,10 +1,10 @@
-//------------------------------------------------------------------------------
-// <generado autom·ticamente>
-//     Este cÛdigo fue generado por una herramienta.
+Ôªø//------------------------------------------------------------------------------
+// <generado autom√°ticamente>
+//     Este c√≥digo fue generado por una herramienta.
 //
-//     Los cambios en este archivo podrÌan causar un comportamiento incorrecto y se perder·n si
-//     se vuelve a generar el cÛdigo. 
-// </generado autom·ticamente>
+//     Los cambios en este archivo podr√≠an causar un comportamiento incorrecto y se perder√°n si
+//     se vuelve a generar el c√≥digo. 
+// </generado autom√°ticamente>
 //------------------------------------------------------------------------------
 
 namespace Strategic
@@ -18,8 +18,8 @@ namespace Strategic
         /// Control lblClaveActual.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblClaveActual;
 
@@ -27,8 +27,8 @@ namespace Strategic
         /// Control txtClaveActual.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtClaveActual;
 
@@ -36,8 +36,8 @@ namespace Strategic
         /// Control lblClaveNueva.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblClaveNueva;
 
@@ -45,8 +45,8 @@ namespace Strategic
         /// Control txtClaveNueva.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtClaveNueva;
 
@@ -54,8 +54,8 @@ namespace Strategic
         /// Control lblConfirmarClave.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblConfirmarClave;
 
@@ -63,8 +63,8 @@ namespace Strategic
         /// Control txtConfirmarClave.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtConfirmarClave;
 
@@ -72,8 +72,8 @@ namespace Strategic
         /// Control btnGuardar.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGuardar;
 
@@ -81,8 +81,8 @@ namespace Strategic
         /// Control btnCancelar.
         /// </summary>
         /// <remarks>
-        /// Campo generado autom·ticamente.
-        /// Para modificarlo, mueva la declaraciÛn del campo del archivo del diseÒador al archivo de cÛdigo subyacente.
+        /// Campo generado autom√°ticamente.
+        /// Para modificarlo, mueva la declaraci√≥n del campo del archivo del dise√±ador al archivo de c√≥digo subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelar;
     }

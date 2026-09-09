@@ -38,6 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLEvento.cs" />
+    <Compile Include="BLLProducto.cs" />
+    <Compile Include="BLLVenta.cs" />
     <Compile Include="BLLUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

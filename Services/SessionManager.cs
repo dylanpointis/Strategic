@@ -1,4 +1,4 @@
-using BE;
+ï»¿using BE;
 using System.Web;
 
 namespace Services
@@ -12,14 +12,14 @@ namespace Services
         {
         }
 
-        // única instancia de SessionManager que va a existir.
+        // Ãºnica instancia de SessionManager que va a existir.
         public static SessionManager Instance
         {
             get { return instancia; }
         }
 
 
-        // Representa al usuario que está actualmente guardado en la Session del usuario.
+        // Representa al usuario que estÃ¡ actualmente guardado en la Session del usuario.
         public static BEUsuario UsuarioActual
         {
             // GET: Obtiene el usuario de la Session.

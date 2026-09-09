@@ -88,6 +88,205 @@ CREATE TABLE [dbo].[DigitoVerificador](
 )
 GO
 
+/* ============================================================
+   Tablas de negocio
+   ============================================================ */
+
+CREATE TABLE [dbo].[Producto](
+    [IdProducto] INT IDENTITY(1,1) NOT NULL,
+    [Codigo] NVARCHAR(50) NOT NULL,
+    [Nombre] NVARCHAR(255) NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    [Precio] DECIMAL(10,2) NOT NULL,
+    [Stock] INT NOT NULL CONSTRAINT [DF_Producto_Stock] DEFAULT(0),
+    [StockMaximo] INT NULL,
+    [StockMinimo] INT NULL,
+    [Categoria] NVARCHAR(100) NULL,
+    [BorradoLogico] BIT NOT NULL CONSTRAINT [DF_Producto_BorradoLogico] DEFAULT(0),
+    [FechaSincronizacion] DATETIME NULL,
+    [Marca] NVARCHAR(100) NULL,
+    CONSTRAINT [PK_Producto] PRIMARY KEY CLUSTERED ([IdProducto] ASC),
+    CONSTRAINT [UQ_Producto_Codigo] UNIQUE ([Codigo])
+)
+GO
+
+CREATE TABLE [dbo].[Venta](
+    [IdVenta] INT IDENTITY(1,1) NOT NULL,
+    [NroVenta] NVARCHAR(50) NOT NULL,
+    [Fecha] DATETIME NOT NULL,
+    [MontoTotal] DECIMAL(10,2) NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    CONSTRAINT [PK_Venta] PRIMARY KEY CLUSTERED ([IdVenta] ASC),
+    CONSTRAINT [UQ_Venta_NroVenta] UNIQUE ([NroVenta])
+)
+GO
+
+CREATE TABLE [dbo].[ItemVenta](
+    [IdItemVenta] INT IDENTITY(1,1) NOT NULL,
+    [IdVenta] INT NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [Cantidad] INT NOT NULL,
+    [PrecioVenta] DECIMAL(10,2) NOT NULL,
+    CONSTRAINT [PK_ItemVenta] PRIMARY KEY CLUSTERED ([IdItemVenta] ASC),
+    CONSTRAINT [FK_ItemVenta_Venta] FOREIGN KEY ([IdVenta]) REFERENCES [dbo].[Venta]([IdVenta]),
+    CONSTRAINT [FK_ItemVenta_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto])
+)
+GO
+
+CREATE TABLE [dbo].[HistorialPrecioProducto](
+    [IdHistorialPrecio] INT IDENTITY(1,1) NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [Precio] DECIMAL(10,2) NOT NULL,
+    [Fecha] DATETIME NOT NULL,
+    CONSTRAINT [PK_HistorialPrecioProducto] PRIMARY KEY CLUSTERED ([IdHistorialPrecio] ASC),
+    CONSTRAINT [FK_HistorialPrecioProducto_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto])
+)
+GO
+
+CREATE TABLE [dbo].[HistorialStock](
+    [IdHistorialStock] INT IDENTITY(1,1) NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [Stock] INT NOT NULL,
+    [Fecha] DATETIME NOT NULL,
+    CONSTRAINT [PK_HistorialStock] PRIMARY KEY CLUSTERED ([IdHistorialStock] ASC),
+    CONSTRAINT [FK_HistorialStock_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto])
+)
+GO
+
+CREATE TABLE [dbo].[Recomendacion](
+    [IdRecomendacion] INT IDENTITY(1,1) NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [Tipo] NVARCHAR(20) NOT NULL,
+    [Titulo] NVARCHAR(255) NOT NULL,
+    [Descripcion] NVARCHAR(1000) NOT NULL,
+    [AccionSugerida] NVARCHAR(255) NULL,
+    [Prioridad] NVARCHAR(10) NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Recomendacion_Estado] DEFAULT('Activa'),
+    [FechaGeneracion] DATETIME NOT NULL CONSTRAINT [DF_Recomendacion_FechaGeneracion] DEFAULT(GETDATE()),
+    CONSTRAINT [PK_Recomendacion] PRIMARY KEY CLUSTERED ([IdRecomendacion] ASC),
+    CONSTRAINT [FK_Recomendacion_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto])
+)
+GO
+
+CREATE TABLE [dbo].[Competencia](
+    [IdCompetencia] INT IDENTITY(1,1) NOT NULL,
+    [Nombre] NVARCHAR(255) NOT NULL,
+    [Marketplace] NVARCHAR(50) NOT NULL,
+    [Descripcion] NVARCHAR(500) NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    CONSTRAINT [PK_Competencia] PRIMARY KEY CLUSTERED ([IdCompetencia] ASC)
+)
+GO
+
+CREATE TABLE [dbo].[ProductoCompetencia](
+    [IdProductoCompetencia] INT IDENTITY(1,1) NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [IdCompetencia] INT NOT NULL,
+    [URL] NVARCHAR(500) NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    [FechaAlta] DATETIME NOT NULL CONSTRAINT [DF_ProductoCompetencia_FechaAlta] DEFAULT(GETDATE()),
+    [FechaUltimaVerificacion] DATETIME NULL,
+    CONSTRAINT [PK_ProductoCompetencia] PRIMARY KEY CLUSTERED ([IdProductoCompetencia] ASC),
+    CONSTRAINT [FK_ProductoCompetencia_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto]),
+    CONSTRAINT [FK_ProductoCompetencia_Competencia] FOREIGN KEY ([IdCompetencia]) REFERENCES [dbo].[Competencia]([IdCompetencia])
+)
+GO
+
+CREATE TABLE [dbo].[HistorialPrecioCompetencia](
+    [IdPrecioCompetencia] INT IDENTITY(1,1) NOT NULL,
+    [IdProductoCompetencia] INT NOT NULL,
+    [PrecioCompetencia] DECIMAL(10,2) NOT NULL,
+    [PrecioPropio] DECIMAL(10,2) NOT NULL,
+    [FechaConsulta] DATETIME NOT NULL CONSTRAINT [DF_HistorialPrecioCompetencia_FechaConsulta] DEFAULT(GETDATE()),
+    CONSTRAINT [PK_HistorialPrecioCompetencia] PRIMARY KEY CLUSTERED ([IdPrecioCompetencia] ASC),
+    CONSTRAINT [FK_HistorialPrecioCompetencia_ProductoCompetencia] FOREIGN KEY ([IdProductoCompetencia]) REFERENCES [dbo].[ProductoCompetencia]([IdProductoCompetencia])
+)
+GO
+
+CREATE TABLE [dbo].[CatalogoAutomatizacion](
+    [IdCatalogoAutomatizacion] INT IDENTITY(1,1) NOT NULL,
+    [Nombre] NVARCHAR(255) NOT NULL,
+    [Tipo] NVARCHAR(50) NOT NULL,
+    [Descripcion] NVARCHAR(500) NULL,
+    CONSTRAINT [PK_CatalogoAutomatizacion] PRIMARY KEY CLUSTERED ([IdCatalogoAutomatizacion] ASC),
+    CONSTRAINT [UQ_CatalogoAutomatizacion_Tipo] UNIQUE ([Tipo])
+)
+GO
+
+CREATE TABLE [dbo].[Automatizacion](
+    [IdAutomatizacion] INT IDENTITY(1,1) NOT NULL,
+    [IdCatalogoAutomatizacion] INT NOT NULL,
+    [Parametros] NVARCHAR(MAX) NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    [FechaAlta] DATETIME NOT NULL CONSTRAINT [DF_Automatizacion_FechaAlta] DEFAULT(GETDATE()),
+    [FechaUltimaEjecucion] DATETIME NULL,
+    CONSTRAINT [PK_Automatizacion] PRIMARY KEY CLUSTERED ([IdAutomatizacion] ASC),
+    CONSTRAINT [FK_Automatizacion_CatalogoAutomatizacion] FOREIGN KEY ([IdCatalogoAutomatizacion]) REFERENCES [dbo].[CatalogoAutomatizacion]([IdCatalogoAutomatizacion])
+)
+GO
+
+CREATE TABLE [dbo].[HistorialAutomatizacion](
+    [IdHistorial] INT IDENTITY(1,1) NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [IdAutomatizacion] INT NOT NULL,
+    [AccionEjecutada] NVARCHAR(255) NOT NULL,
+    [ValorAnterior] NVARCHAR(100) NULL,
+    [ValorNuevo] NVARCHAR(100) NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    [FechaEjecucion] DATETIME NOT NULL CONSTRAINT [DF_HistorialAutomatizacion_FechaEjecucion] DEFAULT(GETDATE()),
+    CONSTRAINT [PK_HistorialAutomatizacion] PRIMARY KEY CLUSTERED ([IdHistorial] ASC),
+    CONSTRAINT [FK_HistorialAutomatizacion_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto]),
+    CONSTRAINT [FK_HistorialAutomatizacion_Automatizacion] FOREIGN KEY ([IdAutomatizacion]) REFERENCES [dbo].[Automatizacion]([IdAutomatizacion])
+)
+GO
+
+CREATE TABLE [dbo].[ConfiguracionIntegracion](
+    [IdConfiguracion] INT IDENTITY(1,1) NOT NULL,
+    [TipoArchivo] NVARCHAR(20) NOT NULL,
+    [FechaConfiguracion] DATETIME NOT NULL CONSTRAINT [DF_ConfiguracionIntegracion_FechaConfiguracion] DEFAULT(GETDATE()),
+    CONSTRAINT [PK_ConfiguracionIntegracion] PRIMARY KEY CLUSTERED ([IdConfiguracion] ASC),
+    CONSTRAINT [CK_ConfiguracionIntegracion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock'))
+)
+GO
+
+CREATE TABLE [dbo].[MapeoColumna](
+    [IdMapeo] INT IDENTITY(1,1) NOT NULL,
+    [IdConfiguracion] INT NOT NULL,
+    [ColumnaStrategic] NVARCHAR(100) NOT NULL,
+    [ColumnaCliente] NVARCHAR(100) NOT NULL,
+    CONSTRAINT [PK_MapeoColumna] PRIMARY KEY CLUSTERED ([IdMapeo] ASC),
+    CONSTRAINT [FK_MapeoColumna_ConfiguracionIntegracion] FOREIGN KEY ([IdConfiguracion]) REFERENCES [dbo].[ConfiguracionIntegracion]([IdConfiguracion])
+)
+GO
+
+CREATE TABLE [dbo].[HistorialSincronizacion](
+    [IdSincronizacion] INT IDENTITY(1,1) NOT NULL,
+    [IdConfiguracion] INT NOT NULL,
+    [TipoArchivo] NVARCHAR(20) NOT NULL,
+    [RegistrosImportados] INT NOT NULL CONSTRAINT [DF_HistorialSincronizacion_RegistrosImportados] DEFAULT(0),
+    [RegistrosActualizados] INT NOT NULL CONSTRAINT [DF_HistorialSincronizacion_RegistrosActualizados] DEFAULT(0),
+    [RegistrosError] INT NOT NULL CONSTRAINT [DF_HistorialSincronizacion_RegistrosError] DEFAULT(0),
+    [Estado] NVARCHAR(20) NOT NULL,
+    [Detalle] NVARCHAR(2000) NULL,
+    [FechaEjecucion] DATETIME NOT NULL CONSTRAINT [DF_HistorialSincronizacion_FechaEjecucion] DEFAULT(GETDATE()),
+    CONSTRAINT [PK_HistorialSincronizacion] PRIMARY KEY CLUSTERED ([IdSincronizacion] ASC),
+    CONSTRAINT [FK_HistorialSincronizacion_ConfiguracionIntegracion] FOREIGN KEY ([IdConfiguracion]) REFERENCES [dbo].[ConfiguracionIntegracion]([IdConfiguracion]),
+    CONSTRAINT [CK_HistorialSincronizacion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock'))
+)
+GO
+
+CREATE TABLE [dbo].[Suscripcion](
+    [IdSuscripcion] INT IDENTITY(1,1) NOT NULL,
+    [FechaInicio] DATETIME NOT NULL,
+    [FechaVencimiento] DATETIME NOT NULL,
+    [Estado] NVARCHAR(20) NOT NULL,
+    [Plan] NVARCHAR(50) NOT NULL,
+    [Monto] DECIMAL(10,2) NOT NULL,
+    [NumeroOperacion] NVARCHAR(100) NULL,
+    CONSTRAINT [PK_Suscripcion] PRIMARY KEY CLUSTERED ([IdSuscripcion] ASC)
+)
+GO
+
 SET IDENTITY_INSERT [dbo].[Rol] ON
 INSERT INTO [dbo].[Rol] ([CodRol], [Nombre], [Activo]) VALUES
 (1, 'WebMaster', 1),
@@ -123,13 +322,24 @@ INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Cl
 ('Admin', 'Admin', 'Strategic', 'admin@strategic.local', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 1, 0, 1, 0)
 GO
 
+SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON
+INSERT INTO [dbo].[CatalogoAutomatizacion] ([IdCatalogoAutomatizacion], [Nombre], [Tipo], [Descripcion]) VALUES
+(1, 'Ajustar precio', 'AjustarPrecio', 'Ajusta el precio del producto cuando la diferencia con el competidor supera el umbral configurado'),
+(2, 'Pausar venta', 'PausarVenta', 'Pausa la publicacion del producto cuando el stock disponible llega a cero'),
+(3, 'Alerta de stock', 'AlertaStock', 'Genera una alerta cuando el stock del producto queda por debajo del stock minimo definido')
+SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] OFF
+GO
+
 INSERT INTO [dbo].[DigitoVerificador] ([Tabla], [DVH], [DVV]) VALUES
 ('Usuario', NULL, NULL),
 ('Rol', NULL, NULL),
 ('Permiso', NULL, NULL),
 ('Rol_Permiso', NULL, NULL),
 ('Permiso_Componente', NULL, NULL),
-('Eventos', NULL, NULL)
+('Eventos', NULL, NULL),
+('Producto', NULL, NULL),
+('Competencia', NULL, NULL),
+('Automatizacion', NULL, NULL)
 GO
 
 CREATE PROCEDURE [dbo].[ValidarUsuario]
@@ -248,5 +458,192 @@ BEGIN
       AND (@FechaInicio IS NULL OR E.Fecha >= @FechaInicio)
       AND (@FechaFin IS NULL OR E.Fecha <= @FechaFin)
     ORDER BY E.CodEvento DESC
+END
+GO
+
+/* ============================================================
+   004. Catalogo Sincronizado
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaProductos]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        P.Estado,
+        P.Precio,
+        P.Stock,
+        P.StockMaximo,
+        P.StockMinimo,
+        P.Categoria,
+        P.BorradoLogico,
+        P.FechaSincronizacion,
+        P.Marca
+    FROM [dbo].[Producto] P
+    WHERE P.BorradoLogico = 0
+    ORDER BY P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarProductos]
+    @Nombre NVARCHAR(255) = NULL,
+    @Categoria NVARCHAR(100) = NULL,
+    @Estado NVARCHAR(20) = NULL,
+    @PrecioMinimo DECIMAL(10,2) = NULL,
+    @PrecioMaximo DECIMAL(10,2) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        P.Estado,
+        P.Precio,
+        P.Stock,
+        P.StockMaximo,
+        P.StockMinimo,
+        P.Categoria,
+        P.BorradoLogico,
+        P.FechaSincronizacion,
+        P.Marca
+    FROM [dbo].[Producto] P
+    WHERE P.BorradoLogico = 0
+      AND (@Nombre IS NULL OR P.Nombre LIKE '%' + @Nombre + '%' OR P.Codigo LIKE '%' + @Nombre + '%')
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+      AND (@Estado IS NULL OR P.Estado = @Estado)
+      AND (@PrecioMinimo IS NULL OR P.Precio >= @PrecioMinimo)
+      AND (@PrecioMaximo IS NULL OR P.Precio <= @PrecioMaximo)
+    ORDER BY P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerProductoPorId]
+    @IdProducto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        P.Estado,
+        P.Precio,
+        P.Stock,
+        P.StockMaximo,
+        P.StockMinimo,
+        P.Categoria,
+        P.BorradoLogico,
+        P.FechaSincronizacion,
+        P.Marca
+    FROM [dbo].[Producto] P
+    WHERE P.IdProducto = @IdProducto
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerHistorialPrecios]
+    @IdProducto INT,
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        H.IdHistorialPrecio,
+        H.IdProducto,
+        P.Nombre AS NombreProducto,
+        H.Precio,
+        H.Fecha
+    FROM [dbo].[HistorialPrecioProducto] H
+    INNER JOIN [dbo].[Producto] P ON H.IdProducto = P.IdProducto
+    WHERE H.IdProducto = @IdProducto
+      AND (@FechaInicio IS NULL OR H.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR H.Fecha < DATEADD(DAY, 1, @FechaFin))
+    ORDER BY H.Fecha ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerHistorialStock]
+    @IdProducto INT,
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        H.IdHistorialStock,
+        H.IdProducto,
+        P.Nombre AS NombreProducto,
+        H.Stock,
+        H.Fecha
+    FROM [dbo].[HistorialStock] H
+    INNER JOIN [dbo].[Producto] P ON H.IdProducto = P.IdProducto
+    WHERE H.IdProducto = @IdProducto
+      AND (@FechaInicio IS NULL OR H.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR H.Fecha < DATEADD(DAY, 1, @FechaFin))
+    ORDER BY H.Fecha ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerListaVentas]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        V.IdVenta,
+        V.NroVenta,
+        V.Fecha,
+        V.MontoTotal,
+        V.Estado,
+        ISNULL((SELECT COUNT(*) FROM [dbo].[ItemVenta] IV WHERE IV.IdVenta = V.IdVenta), 0) AS CantidadItems,
+        ISNULL((SELECT SUM(IV.Cantidad) FROM [dbo].[ItemVenta] IV WHERE IV.IdVenta = V.IdVenta), 0) AS UnidadesVendidas
+    FROM [dbo].[Venta] V
+    ORDER BY V.Fecha DESC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarVentas]
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL,
+    @IdProducto INT = NULL,
+    @Categoria NVARCHAR(100) = NULL,
+    @Estado NVARCHAR(20) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        V.IdVenta,
+        V.NroVenta,
+        V.Fecha,
+        V.MontoTotal,
+        V.Estado,
+        ISNULL((SELECT COUNT(*) FROM [dbo].[ItemVenta] IV WHERE IV.IdVenta = V.IdVenta), 0) AS CantidadItems,
+        ISNULL((SELECT SUM(IV.Cantidad) FROM [dbo].[ItemVenta] IV WHERE IV.IdVenta = V.IdVenta), 0) AS UnidadesVendidas
+    FROM [dbo].[Venta] V
+    WHERE (@FechaInicio IS NULL OR V.Fecha >= @FechaInicio)
+      AND (@FechaFin IS NULL OR V.Fecha < DATEADD(DAY, 1, @FechaFin))
+      AND (@Estado IS NULL OR V.Estado = @Estado)
+      AND (@IdProducto IS NULL OR EXISTS (
+              SELECT 1
+              FROM [dbo].[ItemVenta] IV
+              WHERE IV.IdVenta = V.IdVenta
+                AND IV.IdProducto = @IdProducto))
+      AND (@Categoria IS NULL OR EXISTS (
+              SELECT 1
+              FROM [dbo].[ItemVenta] IV
+              INNER JOIN [dbo].[Producto] P ON IV.IdProducto = P.IdProducto
+              WHERE IV.IdVenta = V.IdVenta
+                AND P.Categoria = @Categoria))
+    ORDER BY V.Fecha DESC
 END
 GO

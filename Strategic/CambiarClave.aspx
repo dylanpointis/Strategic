@@ -1,4 +1,4 @@
-<%@ Page Title="Cambiar clave" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CambiarClave.aspx.cs" Inherits="Strategic.CambiarClave" %>
+﻿<%@ Page Title="Cambiar clave" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CambiarClave.aspx.cs" Inherits="Strategic.CambiarClave" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -45,8 +45,8 @@
             </div>
 
             <div class="auth-actions">
-                <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" Enabled="false" />
-                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-outline-secondary" CausesValidation="false" OnClick="btnCancelar_Click" />
+                <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-strategic" Enabled="false" />
+                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
             </div>
         </section>
     </main>

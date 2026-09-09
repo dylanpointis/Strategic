@@ -138,5 +138,8 @@
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/Scripts/bootstrap.bundle.js") %>
     </asp:PlaceHolder>
+
+    <%-- Scripts propios de cada pagina (graficos, etc). Se cargan al final del body --%>
+    <asp:ContentPlaceHolder ID="ScriptsFinales" runat="server"></asp:ContentPlaceHolder>
 </body>
 </html>
