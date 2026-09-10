@@ -39,6 +39,10 @@
     <Compile Include="BEResumenDashboard.cs" />
     <Compile Include="BEVentaPorCategoria.cs" />
     <Compile Include="BETopProducto.cs" />
+    <Compile Include="BECompetencia.cs" />
+    <Compile Include="BEComparacionPrecio.cs" />
+    <Compile Include="BEHistorialPrecioCompetencia.cs" />
+    <Compile Include="BEResumenComparacion.cs" />
     <Compile Include="BEProducto.cs" />
     <Compile Include="BEHistorialPrecio.cs" />
     <Compile Include="BEHistorialStock.cs" />

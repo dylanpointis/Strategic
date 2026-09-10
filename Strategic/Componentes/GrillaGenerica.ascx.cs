@@ -161,6 +161,27 @@ namespace Strategic.Componentes
         /// </summary>
         public void AgregarColumnaAccion(string titulo, string comando, string texto)
         {
+            gvDatos.Columns.Add(CrearColumnaAccion(titulo, comando, texto));
+        }
+
+        /// <summary>
+        /// Agrega una columna de acción cuyo texto sale de un campo del origen
+        /// de datos, para cuando la acción depende del estado de la fila
+        /// (por ejemplo "Dar de baja" o "Reactivar" según el usuario).
+        /// </summary>
+        public void AgregarColumnaAccion(string titulo, string comando, string texto, string campoTexto)
+        {
+            ButtonField columna = CrearColumnaAccion(titulo, comando, texto);
+
+            // DataTextField tiene prioridad sobre Text: este ultimo queda como
+            // respaldo por si la fila no trae valor en el campo
+            columna.DataTextField = campoTexto;
+
+            gvDatos.Columns.Add(columna);
+        }
+
+        private ButtonField CrearColumnaAccion(string titulo, string comando, string texto)
+        {
             ButtonField columna = new ButtonField();
             columna.ButtonType = ButtonType.Link;
             columna.HeaderText = titulo;
@@ -170,7 +191,7 @@ namespace Strategic.Componentes
             columna.ControlStyle.CssClass = "btn-fila";
             columna.ItemStyle.CssClass = "celda-accion";
 
-            gvDatos.Columns.Add(columna);
+            return columna;
         }
 
         /// <summary>

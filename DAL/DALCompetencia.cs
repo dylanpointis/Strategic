@@ -1,0 +1,124 @@
+﻿using BE;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace DAL
+{
+    public class DALCompetencia
+    {
+        private readonly DALConexion dalCon = new DALConexion();
+
+        public List<BECompetencia> TraerListaCompetidores()
+        {
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerListaCompetidores", null);
+            List<BECompetencia> competidores = new List<BECompetencia>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                competidores.Add(new BECompetencia
+                {
+                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
+                    Nombre = row["Nombre"].ToString(),
+                    Marketplace = row["Marketplace"].ToString(),
+                    Descripcion = row["Descripcion"].ToString(),
+                    Estado = row["Estado"].ToString()
+                });
+            }
+
+            return competidores;
+        }
+
+        public List<BEComparacionPrecio> TraerComparacionPrecios()
+        {
+            return MapearComparaciones(dalCon.ConsultaProcAlmacenado("TraerComparacionPrecios", null));
+        }
+
+        public List<BEComparacionPrecio> FiltrarComparacionPrecios(int? idProducto, string categoria, int? idCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto),
+                new SqlParameter("@Categoria", categoria),
+                new SqlParameter("@IdCompetencia", idCompetencia)
+            };
+
+            return MapearComparaciones(dalCon.ConsultaProcAlmacenado("FiltrarComparacionPrecios", parametros));
+        }
+
+        public BEComparacionPrecio TraerComparacionPrecioPorId(int idProductoCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProductoCompetencia", idProductoCompetencia)
+            };
+
+            List<BEComparacionPrecio> comparaciones = MapearComparaciones(
+                dalCon.ConsultaProcAlmacenado("TraerComparacionPrecioPorId", parametros));
+
+            return comparaciones.Count > 0 ? comparaciones[0] : null;
+        }
+
+        public List<BEHistorialPrecioCompetencia> TraerHistorialPrecioCompetencia(int idProductoCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProductoCompetencia", idProductoCompetencia)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerHistorialPrecioCompetencia", parametros);
+            List<BEHistorialPrecioCompetencia> historial = new List<BEHistorialPrecioCompetencia>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                historial.Add(new BEHistorialPrecioCompetencia
+                {
+                    IdPrecioCompetencia = Convert.ToInt32(row["IdPrecioCompetencia"]),
+                    IdProductoCompetencia = Convert.ToInt32(row["IdProductoCompetencia"]),
+                    PrecioCompetencia = Convert.ToDecimal(row["PrecioCompetencia"]),
+                    PrecioPropio = Convert.ToDecimal(row["PrecioPropio"]),
+                    DiferenciaPorcentaje = row["DiferenciaPorcentaje"] == DBNull.Value
+                        ? (decimal?)null
+                        : Convert.ToDecimal(row["DiferenciaPorcentaje"]),
+                    FechaConsulta = Convert.ToDateTime(row["FechaConsulta"])
+                });
+            }
+
+            return historial;
+        }
+
+        private List<BEComparacionPrecio> MapearComparaciones(DataTable tabla)
+        {
+            List<BEComparacionPrecio> comparaciones = new List<BEComparacionPrecio>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                comparaciones.Add(new BEComparacionPrecio
+                {
+                    IdProductoCompetencia = Convert.ToInt32(row["IdProductoCompetencia"]),
+                    IdProducto = Convert.ToInt32(row["IdProducto"]),
+                    CodigoProducto = row["CodigoProducto"].ToString(),
+                    NombreProducto = row["NombreProducto"].ToString(),
+                    Categoria = row["Categoria"].ToString(),
+                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
+                    NombreCompetidor = row["NombreCompetidor"].ToString(),
+                    Marketplace = row["Marketplace"].ToString(),
+                    Url = row["URL"].ToString(),
+                    PrecioPropio = Convert.ToDecimal(row["PrecioPropio"]),
+                    PrecioCompetencia = row["PrecioCompetencia"] == DBNull.Value
+                        ? (decimal?)null
+                        : Convert.ToDecimal(row["PrecioCompetencia"]),
+                    DiferenciaPorcentaje = row["DiferenciaPorcentaje"] == DBNull.Value
+                        ? (decimal?)null
+                        : Convert.ToDecimal(row["DiferenciaPorcentaje"]),
+                    FechaConsulta = row["FechaConsulta"] == DBNull.Value
+                        ? (DateTime?)null
+                        : Convert.ToDateTime(row["FechaConsulta"])
+                });
+            }
+
+            return comparaciones;
+        }
+    }
+}

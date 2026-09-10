@@ -1036,6 +1036,162 @@ textarea {
         word-break: break-word;
     }
 
+/* ---------- Formularios de alta y modificacion ---------- */
+
+.formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px 20px;
+    align-items: start;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+    .campo .form-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: #8a6d80;
+        margin-bottom: 6px;
+    }
+
+/* Campo que ocupa el ancho completo de la grilla */
+.campo-ancho {
+    grid-column: 1 / -1;
+}
+
+/* Mensaje de validacion debajo del campo */
+.campo-error {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #b02a52;
+}
+
+/* Dato que no se puede editar, como el nombre de usuario al modificar */
+.campo-fijo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #493442;
+    background-color: #fbf5f9;
+    border: 1px solid #f0c5e2;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+}
+
+.campo-ayuda {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #8a6d80;
+}
+
+.campo-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 26px;
+}
+
+    .campo-check input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #c6128f;
+    }
+
+    .campo-check label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #493442;
+        margin: 0;
+    }
+
+.formulario-acciones {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #f5e3ef;
+}
+
+    .formulario-acciones .btn {
+        min-width: 150px;
+    }
+
+/* Acciones que acompanian al titulo de una tarjeta */
+.strategic-card-acciones {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Pedido de confirmacion antes de una accion que cambia datos */
+.confirmacion {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 14px 18px;
+    border: 1px solid #ffe0a3;
+    border-radius: 10px;
+    background-color: #fffaf0;
+}
+
+    .confirmacion p {
+        margin: 0;
+        flex: 1 1 260px;
+        font-size: 0.92rem;
+        color: #8a6100;
+    }
+
+.mensaje-exito {
+    display: block;
+    font-size: 0.9rem;
+}
+
+    .mensaje-exito:not(:empty) {
+        margin-top: 18px;
+        background-color: #f1faf3;
+        border: 1px solid #b9e2c6;
+        border-radius: 8px;
+        color: #1f6b3a;
+        padding: 10px 14px;
+    }
+
+/* Clave por defecto que se muestra una sola vez despues del alta */
+.clave-generada {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    border: 1px dashed #b9e2c6;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f6b3a;
+}
+
+
+/* Enlace a la publicacion de la competencia (CU-002-007) */
+.enlace-publicacion {
+    color: #3f72b8;
+    text-decoration: underline;
+}
+
+    .enlace-publicacion:hover,
+    .enlace-publicacion:focus {
+        color: #2f5a94;
+    }
+
 .detalle-acciones {
     display: flex;
     gap: 12px;

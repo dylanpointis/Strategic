@@ -101,6 +101,10 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="CambiarClave.aspx" />
+    <Content Include="AltaUsuario.aspx" />
+    <Content Include="CompararPrecios.aspx" />
+    <Content Include="ConsultarUsuarios.aspx" />
+    <Content Include="ModificarUsuario.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Dashboard.aspx" />
@@ -263,6 +267,34 @@
     </Compile>
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="AltaUsuario.aspx.cs">
+      <DependentUpon>AltaUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaUsuario.aspx.designer.cs">
+      <DependentUpon>AltaUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConsultarUsuarios.aspx.cs">
+      <DependentUpon>ConsultarUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarUsuarios.aspx.designer.cs">
+      <DependentUpon>ConsultarUsuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarUsuario.aspx.cs">
+      <DependentUpon>ModificarUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarUsuario.aspx.designer.cs">
+      <DependentUpon>ModificarUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CompararPrecios.aspx.cs">
+      <DependentUpon>CompararPrecios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CompararPrecios.aspx.designer.cs">
+      <DependentUpon>CompararPrecios.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>

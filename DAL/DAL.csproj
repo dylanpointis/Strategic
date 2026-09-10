@@ -41,7 +41,9 @@
     <Compile Include="DALConexion.cs" />
     <Compile Include="DALEvento.cs" />
     <Compile Include="DALDashboard.cs" />
+    <Compile Include="DALCompetencia.cs" />
     <Compile Include="DALProducto.cs" />
+    <Compile Include="DALRol.cs" />
     <Compile Include="DALVenta.cs" />
     <Compile Include="DALUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

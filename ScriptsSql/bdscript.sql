@@ -759,3 +759,362 @@ BEGIN
     ORDER BY (P.Stock - P.StockMinimo) ASC, P.Nombre ASC
 END
 GO
+
+/* ============================================================
+   002. Analisis - CU-002-007 Comparar Precios con Competidores
+   ------------------------------------------------------------
+   La comparacion se arma sobre los mapeos de ProductoCompetencia:
+   cada fila es un producto propio asociado a una publicacion de
+   un competidor. El precio de la competencia es el ultimo valor
+   registrado en HistorialPrecioCompetencia.
+   La diferencia porcentual se calcula contra el precio del
+   competidor: positiva significa que el producto propio esta mas
+   caro que la publicacion de la competencia.
+   Los mapeos que todavia no tienen ninguna consulta de precio se
+   siguen mostrando, con el precio de la competencia en NULL.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaCompetidores]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Solo los competidores vigentes: son los que se pueden comparar.
+    -- El listado completo lo resuelve el CU-007-032 con sus propios filtros.
+    SELECT
+        C.IdCompetencia,
+        C.Nombre,
+        C.Marketplace,
+        ISNULL(C.Descripcion, N'') AS Descripcion,
+        C.Estado
+    FROM [dbo].[Competencia] C
+    WHERE C.Estado = N'Activo'
+    ORDER BY C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerComparacionPrecios]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        ISNULL(P.Categoria, N'') AS Categoria,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        P.Precio                 AS PrecioPropio,
+        UP.PrecioCompetencia,
+        UP.FechaConsulta,
+        CASE
+            WHEN UP.PrecioCompetencia IS NULL OR UP.PrecioCompetencia = 0 THEN NULL
+            ELSE CONVERT(DECIMAL(10,2), ((P.Precio - UP.PrecioCompetencia) / UP.PrecioCompetencia) * 100)
+        END AS DiferenciaPorcentaje
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1)
+            H.PrecioCompetencia,
+            H.FechaConsulta
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE P.BorradoLogico = 0
+      AND PC.Estado = N'Activo'
+    ORDER BY P.Nombre ASC, C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarComparacionPrecios]
+    @IdProducto INT = NULL,
+    @Categoria NVARCHAR(100) = NULL,
+    @IdCompetencia INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        ISNULL(P.Categoria, N'') AS Categoria,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        P.Precio                 AS PrecioPropio,
+        UP.PrecioCompetencia,
+        UP.FechaConsulta,
+        CASE
+            WHEN UP.PrecioCompetencia IS NULL OR UP.PrecioCompetencia = 0 THEN NULL
+            ELSE CONVERT(DECIMAL(10,2), ((P.Precio - UP.PrecioCompetencia) / UP.PrecioCompetencia) * 100)
+        END AS DiferenciaPorcentaje
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1)
+            H.PrecioCompetencia,
+            H.FechaConsulta
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE P.BorradoLogico = 0
+      AND PC.Estado = N'Activo'
+      AND (@IdProducto IS NULL OR P.IdProducto = @IdProducto)
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+      AND (@IdCompetencia IS NULL OR C.IdCompetencia = @IdCompetencia)
+    ORDER BY P.Nombre ASC, C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerComparacionPrecioPorId]
+    @IdProductoCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        ISNULL(P.Categoria, N'') AS Categoria,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        P.Precio                 AS PrecioPropio,
+        UP.PrecioCompetencia,
+        UP.FechaConsulta,
+        CASE
+            WHEN UP.PrecioCompetencia IS NULL OR UP.PrecioCompetencia = 0 THEN NULL
+            ELSE CONVERT(DECIMAL(10,2), ((P.Precio - UP.PrecioCompetencia) / UP.PrecioCompetencia) * 100)
+        END AS DiferenciaPorcentaje
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1)
+            H.PrecioCompetencia,
+            H.FechaConsulta
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE PC.IdProductoCompetencia = @IdProductoCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerHistorialPrecioCompetencia]
+    @IdProductoCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- El historial guarda el precio propio vigente al momento de cada consulta,
+    -- asi la comparacion refleja como estaban los dos precios ese dia
+    SELECT
+        H.IdPrecioCompetencia,
+        H.IdProductoCompetencia,
+        H.PrecioCompetencia,
+        H.PrecioPropio,
+        H.FechaConsulta,
+        CASE
+            WHEN H.PrecioCompetencia = 0 THEN NULL
+            ELSE CONVERT(DECIMAL(10,2), ((H.PrecioPropio - H.PrecioCompetencia) / H.PrecioCompetencia) * 100)
+        END AS DiferenciaPorcentaje
+    FROM [dbo].[HistorialPrecioCompetencia] H
+    WHERE H.IdProductoCompetencia = @IdProductoCompetencia
+    ORDER BY H.FechaConsulta ASC
+END
+GO
+
+/* ============================================================
+   005. Gestion de Usuarios y Permisos
+   ------------------------------------------------------------
+   CU-005-017 Consultar Usuarios
+   CU-005-018 Alta Usuario
+   CU-005-019 Baja Usuario (logica: Activo = 0)
+   CU-005-020 Modificar Usuario
+
+   Los procedimientos de consulta no devuelven la columna Clave:
+   la contrasenia encriptada solo sale de la base en ValidarUsuario,
+   que es el unico lugar que necesita compararla.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaRoles]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        R.CodRol,
+        R.Nombre,
+        R.Activo
+    FROM [dbo].[Rol] R
+    WHERE R.Activo = 1
+    ORDER BY R.CodRol ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerListaUsuarios]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        U.NombreUsuario,
+        U.Nombre,
+        U.Apellido,
+        U.Email,
+        U.CodRol,
+        U.Bloqueado,
+        U.Activo,
+        U.ContFallidos,
+        R.Nombre AS NombreRol
+    FROM [dbo].[Usuario] U
+    INNER JOIN [dbo].[Rol] R ON U.CodRol = R.CodRol
+    ORDER BY U.NombreUsuario ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarUsuarios]
+    @Texto VARCHAR(100) = NULL,
+    @CodRol INT = NULL,
+    @Activo BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- @Texto busca en usuario, nombre, apellido y email a la vez
+    SELECT
+        U.NombreUsuario,
+        U.Nombre,
+        U.Apellido,
+        U.Email,
+        U.CodRol,
+        U.Bloqueado,
+        U.Activo,
+        U.ContFallidos,
+        R.Nombre AS NombreRol
+    FROM [dbo].[Usuario] U
+    INNER JOIN [dbo].[Rol] R ON U.CodRol = R.CodRol
+    WHERE (@Texto IS NULL
+           OR U.NombreUsuario LIKE '%' + @Texto + '%'
+           OR U.Nombre LIKE '%' + @Texto + '%'
+           OR U.Apellido LIKE '%' + @Texto + '%'
+           OR U.Email LIKE '%' + @Texto + '%')
+      AND (@CodRol IS NULL OR U.CodRol = @CodRol)
+      AND (@Activo IS NULL OR U.Activo = @Activo)
+    ORDER BY U.NombreUsuario ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerUsuarioPorNombre]
+    @NombreUsuario VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        U.NombreUsuario,
+        U.Nombre,
+        U.Apellido,
+        U.Email,
+        U.CodRol,
+        U.Bloqueado,
+        U.Activo,
+        U.ContFallidos,
+        R.Nombre AS NombreRol
+    FROM [dbo].[Usuario] U
+    INNER JOIN [dbo].[Rol] R ON U.CodRol = R.CodRol
+    WHERE U.NombreUsuario = @NombreUsuario
+END
+GO
+
+CREATE PROCEDURE [dbo].[ExisteUsuario]
+    @NombreUsuario VARCHAR(50) = NULL,
+    @Email VARCHAR(100) = NULL,
+    @NombreUsuarioExcluido VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Alternativa 5.1 del CU-005-018 y 4.1 del CU-005-020 [#ERR021].
+    -- @NombreUsuarioExcluido deja fuera al usuario que se esta editando,
+    -- para que sus propios datos no se cuenten como duplicados.
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Usuario] U
+    WHERE (@NombreUsuarioExcluido IS NULL OR U.NombreUsuario <> @NombreUsuarioExcluido)
+      AND ((@NombreUsuario IS NOT NULL AND U.NombreUsuario = @NombreUsuario)
+           OR (@Email IS NOT NULL AND U.Email = @Email))
+END
+GO
+
+CREATE PROCEDURE [dbo].[AltaUsuario]
+    @NombreUsuario VARCHAR(50),
+    @Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @Email VARCHAR(100),
+    @Clave VARCHAR(64),
+    @CodRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- El usuario nace activo, desbloqueado y sin intentos fallidos
+    INSERT INTO [dbo].[Usuario]
+        ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos])
+    VALUES
+        (@NombreUsuario, @Nombre, @Apellido, @Email, @Clave, @CodRol, 0, 1, 0)
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarUsuario]
+    @NombreUsuario VARCHAR(50),
+    @Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @Email VARCHAR(100),
+    @CodRol INT,
+    @Bloqueado BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Usuario]
+    SET [Nombre] = @Nombre,
+        [Apellido] = @Apellido,
+        [Email] = @Email,
+        [CodRol] = @CodRol,
+        [Bloqueado] = @Bloqueado,
+        -- Al desbloquear se reinicia el contador: si quedara en el limite el
+        -- usuario se volveria a bloquear con el primer intento fallido
+        [ContFallidos] = CASE WHEN @Bloqueado = 0 THEN 0 ELSE [ContFallidos] END
+    WHERE [NombreUsuario] = @NombreUsuario
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoUsuario]
+    @NombreUsuario VARCHAR(50),
+    @Activo BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Baja y reactivacion logicas del CU-005-019. El usuario nunca se borra
+    -- fisicamente porque la bitacora de eventos lo referencia.
+    UPDATE [dbo].[Usuario]
+    SET [Activo] = @Activo
+    WHERE [NombreUsuario] = @NombreUsuario
+END
+GO

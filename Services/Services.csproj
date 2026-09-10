@@ -37,6 +37,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClavePorDefecto.cs" />
     <Compile Include="Encriptacion.cs" />
     <Compile Include="Evento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

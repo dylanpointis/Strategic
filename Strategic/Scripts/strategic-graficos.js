@@ -20,6 +20,10 @@ Strategic.grafico = (function () {
             return null;
         }
 
+        // Los valores que arma Chart.js por su cuenta, como los del tooltip,
+        // tambien tienen que salir con el formato del sistema
+        Chart.defaults.locale = idioma;
+
         var canvas = document.getElementById(idCanvas);
 
         if (!canvas) {
@@ -32,10 +36,21 @@ Strategic.grafico = (function () {
     // Eje que muestra los valores: lleva el prefijo ($, etc) y arranca en cero en las barras.
     // Si todos los valores son enteros (unidades, cantidades) se evitan los decimales
     // en las marcas del eje, que quedarian como 0,5 - 1,5 - 2,5
+    // Los numeros se muestran con el mismo formato que usan las pantallas del
+    // lado del servidor, sin depender del idioma que tenga configurado el
+    // navegador de quien mira el grafico
+    var idioma = 'es-AR';
+
+    // Los importes del negocio llegan al orden de los cientos de miles, asi que
+    // las marcas del eje se muestran con separador de miles igual que el tooltip
+    function formatearMarca(valor) {
+        return typeof valor === 'number' ? valor.toLocaleString(idioma) : valor;
+    }
+
     function ejeDeValores(prefijoValor, arrancaEnCero, soloEnteros) {
         var marcas = {
             color: colores.texto,
-            callback: function (valor) { return prefijoValor + valor; }
+            callback: function (valor) { return prefijoValor + formatearMarca(valor); }
         };
 
         if (soloEnteros) {
@@ -122,17 +137,89 @@ Strategic.grafico = (function () {
         });
     }
 
-    // La torta necesita un color por porcion. Se combinan los dos colores
-    // institucionales (azul y magenta) con sus variantes claras.
+    // Colores para los graficos que necesitan distinguir varios elementos:
+    // las porciones de la torta y las series de un grafico de lineas.
+    // Se combinan los dos colores institucionales (azul y magenta) con sus
+    // variantes claras.
+    var paleta = ['#5b8fd9', '#c6128f', '#3f72b8', '#e7a9d0', '#8fb8e8', '#98a7b8'];
+
+    function colorDeSerie(indice) {
+        return paleta[indice % paleta.length];
+    }
+
     function coloresDePorciones(cantidad) {
-        var paleta = ['#5b8fd9', '#c6128f', '#3f72b8', '#e7a9d0', '#8fb8e8', '#98a7b8'];
         var asignados = [];
 
         for (var i = 0; i < cantidad; i++) {
-            asignados.push(paleta[i % paleta.length]);
+            asignados.push(colorDeSerie(i));
         }
 
         return asignados;
+    }
+
+    // Grafico de lineas con mas de una serie: sirve para seguir en el tiempo
+    // dos valores que se comparan entre si, como el precio propio y el de
+    // la publicacion de un competidor.
+    // Espera { etiquetas: [], series: [{ nombre: '', valores: [] }] }
+    function dibujarLineas(idCanvas, datos, prefijoValor) {
+        var contexto = obtenerContexto(idCanvas);
+
+        if (!contexto || !datos || !datos.etiquetas || datos.etiquetas.length === 0 || !datos.series) {
+            return null;
+        }
+
+        prefijoValor = prefijoValor || '';
+
+        var conjuntos = [];
+        var todosLosValores = [];
+
+        for (var i = 0; i < datos.series.length; i++) {
+            var serie = datos.series[i];
+            var color = colorDeSerie(i);
+
+            conjuntos.push({
+                label: serie.nombre,
+                data: serie.valores,
+                borderColor: color,
+                backgroundColor: color,
+                pointBackgroundColor: color,
+                pointRadius: 3,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.25
+            });
+
+            todosLosValores = todosLosValores.concat(serie.valores);
+        }
+
+        var opciones = armarOpciones('line', false, prefijoValor, todosEnteros(todosLosValores));
+
+        // Con varias series hace falta la referencia y saber a cual pertenece
+        // cada valor del tooltip
+        opciones.plugins.legend = {
+            display: true,
+            position: 'top',
+            labels: {
+                color: colores.texto,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 14,
+                boxWidth: 8
+            }
+        };
+
+        opciones.plugins.tooltip.callbacks.label = function (contexto) {
+            return contexto.dataset.label + ': ' + prefijoValor + contexto.formattedValue;
+        };
+
+        return new Chart(contexto, {
+            type: 'line',
+            data: {
+                labels: datos.etiquetas,
+                datasets: conjuntos
+            },
+            options: opciones
+        });
     }
 
     function sumar(valores) {
@@ -204,6 +291,9 @@ Strategic.grafico = (function () {
     return {
         linea: function (idCanvas, datos, etiquetaSerie, prefijoValor) {
             return dibujar(idCanvas, 'line', false, datos, etiquetaSerie, prefijoValor);
+        },
+        lineas: function (idCanvas, datos, prefijoValor) {
+            return dibujarLineas(idCanvas, datos, prefijoValor);
         },
         barras: function (idCanvas, datos, etiquetaSerie, prefijoValor) {
             return dibujar(idCanvas, 'bar', false, datos, etiquetaSerie, prefijoValor);
