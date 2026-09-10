@@ -40,6 +40,7 @@
     <Compile Include="BLLEvento.cs" />
     <Compile Include="BLLDashboard.cs" />
     <Compile Include="BLLCompetencia.cs" />
+    <Compile Include="BLLPermiso.cs" />
     <Compile Include="BLLProducto.cs" />
     <Compile Include="BLLRol.cs" />
     <Compile Include="BLLVenta.cs" />

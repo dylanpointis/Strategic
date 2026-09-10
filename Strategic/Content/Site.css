@@ -659,6 +659,43 @@ textarea {
         text-decoration: none;
     }
 
+.btn-fila-baja {
+    color: #c0392b;
+    background-color: #fbe6e4;
+    border-color: #f3c6c1;
+}
+
+    .btn-fila-baja:hover,
+    .btn-fila-baja:focus {
+        color: #ffffff;
+        background-color: #c0392b;
+        border-color: #c0392b;
+    }
+
+.btn-strategic-danger {
+    color: #ffffff;
+    background-color: #c0392b;
+    border: 1px solid #c0392b;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.5rem 1.1rem;
+    box-shadow: 0 2px 6px rgba(192, 57, 43, 0.18);
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+    .btn-strategic-danger:hover,
+    .btn-strategic-danger:focus {
+        color: #ffffff;
+        background-color: #a5321f;
+        border-color: #a5321f;
+        box-shadow: 0 4px 10px rgba(192, 57, 43, 0.24);
+    }
+
+    .btn-strategic-danger:active {
+        transform: translateY(1px);
+    }
+
 
 /* ---------- Grilla ---------- */
 
@@ -1035,6 +1072,119 @@ textarea {
         color: #493442;
         word-break: break-word;
     }
+
+/* ---------- Selector de permisos y familias (Composite) ---------- */
+
+.selector-permisos {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.selector-columna {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.selector-lista {
+    width: 100%;
+    height: auto;
+    min-height: 240px;
+    padding: 6px;
+    font-size: 0.88rem;
+}
+
+    .selector-lista option {
+        padding: 5px 8px;
+        border-radius: 6px;
+    }
+
+.selector-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 30px;
+}
+
+    .selector-acciones .btn {
+        min-width: 130px;
+    }
+
+@media screen and (max-width: 767.98px) {
+    .selector-permisos {
+        grid-template-columns: 1fr;
+    }
+
+    .selector-acciones {
+        flex-direction: row;
+        padding-top: 0;
+    }
+}
+
+/* ---------- Arbol de componentes ---------- */
+
+.arbol-permisos ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 22px;
+}
+
+.arbol-permisos > ul {
+    padding-left: 0;
+}
+
+.arbol-permisos li {
+    position: relative;
+    padding: 4px 0 4px 0;
+    font-size: 0.9rem;
+    color: #493442;
+}
+
+.arbol-permisos ul ul > li::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 15px;
+    width: 8px;
+    border-top: 1px solid #f0c5e2;
+}
+
+.arbol-permisos ul ul {
+    border-left: 1px solid #f0c5e2;
+    margin-left: 4px;
+}
+
+.nodo-familia {
+    font-weight: 700;
+    color: #c6128f;
+}
+
+.nodo-simple {
+    color: #493442;
+}
+
+.nodo-etiqueta {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    background-color: #f7f9fc;
+    border: 1px solid #dfe9f6;
+    color: #6b7f99;
+}
+
+.nodo-baja {
+    background-color: #fff0f4;
+    border-color: #f3c2d2;
+    color: #b02a52;
+}
+
 
 /* ---------- Formularios de alta y modificacion ---------- */
 

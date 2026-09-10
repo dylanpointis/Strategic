@@ -296,26 +296,98 @@ INSERT INTO [dbo].[Rol] ([CodRol], [Nombre], [Activo]) VALUES
 SET IDENTITY_INSERT [dbo].[Rol] OFF
 GO
 
+/* ------------------------------------------------------------
+   Permisos simples (hojas del Composite)
+   El nombre de cada permiso coincide con el nombre del aspx que
+   habilita. Estan predefinidos: no se crean ni se modifican desde
+   la aplicacion, solo se combinan en familias y se asignan a roles.
+   ------------------------------------------------------------ */
+
 SET IDENTITY_INSERT [dbo].[Permiso] ON
+
 INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Activo]) VALUES
-(1, 'SEGURIDAD_LOGIN', 'Permite iniciar sesion', 'Simple', 1),
-(2, 'SEGURIDAD_USUARIOS', 'Permite gestionar usuarios', 'Simple', 1),
-(3, 'SEGURIDAD_ROLES', 'Permite gestionar roles', 'Simple', 1),
-(4, 'SEGURIDAD_FAMILIA_ADMIN', 'Familia inicial de permisos de seguridad', 'Familia', 1)
+( 1, 'Dashboard',                          'Ver el dashboard principal',                    'Simple', 1),
+( 2, 'Recomendaciones',                    'Ver las recomendaciones generadas',             'Simple', 1),
+( 3, 'Predicciones',                       'Ver las predicciones de demanda',               'Simple', 1),
+( 4, 'CompararPrecios',                    'Comparar precios con los competidores',         'Simple', 1),
+( 5, 'Reportes',                           'Generar reportes del negocio',                  'Simple', 1),
+( 6, 'ConsultarAutomatizaciones',          'Consultar las automatizaciones configuradas',   'Simple', 1),
+( 7, 'HistorialAutomatizaciones',          'Ver el historial de automatizaciones',          'Simple', 1),
+( 8, 'ProductosSincronizados',             'Ver el catalogo de productos sincronizados',    'Simple', 1),
+( 9, 'HistorialPrecios',                   'Ver el historial de precios de un producto',    'Simple', 1),
+(10, 'HistorialStock',                     'Ver el historial de stock de un producto',      'Simple', 1),
+(11, 'HistorialVentas',                    'Ver el historial de ventas',                    'Simple', 1),
+(12, 'ConsultarUsuarios',                  'Gestionar los usuarios del sistema',            'Simple', 1),
+(13, 'ConsultarRoles',                     'Gestionar los roles del sistema',               'Simple', 1),
+(14, 'ConsultarFamilias',                  'Gestionar las familias de permisos',            'Simple', 1),
+(15, 'ImportarDatos',                      'Importar y sincronizar datos del cliente',      'Simple', 1),
+(16, 'HistorialSincronizaciones',          'Ver el historial de sincronizaciones',          'Simple', 1),
+(17, 'ConsultarCompetidores',              'Gestionar los competidores registrados',        'Simple', 1),
+(18, 'MapearProductosCompetencia',         'Asociar productos con publicaciones rivales',   'Simple', 1),
+(19, 'MonitoreoPublicacionesCompetidoras', 'Monitorear las publicaciones de la competencia', 'Simple', 1),
+(20, 'ConsultarEventosSistema',            'Consultar la bitacora de eventos',              'Simple', 1),
+(21, 'RealizarBackup',                     'Generar copias de seguridad',                   'Simple', 1),
+(22, 'RenovarSuscripcion',                 'Gestionar la suscripcion del cliente',          'Simple', 1),
+
+/* ------------------------------------------------------------
+   Familias iniciales (composites)
+   Agrupan permisos por modulo. "Acceso total" es una familia de
+   familias: muestra que el arbol admite mas de un nivel.
+   Se pueden crear otras desde el CU-005-026.
+   ------------------------------------------------------------ */
+(23, 'Modulo Analisis',         'Pantallas de analisis del negocio',            'Familia', 1),
+(24, 'Modulo Catalogo',         'Pantallas del catalogo sincronizado',          'Familia', 1),
+(25, 'Modulo Automatizaciones', 'Pantallas de automatizaciones',                'Familia', 1),
+(26, 'Modulo Competencia',      'Pantallas de gestion de competencia',          'Familia', 1),
+(27, 'Modulo Integraciones',    'Pantallas de importacion y sincronizacion',    'Familia', 1),
+(28, 'Modulo Seguridad',        'Pantallas de usuarios, roles y familias',      'Familia', 1),
+(29, 'Modulo Auditoria',        'Pantallas de bitacora y backup',               'Familia', 1),
+(30, 'Acceso total',            'Todas las pantallas del sistema',              'Familia', 1)
+
 SET IDENTITY_INSERT [dbo].[Permiso] OFF
 GO
 
+
+/* ------------------------------------------------------------
+   Permiso_Componente: la relacion recursiva que arma el arbol.
+   CodPadre siempre es una familia; CodHijo puede ser un permiso
+   simple u otra familia.
+   ------------------------------------------------------------ */
+
 INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
-(4, 1),
-(4, 2),
-(4, 3)
+-- Modulo Analisis
+(23,  1), (23,  2), (23,  3), (23,  4), (23,  5),
+-- Modulo Catalogo
+(24,  8), (24,  9), (24, 10), (24, 11),
+-- Modulo Automatizaciones
+(25,  6), (25,  7),
+-- Modulo Competencia
+(26, 17), (26, 18), (26, 19),
+-- Modulo Integraciones
+(27, 15), (27, 16),
+-- Modulo Seguridad
+(28, 12), (28, 13), (28, 14),
+-- Modulo Auditoria
+(29, 20), (29, 21),
+-- Acceso total: contiene a las demas familias y un permiso suelto
+(30, 23), (30, 24), (30, 25), (30, 26), (30, 27), (30, 28), (30, 29), (30, 22)
 GO
 
+
+/* ------------------------------------------------------------
+   Rol_Permiso: el rol se asocia a cualquier componente, sea un
+   permiso simple o una familia. No distingue entre los dos.
+   ------------------------------------------------------------ */
+
 INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
-(1, 4),
-(2, 4),
-(3, 1),
-(4, 1)
+-- WebMaster: una sola familia que lo alcanza todo
+(1, 30),
+-- Administrador: varias familias mas un permiso simple suelto
+(2, 23), (2, 24), (2, 25), (2, 26), (2, 27), (2, 28), (2, 20),
+-- Analista: solo consulta
+(3, 23), (3, 24),
+-- Usuario: apenas el dashboard
+(4,  1)
 GO
 
 INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
@@ -1116,5 +1188,402 @@ BEGIN
     UPDATE [dbo].[Usuario]
     SET [Activo] = @Activo
     WHERE [NombreUsuario] = @NombreUsuario
+END
+GO
+
+/* ============================================================
+   005. Gestion de Usuarios y Permisos - Roles y Familias
+   ------------------------------------------------------------
+   CU-005-021 a CU-005-024  Roles
+   CU-005-025 a CU-005-028  Familias
+
+   Roles y familias se guardan con sus componentes en una sola
+   llamada: el alta y la modificacion reciben los codigos elegidos
+   en una lista separada por comas y resuelven todo dentro de una
+   transaccion, para que no pueda quedar un rol sin permisos o una
+   familia a medio armar.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[FiltrarRoles]
+    @Nombre VARCHAR(50) = NULL,
+    @Activo BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- CantidadComponentes es lo que muestra el listado del CU-005-021
+    SELECT
+        R.CodRol,
+        R.Nombre,
+        R.Activo,
+        (SELECT COUNT(*) FROM [dbo].[Rol_Permiso] RP WHERE RP.CodRol = R.CodRol) AS CantidadComponentes,
+        (SELECT COUNT(*) FROM [dbo].[Usuario] U WHERE U.CodRol = R.CodRol AND U.Activo = 1) AS UsuariosActivos
+    FROM [dbo].[Rol] R
+    WHERE (@Nombre IS NULL OR R.Nombre LIKE '%' + @Nombre + '%')
+      AND (@Activo IS NULL OR R.Activo = @Activo)
+    ORDER BY R.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerRolPorId]
+    @CodRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        R.CodRol,
+        R.Nombre,
+        R.Activo,
+        (SELECT COUNT(*) FROM [dbo].[Rol_Permiso] RP WHERE RP.CodRol = R.CodRol) AS CantidadComponentes,
+        (SELECT COUNT(*) FROM [dbo].[Usuario] U WHERE U.CodRol = R.CodRol AND U.Activo = 1) AS UsuariosActivos
+    FROM [dbo].[Rol] R
+    WHERE R.CodRol = @CodRol
+END
+GO
+
+CREATE PROCEDURE [dbo].[ExisteRol]
+    @Nombre VARCHAR(50),
+    @CodRolExcluido INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Alternativa 4.2 de los CU-005-022 y CU-005-024 [#ERR038]
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Rol] R
+    WHERE R.Nombre = @Nombre
+      AND (@CodRolExcluido IS NULL OR R.CodRol <> @CodRolExcluido)
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerComponentesDeRol]
+    @CodRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Hijos directos del rol: pueden ser permisos simples o familias
+    SELECT
+        P.CodPermiso,
+        P.Nombre,
+        ISNULL(P.Descripcion, '') AS Descripcion,
+        P.Tipo,
+        P.Activo
+    FROM [dbo].[Rol_Permiso] RP
+    INNER JOIN [dbo].[Permiso] P ON P.CodPermiso = RP.CodPermiso
+    WHERE RP.CodRol = @CodRol
+    ORDER BY P.Tipo DESC, P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[AltaRol]
+    @Nombre VARCHAR(50),
+    @Componentes VARCHAR(1000)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRANSACTION
+
+    BEGIN TRY
+        INSERT INTO [dbo].[Rol] ([Nombre], [Activo]) VALUES (@Nombre, 1)
+
+        DECLARE @CodRol INT = SCOPE_IDENTITY()
+
+        INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso])
+        SELECT @CodRol, CONVERT(INT, LTRIM(RTRIM(S.value)))
+        FROM STRING_SPLIT(@Componentes, ',') S
+        WHERE LTRIM(RTRIM(S.value)) <> ''
+
+        COMMIT TRANSACTION
+
+        SELECT @CodRol AS CodRol
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        THROW
+    END CATCH
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarRol]
+    @CodRol INT,
+    @Nombre VARCHAR(50),
+    @Componentes VARCHAR(1000)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRANSACTION
+
+    BEGIN TRY
+        UPDATE [dbo].[Rol] SET [Nombre] = @Nombre WHERE [CodRol] = @CodRol
+
+        -- Los componentes se reemplazan enteros: es mas simple y mas seguro
+        -- que ir comparando cual se agrego y cual se quito
+        DELETE FROM [dbo].[Rol_Permiso] WHERE [CodRol] = @CodRol
+
+        INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso])
+        SELECT @CodRol, CONVERT(INT, LTRIM(RTRIM(S.value)))
+        FROM STRING_SPLIT(@Componentes, ',') S
+        WHERE LTRIM(RTRIM(S.value)) <> ''
+
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        THROW
+    END CATCH
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoRol]
+    @CodRol INT,
+    @Activo BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Baja logica del CU-005-023: el rol no se borra porque los usuarios
+    -- que lo tuvieron asignado lo siguen referenciando
+    UPDATE [dbo].[Rol] SET [Activo] = @Activo WHERE [CodRol] = @CodRol
+END
+GO
+
+CREATE PROCEDURE [dbo].[ContarUsuariosActivosPorRol]
+    @CodRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Alternativa 2.1 del CU-005-023 [#ERR039]
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Usuario] U
+    WHERE U.CodRol = @CodRol
+      AND U.Activo = 1
+END
+GO
+
+
+/* ------------------------------------------------------------
+   Permisos y familias
+   ------------------------------------------------------------ */
+
+CREATE PROCEDURE [dbo].[TraerListaPermisos]
+    @Tipo VARCHAR(10) = NULL,
+    @Activo BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- @Tipo NULL trae hojas y familias juntas, que es como las consume
+    -- el selector de componentes
+    SELECT
+        P.CodPermiso,
+        P.Nombre,
+        ISNULL(P.Descripcion, '') AS Descripcion,
+        P.Tipo,
+        P.Activo
+    FROM [dbo].[Permiso] P
+    WHERE (@Tipo IS NULL OR P.Tipo = @Tipo)
+      AND (@Activo IS NULL OR P.Activo = @Activo)
+    ORDER BY P.Tipo DESC, P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarFamilias]
+    @Nombre VARCHAR(80) = NULL,
+    @Activo BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.CodPermiso,
+        P.Nombre,
+        ISNULL(P.Descripcion, '') AS Descripcion,
+        P.Tipo,
+        P.Activo,
+        (SELECT COUNT(*) FROM [dbo].[Permiso_Componente] PC WHERE PC.CodPadre = P.CodPermiso) AS CantidadComponentes
+    FROM [dbo].[Permiso] P
+    WHERE P.Tipo = 'Familia'
+      AND (@Nombre IS NULL OR P.Nombre LIKE '%' + @Nombre + '%')
+      AND (@Activo IS NULL OR P.Activo = @Activo)
+    ORDER BY P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerPermisoPorId]
+    @CodPermiso INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.CodPermiso,
+        P.Nombre,
+        ISNULL(P.Descripcion, '') AS Descripcion,
+        P.Tipo,
+        P.Activo
+    FROM [dbo].[Permiso] P
+    WHERE P.CodPermiso = @CodPermiso
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerHijosDeFamilia]
+    @CodPadre INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.CodPermiso,
+        P.Nombre,
+        ISNULL(P.Descripcion, '') AS Descripcion,
+        P.Tipo,
+        P.Activo
+    FROM [dbo].[Permiso_Componente] PC
+    INNER JOIN [dbo].[Permiso] P ON P.CodPermiso = PC.CodHijo
+    WHERE PC.CodPadre = @CodPadre
+    ORDER BY P.Tipo DESC, P.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[ExistePermisoConNombre]
+    @Nombre VARCHAR(80),
+    @CodPermisoExcluido INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- El nombre es unico en toda la tabla Permiso, asi que una familia
+    -- tampoco puede llamarse igual que un permiso simple [#ERR040]
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Permiso] P
+    WHERE P.Nombre = @Nombre
+      AND (@CodPermisoExcluido IS NULL OR P.CodPermiso <> @CodPermisoExcluido)
+END
+GO
+
+CREATE PROCEDURE [dbo].[AltaFamilia]
+    @Nombre VARCHAR(80),
+    @Descripcion VARCHAR(150) = NULL,
+    @Componentes VARCHAR(1000)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRANSACTION
+
+    BEGIN TRY
+        INSERT INTO [dbo].[Permiso] ([Nombre], [Descripcion], [Tipo], [Activo])
+        VALUES (@Nombre, @Descripcion, 'Familia', 1)
+
+        DECLARE @CodPermiso INT = SCOPE_IDENTITY()
+
+        INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo])
+        SELECT @CodPermiso, CONVERT(INT, LTRIM(RTRIM(S.value)))
+        FROM STRING_SPLIT(@Componentes, ',') S
+        WHERE LTRIM(RTRIM(S.value)) <> ''
+
+        COMMIT TRANSACTION
+
+        SELECT @CodPermiso AS CodPermiso
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        THROW
+    END CATCH
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarFamilia]
+    @CodPermiso INT,
+    @Nombre VARCHAR(80),
+    @Descripcion VARCHAR(150) = NULL,
+    @Componentes VARCHAR(1000)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRANSACTION
+
+    BEGIN TRY
+        UPDATE [dbo].[Permiso]
+        SET [Nombre] = @Nombre,
+            [Descripcion] = @Descripcion
+        WHERE [CodPermiso] = @CodPermiso
+          AND [Tipo] = 'Familia'
+
+        DELETE FROM [dbo].[Permiso_Componente] WHERE [CodPadre] = @CodPermiso
+
+        INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo])
+        SELECT @CodPermiso, CONVERT(INT, LTRIM(RTRIM(S.value)))
+        FROM STRING_SPLIT(@Componentes, ',') S
+        WHERE LTRIM(RTRIM(S.value)) <> ''
+
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        THROW
+    END CATCH
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoFamilia]
+    @CodPermiso INT,
+    @Activo BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Baja logica del CU-005-027: la familia no se borra para no perder
+    -- el arbol que quedo registrado
+    UPDATE [dbo].[Permiso]
+    SET [Activo] = @Activo
+    WHERE [CodPermiso] = @CodPermiso
+      AND [Tipo] = 'Familia'
+END
+GO
+
+CREATE PROCEDURE [dbo].[ContarRolesConComponente]
+    @CodPermiso INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Alternativa 2.1 del CU-005-027 [#ERR042]
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Rol_Permiso] RP
+    WHERE RP.CodPermiso = @CodPermiso
+END
+GO
+
+CREATE PROCEDURE [dbo].[ContarFamiliasQueContienen]
+    @CodPermiso INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Alternativa 2.2 del CU-005-027 [#ERR043]
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Permiso_Componente] PC
+    WHERE PC.CodHijo = @CodPermiso
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerRelacionesPermisos]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Todas las aristas del arbol de una sola vez. Armar el arbol en memoria
+    -- a partir de esta foto evita una consulta por cada familia que se abre.
+    SELECT
+        PC.CodPadre,
+        PC.CodHijo
+    FROM [dbo].[Permiso_Componente] PC
 END
 GO

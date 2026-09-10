@@ -1,4 +1,5 @@
 ﻿using BE;
+using BE.Composite;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,6 +9,7 @@ namespace DAL
     public class DALUsuario
     {
         private readonly DALConexion dalCon = new DALConexion();
+        private readonly DALPermiso dalPermiso = new DALPermiso();
 
         public BEUsuario ValidarUsuario(string nombreUsuario, string email)
         {
@@ -33,7 +35,13 @@ namespace DAL
 
                 usuario.ContFallidos = Convert.ToInt32(row["ContFallidos"]);
                 usuario.Rol = new BERol(Convert.ToInt32(row["CodRol"]), row["NombreRol"].ToString());
-                usuario.Rol.Permisos = ObtenerPermisosPorRol(usuario.CodRol);
+
+                // El rol viaja con su arbol de permisos armado: de ahi sale
+                // despues que pantallas se le habilitan al usuario
+                foreach (BEComponente componente in dalPermiso.TraerArbolDeRol(usuario.CodRol).ObtenerHijos())
+                {
+                    usuario.Rol.Componentes.AgregarHijo(componente);
+                }
 
                 return usuario;
             }
@@ -184,27 +192,5 @@ namespace DAL
             return usuarios;
         }
 
-        private System.Collections.Generic.List<BEPermiso> ObtenerPermisosPorRol(int codRol)
-        {
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@CodRol", codRol)
-            };
-
-            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerPermisosPorRol", parametros);
-            System.Collections.Generic.List<BEPermiso> permisos = new System.Collections.Generic.List<BEPermiso>();
-
-            foreach (DataRow row in tabla.Rows)
-            {
-                permisos.Add(new BEPermiso
-                {
-                    CodPermiso = Convert.ToInt32(row["CodPermiso"]),
-                    Nombre = row["Nombre"].ToString(),
-                    Tipo = row["Tipo"].ToString()
-                });
-            }
-
-            return permisos;
-        }
     }
 }

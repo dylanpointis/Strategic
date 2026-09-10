@@ -47,7 +47,9 @@
     <Compile Include="BEHistorialPrecio.cs" />
     <Compile Include="BEHistorialStock.cs" />
     <Compile Include="BEVenta.cs" />
-    <Compile Include="BEPermiso.cs" />
+    <Compile Include="Composite\BEComponente.cs" />
+    <Compile Include="Composite\BEPermiso.cs" />
+    <Compile Include="Composite\BEFamilia.cs" />
     <Compile Include="BERol.cs" />
     <Compile Include="BEUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

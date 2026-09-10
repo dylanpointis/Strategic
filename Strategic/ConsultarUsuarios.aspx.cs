@@ -210,6 +210,7 @@ namespace Strategic
                     usuario.NombreUsuario));
 
                 btnConfirmar.Text = usuario.Activo ? "Dar de baja" : "Reactivar";
+                btnConfirmar.CssClass = usuario.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
                 pnlConfirmacion.Visible = true;
             }
             catch (Exception ex)

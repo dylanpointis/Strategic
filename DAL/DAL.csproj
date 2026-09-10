@@ -42,6 +42,7 @@
     <Compile Include="DALEvento.cs" />
     <Compile Include="DALDashboard.cs" />
     <Compile Include="DALCompetencia.cs" />
+    <Compile Include="DALPermiso.cs" />
     <Compile Include="DALProducto.cs" />
     <Compile Include="DALRol.cs" />
     <Compile Include="DALVenta.cs" />

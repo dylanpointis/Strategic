@@ -101,7 +101,13 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="CambiarClave.aspx" />
+    <Content Include="AltaFamilia.aspx" />
+    <Content Include="AltaRol.aspx" />
     <Content Include="AltaUsuario.aspx" />
+    <Content Include="ConsultarFamilias.aspx" />
+    <Content Include="ConsultarRoles.aspx" />
+    <Content Include="ModificarFamilia.aspx" />
+    <Content Include="ModificarRol.aspx" />
     <Content Include="CompararPrecios.aspx" />
     <Content Include="ConsultarUsuarios.aspx" />
     <Content Include="ModificarUsuario.aspx" />
@@ -193,6 +199,7 @@
     <Content Include="Site.Master" />
     <Content Include="Componentes\FiltroFechas.ascx" />
     <Content Include="Componentes\GrillaGenerica.ascx" />
+    <Content Include="Componentes\SelectorPermisos.ascx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -268,6 +275,48 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="AltaFamilia.aspx.cs">
+      <DependentUpon>AltaFamilia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaFamilia.aspx.designer.cs">
+      <DependentUpon>AltaFamilia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AltaRol.aspx.cs">
+      <DependentUpon>AltaRol.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaRol.aspx.designer.cs">
+      <DependentUpon>AltaRol.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConsultarFamilias.aspx.cs">
+      <DependentUpon>ConsultarFamilias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarFamilias.aspx.designer.cs">
+      <DependentUpon>ConsultarFamilias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConsultarRoles.aspx.cs">
+      <DependentUpon>ConsultarRoles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarRoles.aspx.designer.cs">
+      <DependentUpon>ConsultarRoles.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarFamilia.aspx.cs">
+      <DependentUpon>ModificarFamilia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarFamilia.aspx.designer.cs">
+      <DependentUpon>ModificarFamilia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarRol.aspx.cs">
+      <DependentUpon>ModificarRol.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarRol.aspx.designer.cs">
+      <DependentUpon>ModificarRol.aspx</DependentUpon>
+    </Compile>
     <Compile Include="AltaUsuario.aspx.cs">
       <DependentUpon>AltaUsuario.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -338,6 +387,14 @@
     </Compile>
     <Compile Include="Componentes\FiltroFechas.ascx.designer.cs">
       <DependentUpon>Componentes\FiltroFechas.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Componentes\ArbolPermisos.cs" />
+    <Compile Include="Componentes\SelectorPermisos.ascx.cs">
+      <DependentUpon>SelectorPermisos.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Componentes\SelectorPermisos.ascx.designer.cs">
+      <DependentUpon>SelectorPermisos.ascx</DependentUpon>
     </Compile>
     <Compile Include="Componentes\GrillaGenerica.ascx.cs">
       <DependentUpon>Componentes\GrillaGenerica.ascx</DependentUpon>

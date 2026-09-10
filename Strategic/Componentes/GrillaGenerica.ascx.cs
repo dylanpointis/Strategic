@@ -266,6 +266,27 @@ namespace Strategic.Componentes
             }
         }
 
+        protected void gvDatos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType != DataControlRowType.DataRow)
+            {
+                return;
+            }
+
+            foreach (TableCell celda in e.Row.Cells)
+            {
+                foreach (Control control in celda.Controls)
+                {
+                    LinkButton boton = control as LinkButton;
+
+                    if (boton != null && boton.Text == "Dar de baja")
+                    {
+                        boton.CssClass = string.Concat(boton.CssClass, " btn-fila-baja");
+                    }
+                }
+            }
+        }
+
         protected void Paginado_Command(object sender, CommandEventArgs e)
         {
             switch (e.CommandName)

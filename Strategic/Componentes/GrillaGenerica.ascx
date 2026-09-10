@@ -5,7 +5,7 @@
     <div class="tabla-scroll">
         <asp:GridView ID="gvDatos" runat="server" AutoGenerateColumns="false" CssClass="strategic-table"
             GridLines="None" UseAccessibleHeader="true" AllowPaging="true" PageSize="10"
-            OnRowCommand="gvDatos_RowCommand">
+            OnRowCommand="gvDatos_RowCommand" OnRowDataBound="gvDatos_RowDataBound">
             <PagerSettings Visible="false" />
         </asp:GridView>
     </div>
