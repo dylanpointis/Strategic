@@ -12,22 +12,97 @@ namespace DAL
 
         public List<BECompetencia> TraerListaCompetidores()
         {
-            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerListaCompetidores", null);
-            List<BECompetencia> competidores = new List<BECompetencia>();
+            return MapearCompetidores(dalCon.ConsultaProcAlmacenado("TraerListaCompetidores", null));
+        }
+
+        public List<BECompetencia> FiltrarCompetidores(string texto, string marketplace, bool? activo)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@Texto", texto),
+                new SqlParameter("@Marketplace", marketplace),
+                new SqlParameter("@Activo", activo)
+            };
+
+            return MapearCompetidores(dalCon.ConsultaProcAlmacenado("FiltrarCompetidores", parametros));
+        }
+
+        public BECompetencia TraerCompetidorPorId(int idCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdCompetencia", idCompetencia)
+            };
+
+            List<BECompetencia> competidores = MapearCompetidores(
+                dalCon.ConsultaProcAlmacenado("TraerCompetidorPorId", parametros));
+
+            return competidores.Count > 0 ? competidores[0] : null;
+        }
+
+        /// <summary>
+        /// Cantidad de competidores que ya usan ese nombre.
+        /// idCompetenciaExcluido deja fuera al competidor que se esta editando.
+        /// </summary>
+        public int ContarCompetidoresConNombre(string nombre, int? idCompetenciaExcluido)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@Nombre", nombre),
+                new SqlParameter("@IdCompetenciaExcluido", idCompetenciaExcluido)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("ExisteCompetidorConNombre", parametros);
 
             foreach (DataRow row in tabla.Rows)
             {
-                competidores.Add(new BECompetencia
-                {
-                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
-                    Nombre = row["Nombre"].ToString(),
-                    Marketplace = row["Marketplace"].ToString(),
-                    Descripcion = row["Descripcion"].ToString(),
-                    Estado = row["Estado"].ToString()
-                });
+                return Convert.ToInt32(row["Cantidad"]);
             }
 
-            return competidores;
+            return 0;
+        }
+
+        public int AltaCompetidor(BECompetencia competidor)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@Nombre", competidor.Nombre),
+                new SqlParameter("@Marketplace", competidor.Marketplace),
+                new SqlParameter("@Descripcion", competidor.Descripcion)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("AltaCompetidor", parametros);
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                return Convert.ToInt32(row["IdCompetencia"]);
+            }
+
+            return 0;
+        }
+
+        public void ModificarCompetidor(BECompetencia competidor)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdCompetencia", competidor.IdCompetencia),
+                new SqlParameter("@Nombre", competidor.Nombre),
+                new SqlParameter("@Marketplace", competidor.Marketplace),
+                new SqlParameter("@Descripcion", competidor.Descripcion)
+            };
+
+            dalCon.EjecutarProcAlmacenado("ModificarCompetidor", parametros);
+        }
+
+        public void ModificarEstado(int idCompetencia, bool activo)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdCompetencia", idCompetencia),
+                new SqlParameter("@Estado", activo ? "Activo" : "Inactivo")
+            };
+
+            dalCon.EjecutarProcAlmacenado("ModificarEstadoCompetidor", parametros);
         }
 
         public List<BEComparacionPrecio> TraerComparacionPrecios()
@@ -86,6 +161,25 @@ namespace DAL
             }
 
             return historial;
+        }
+
+        private List<BECompetencia> MapearCompetidores(DataTable tabla)
+        {
+            List<BECompetencia> competidores = new List<BECompetencia>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                competidores.Add(new BECompetencia
+                {
+                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
+                    Nombre = row["Nombre"].ToString(),
+                    Marketplace = row["Marketplace"].ToString(),
+                    Descripcion = row["Descripcion"].ToString(),
+                    Estado = row["Estado"].ToString()
+                });
+            }
+
+            return competidores;
         }
 
         private List<BEComparacionPrecio> MapearComparaciones(DataTable tabla)

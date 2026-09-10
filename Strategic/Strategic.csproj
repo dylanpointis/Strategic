@@ -111,6 +111,11 @@
     <Content Include="CompararPrecios.aspx" />
     <Content Include="ConsultarUsuarios.aspx" />
     <Content Include="ModificarUsuario.aspx" />
+    <Content Include="BajaUsuario.aspx" />
+    <Content Include="ConsultarCompetidores.aspx" />
+    <Content Include="AltaCompetidor.aspx" />
+    <Content Include="ModificarCompetidor.aspx" />
+    <Content Include="BajaCompetidor.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Dashboard.aspx" />
@@ -337,6 +342,41 @@
     </Compile>
     <Compile Include="ModificarUsuario.aspx.designer.cs">
       <DependentUpon>ModificarUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaUsuario.aspx.cs">
+      <DependentUpon>BajaUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaUsuario.aspx.designer.cs">
+      <DependentUpon>BajaUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConsultarCompetidores.aspx.cs">
+      <DependentUpon>ConsultarCompetidores.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarCompetidores.aspx.designer.cs">
+      <DependentUpon>ConsultarCompetidores.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AltaCompetidor.aspx.cs">
+      <DependentUpon>AltaCompetidor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaCompetidor.aspx.designer.cs">
+      <DependentUpon>AltaCompetidor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarCompetidor.aspx.cs">
+      <DependentUpon>ModificarCompetidor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarCompetidor.aspx.designer.cs">
+      <DependentUpon>ModificarCompetidor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaCompetidor.aspx.cs">
+      <DependentUpon>BajaCompetidor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaCompetidor.aspx.designer.cs">
+      <DependentUpon>BajaCompetidor.aspx</DependentUpon>
     </Compile>
     <Compile Include="CompararPrecios.aspx.cs">
       <DependentUpon>CompararPrecios.aspx</DependentUpon>

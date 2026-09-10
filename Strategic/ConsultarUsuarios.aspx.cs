@@ -19,22 +19,6 @@ namespace Strategic
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLRol bllRol = new BLLRol();
 
-        /// <summary>
-        /// Usuario sobre el que se está pidiendo confirmación de baja o
-        /// reactivación. Viaja en el ViewState entre el clic y la confirmación.
-        /// </summary>
-        private string UsuarioAConfirmar
-        {
-            get { return Convert.ToString(ViewState["UsuarioAConfirmar"]); }
-            set { ViewState["UsuarioAConfirmar"] = value; }
-        }
-
-        private bool EstadoAConfirmar
-        {
-            get { return ViewState["EstadoAConfirmar"] != null && Convert.ToBoolean(ViewState["EstadoAConfirmar"]); }
-            set { ViewState["EstadoAConfirmar"] = value; }
-        }
-
         protected void Page_Init(object sender, EventArgs e)
         {
             // Las columnas se arman en el Init para que la grilla pueda
@@ -63,7 +47,6 @@ namespace Strategic
 
         protected void btnFiltrar_Click(object sender, EventArgs e)
         {
-            OcultarConfirmacion();
             Consultar(true);
         }
 
@@ -73,7 +56,6 @@ namespace Strategic
             ddlRol.SelectedIndex = 0;
             ddlEstado.SelectedIndex = 0;
 
-            OcultarConfirmacion();
             Consultar(false);
         }
 
@@ -99,43 +81,8 @@ namespace Strategic
 
             if (e.Comando == "CambiarEstado")
             {
-                PedirConfirmacion(nombreUsuario);
+                Response.Redirect("~/BajaUsuario.aspx?usuario=" + Server.UrlEncode(nombreUsuario));
             }
-        }
-
-        protected void btnConfirmar_Click(object sender, EventArgs e)
-        {
-            string nombreUsuario = UsuarioAConfirmar;
-            bool activo = EstadoAConfirmar;
-
-            OcultarConfirmacion();
-
-            if (string.IsNullOrEmpty(nombreUsuario))
-            {
-                return;
-            }
-
-            try
-            {
-                BEUsuario enSesion = SessionManager.UsuarioActual;
-
-                bllUsuario.CambiarEstadoUsuario(nombreUsuario, activo, enSesion.NombreUsuario);
-
-                lblExito.Text = Server.HtmlEncode(string.Format(
-                    activo ? "Se reactivó el usuario {0}" : "Se dio de baja al usuario {0}",
-                    nombreUsuario));
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-
-            Consultar(HayFiltrosAplicados());
-        }
-
-        protected void btnCancelar_Click(object sender, EventArgs e)
-        {
-            OcultarConfirmacion();
         }
 
         private void ConfigurarGrilla()
@@ -186,43 +133,6 @@ namespace Strategic
             lblCantidad.Text = usuarios.Count == 1
                 ? "1 usuario"
                 : string.Format("{0} usuarios", usuarios.Count);
-        }
-
-        private void PedirConfirmacion(string nombreUsuario)
-        {
-            try
-            {
-                BEUsuario usuario = bllUsuario.TraerUsuarioPorNombre(nombreUsuario);
-
-                if (usuario == null)
-                {
-                    lblError.Text = "No se encontró el usuario seleccionado";
-                    return;
-                }
-
-                UsuarioAConfirmar = usuario.NombreUsuario;
-                EstadoAConfirmar = !usuario.Activo;
-
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    usuario.Activo
-                        ? "¿Confirmás dar de baja al usuario {0}? No va a poder iniciar sesión."
-                        : "¿Confirmás reactivar al usuario {0}?",
-                    usuario.NombreUsuario));
-
-                btnConfirmar.Text = usuario.Activo ? "Dar de baja" : "Reactivar";
-                btnConfirmar.CssClass = usuario.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
-                pnlConfirmacion.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-        }
-
-        private void OcultarConfirmacion()
-        {
-            pnlConfirmacion.Visible = false;
-            UsuarioAConfirmar = null;
         }
 
         /// <summary>

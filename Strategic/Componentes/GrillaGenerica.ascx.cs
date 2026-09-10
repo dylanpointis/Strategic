@@ -281,7 +281,12 @@ namespace Strategic.Componentes
 
                     if (boton != null && boton.Text == "Dar de baja")
                     {
-                        boton.CssClass = string.Concat(boton.CssClass, " btn-fila-baja");
+                        // El ButtonField vuelve a aplicar su ControlStyle (con la
+                        // clase "btn-fila" comun) sobre el control despues de este
+                        // evento, y eso pisa cualquier CssClass agregada aca. Por
+                        // eso el estilo de peligro se marca con un atributo propio
+                        // en lugar de agregar una clase.
+                        boton.Attributes["data-boton-peligro"] = "true";
                     }
                 }
             }
