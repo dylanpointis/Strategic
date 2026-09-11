@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <generado automáticamente>
 //     Este código fue generado por una herramienta.
 //
@@ -11,7 +11,7 @@ namespace Strategic
 {
 
 
-    public partial class ConsultarUsuarios
+    public partial class ConsultarCompetidores
     {
 
         /// <summary>
@@ -25,14 +25,14 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.TextBox txtTexto;
 
         /// <summary>
-        /// Control lblRol.
+        /// Control lblMarketplace.
         /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblRol;
+        protected global::System.Web.UI.WebControls.Label lblMarketplace;
 
         /// <summary>
-        /// Control ddlRol.
+        /// Control txtMarketplace.
         /// </summary>
-        protected global::System.Web.UI.WebControls.DropDownList ddlRol;
+        protected global::System.Web.UI.WebControls.TextBox txtMarketplace;
 
         /// <summary>
         /// Control lblEstado.
@@ -80,8 +80,8 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Button btnNuevo;
 
         /// <summary>
-        /// Control grillaUsuarios.
+        /// Control grillaCompetidores.
         /// </summary>
-        protected global::Strategic.Componentes.GrillaGenerica grillaUsuarios;
+        protected global::Strategic.Componentes.GrillaGenerica grillaCompetidores;
     }
 }

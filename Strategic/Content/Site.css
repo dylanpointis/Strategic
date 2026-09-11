@@ -659,14 +659,17 @@ textarea {
         text-decoration: none;
     }
 
-.btn-fila-baja {
+.btn-fila-baja,
+.btn-fila[data-boton-peligro="true"] {
     color: #c0392b;
     background-color: #fbe6e4;
     border-color: #f3c6c1;
 }
 
     .btn-fila-baja:hover,
-    .btn-fila-baja:focus {
+    .btn-fila-baja:focus,
+    .btn-fila[data-boton-peligro="true"]:hover,
+    .btn-fila[data-boton-peligro="true"]:focus {
         color: #ffffff;
         background-color: #c0392b;
         border-color: #c0392b;

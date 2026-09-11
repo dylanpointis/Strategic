@@ -174,7 +174,8 @@ CREATE TABLE [dbo].[Competencia](
     [Marketplace] NVARCHAR(50) NOT NULL,
     [Descripcion] NVARCHAR(500) NULL,
     [Estado] NVARCHAR(20) NOT NULL,
-    CONSTRAINT [PK_Competencia] PRIMARY KEY CLUSTERED ([IdCompetencia] ASC)
+    CONSTRAINT [PK_Competencia] PRIMARY KEY CLUSTERED ([IdCompetencia] ASC),
+    CONSTRAINT [UQ_Competencia_Nombre] UNIQUE ([Nombre])
 )
 GO
 
@@ -1008,6 +1009,164 @@ BEGIN
     FROM [dbo].[HistorialPrecioCompetencia] H
     WHERE H.IdProductoCompetencia = @IdProductoCompetencia
     ORDER BY H.FechaConsulta ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarCompetidores]
+    @Texto NVARCHAR(255) = NULL,
+    @Marketplace NVARCHAR(50) = NULL,
+    @Activo BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        C.IdCompetencia,
+        C.Nombre,
+        C.Marketplace,
+        ISNULL(C.Descripcion, '') AS Descripcion,
+        C.Estado
+    FROM [dbo].[Competencia] C
+    WHERE (@Texto IS NULL OR C.Nombre LIKE '%' + @Texto + '%')
+      AND (@Marketplace IS NULL OR C.Marketplace LIKE '%' + @Marketplace + '%')
+      AND (@Activo IS NULL OR C.Estado = CASE WHEN @Activo = 1 THEN N'Activo' ELSE N'Inactivo' END)
+    ORDER BY C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerCompetidorPorId]
+    @IdCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        C.IdCompetencia,
+        C.Nombre,
+        C.Marketplace,
+        ISNULL(C.Descripcion, '') AS Descripcion,
+        C.Estado
+    FROM [dbo].[Competencia] C
+    WHERE C.IdCompetencia = @IdCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[ExisteCompetidorConNombre]
+    @Nombre NVARCHAR(255),
+    @IdCompetenciaExcluido INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Competencia] C
+    WHERE C.Nombre = @Nombre
+      AND (@IdCompetenciaExcluido IS NULL OR C.IdCompetencia <> @IdCompetenciaExcluido)
+END
+GO
+
+CREATE PROCEDURE [dbo].[AltaCompetidor]
+    @Nombre NVARCHAR(255),
+    @Marketplace NVARCHAR(50),
+    @Descripcion NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- El competidor nace activo
+    INSERT INTO [dbo].[Competencia] ([Nombre], [Marketplace], [Descripcion], [Estado])
+    VALUES (@Nombre, @Marketplace, @Descripcion, N'Activo')
+
+    SELECT SCOPE_IDENTITY() AS IdCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarCompetidor]
+    @IdCompetencia INT,
+    @Nombre NVARCHAR(255),
+    @Marketplace NVARCHAR(50),
+    @Descripcion NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Competencia]
+    SET [Nombre] = @Nombre,
+        [Marketplace] = @Marketplace,
+        [Descripcion] = @Descripcion
+    WHERE [IdCompetencia] = @IdCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoCompetidor]
+    @IdCompetencia INT,
+    @Estado NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Baja y reactivacion logicas: el competidor no se borra porque queda
+    -- referenciado desde ProductoCompetencia y su historial de precios
+    UPDATE [dbo].[Competencia]
+    SET [Estado] = @Estado
+    WHERE [IdCompetencia] = @IdCompetencia
+
+    -- CU-007-034: al dar de baja al competidor se pausan tambien sus
+    -- publicaciones mapeadas activas, para que dejen de monitorearse
+    IF @Estado = N'Inactivo'
+    BEGIN
+        UPDATE [dbo].[ProductoCompetencia]
+        SET [Estado] = N'Pausada'
+        WHERE [IdCompetencia] = @IdCompetencia
+          AND [Estado] = N'Activa'
+    END
+END
+GO
+
+CREATE PROCEDURE [dbo].[ContarPublicacionesActivasPorCompetidor]
+    @IdCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[ProductoCompetencia]
+    WHERE [IdCompetencia] = @IdCompetencia
+      AND [Estado] = N'Activa'
+END
+GO
+
+/* ------------------------------------------------------------
+   CU-007-036 - Mapear Productos con Competencia
+   ------------------------------------------------------------ */
+
+CREATE PROCEDURE [dbo].[ExisteMapeoProductoCompetencia]
+    @IdProducto INT,
+    @IdCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[ProductoCompetencia]
+    WHERE [IdProducto] = @IdProducto
+      AND [IdCompetencia] = @IdCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[AltaMapeoProductoCompetencia]
+    @IdProducto INT,
+    @IdCompetencia INT,
+    @Url NVARCHAR(500)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- El mapeo nace activo: entra al proximo ciclo de monitoreo automatico
+    INSERT INTO [dbo].[ProductoCompetencia] ([IdProducto], [IdCompetencia], [URL], [Estado])
+    VALUES (@IdProducto, @IdCompetencia, @Url, N'Activa')
+
+    SELECT SCOPE_IDENTITY() AS IdProductoCompetencia
 END
 GO
 

@@ -1,5 +1,6 @@
 ﻿using BE;
 using DAL;
+using Services;
 using System;
 using System.Collections.Generic;
 
@@ -7,12 +8,223 @@ namespace BLL
 {
     public class BLLCompetencia
     {
+        private const string ModuloCompetencia = "Competencia";
+        private const int CriticidadCambio = 2;
+
         private readonly DALCompetencia dalCompetencia = new DALCompetencia();
+        private readonly BLLEvento bllEvento = new BLLEvento();
+
+        #region Consulta
 
         public List<BECompetencia> TraerListaCompetidores()
         {
             return dalCompetencia.TraerListaCompetidores();
         }
+
+        public List<BECompetencia> FiltrarCompetidores(string texto, string marketplace, bool? activo)
+        {
+            return dalCompetencia.FiltrarCompetidores(Normalizar(texto), Normalizar(marketplace), activo);
+        }
+
+        public BECompetencia TraerCompetidorPorId(int idCompetencia)
+        {
+            ValidarCodigo(idCompetencia);
+
+            return dalCompetencia.TraerCompetidorPorId(idCompetencia);
+        }
+
+        #endregion
+
+        #region Alta
+
+        public int AltaCompetidor(BECompetencia competidor, string nombreUsuarioEnSesion)
+        {
+            ValidarDatos(competidor);
+
+            if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, null) > 0)
+            {
+                throw new Exception("Ya existe un competidor con ese nombre");
+            }
+
+            int idCompetencia = dalCompetencia.AltaCompetidor(competidor);
+
+            RegistrarEvento(nombreUsuarioEnSesion, "Alta de competidor", competidor.Nombre);
+
+            return idCompetencia;
+        }
+
+        #endregion
+
+        #region Modificacion
+
+        public void ModificarCompetidor(BECompetencia competidor, string nombreUsuarioEnSesion)
+        {
+            ValidarCodigo(competidor.IdCompetencia);
+            ValidarDatos(competidor);
+
+            BECompetencia actual = dalCompetencia.TraerCompetidorPorId(competidor.IdCompetencia);
+
+            if (actual == null)
+            {
+                throw new Exception("No se encontro el competidor seleccionado");
+            }
+
+            if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, competidor.IdCompetencia) > 0)
+            {
+                throw new Exception("Ya existe un competidor con ese nombre");
+            }
+
+            dalCompetencia.ModificarCompetidor(competidor);
+
+            RegistrarEvento(nombreUsuarioEnSesion, "Modificacion de competidor", competidor.Nombre);
+        }
+
+        #endregion
+
+        #region Baja
+
+        /// <summary>
+        /// Publicaciones mapeadas activas que se pausarian si se diera de baja
+        /// al competidor. Se usa para advertir antes de confirmar la baja.
+        /// </summary>
+        public int ContarPublicacionesActivasPorCompetidor(int idCompetencia)
+        {
+            ValidarCodigo(idCompetencia);
+
+            return dalCompetencia.ContarPublicacionesActivasPorCompetidor(idCompetencia);
+        }
+
+        public void CambiarEstadoCompetidor(int idCompetencia, bool activo, string nombreUsuarioEnSesion)
+        {
+            ValidarCodigo(idCompetencia);
+
+            BECompetencia competidor = dalCompetencia.TraerCompetidorPorId(idCompetencia);
+
+            if (competidor == null)
+            {
+                throw new Exception("No se encontro el competidor seleccionado");
+            }
+
+            if (competidor.Activo == activo)
+            {
+                throw new Exception(activo
+                    ? "El competidor ya se encuentra activo"
+                    : "El competidor ya se encuentra dado de baja");
+            }
+
+            dalCompetencia.ModificarEstado(idCompetencia, activo);
+
+            RegistrarEvento(
+                nombreUsuarioEnSesion,
+                activo ? "Reactivacion de competidor" : "Baja de competidor",
+                competidor.Nombre);
+        }
+
+        #endregion
+
+        #region Validaciones
+
+        private void ValidarDatos(BECompetencia competidor)
+        {
+            if (competidor == null)
+            {
+                throw new Exception("No se recibieron los datos del competidor");
+            }
+
+            ExigirTexto(competidor.Nombre, "el nombre", 255);
+            ExigirTexto(competidor.Marketplace, "el marketplace", 50);
+
+            if (!string.IsNullOrEmpty(competidor.Descripcion) && competidor.Descripcion.Trim().Length > 500)
+            {
+                throw new Exception("La descripcion supera los 500 caracteres");
+            }
+        }
+
+        private void ValidarCodigo(int idCompetencia)
+        {
+            if (idCompetencia <= 0)
+            {
+                throw new Exception("Debe seleccionar un competidor");
+            }
+        }
+
+        private void ExigirTexto(string valor, string campo, int largoMaximo)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                throw new Exception(string.Format("Debe completar {0}", campo));
+            }
+
+            if (valor.Trim().Length > largoMaximo)
+            {
+                throw new Exception(string.Format("El valor de {0} supera los {1} caracteres", campo, largoMaximo));
+            }
+        }
+
+        #endregion
+
+        private void RegistrarEvento(string nombreUsuarioEnSesion, string accion, string nombreCompetidor)
+        {
+            bllEvento.RegistrarEvento(new Evento(
+                nombreUsuarioEnSesion,
+                ModuloCompetencia,
+                string.Format("{0}: {1}", accion, nombreCompetidor),
+                CriticidadCambio));
+        }
+
+        #region Mapeo de productos
+
+        public int MapearProducto(int idProducto, int idCompetencia, string url, string nombreUsuarioEnSesion)
+        {
+            if (idProducto <= 0)
+            {
+                throw new Exception("Debe seleccionar un producto");
+            }
+
+            ValidarCodigo(idCompetencia);
+            ValidarUrl(url);
+
+            BECompetencia competidor = dalCompetencia.TraerCompetidorPorId(idCompetencia);
+
+            if (competidor == null)
+            {
+                throw new Exception("No se encontro el competidor seleccionado");
+            }
+
+            if (dalCompetencia.ContarMapeosProductoCompetidor(idProducto, idCompetencia) > 0)
+            {
+                throw new Exception("Ya existe un mapeo para ese producto con ese competidor");
+            }
+
+            int idProductoCompetencia = dalCompetencia.MapearProducto(idProducto, idCompetencia, url.Trim());
+
+            RegistrarEvento(nombreUsuarioEnSesion, "Mapeo de producto con competencia", competidor.Nombre);
+
+            return idProductoCompetencia;
+        }
+
+        private void ValidarUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                throw new Exception("Debe ingresar la URL de la publicacion");
+            }
+
+            Uri direccion;
+
+            if (!Uri.TryCreate(url.Trim(), UriKind.Absolute, out direccion)
+                || (direccion.Scheme != Uri.UriSchemeHttp && direccion.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new Exception("La URL ingresada no tiene un formato valido");
+            }
+
+            if (url.Trim().Length > 500)
+            {
+                throw new Exception("La URL supera los 500 caracteres");
+            }
+        }
+
+        #endregion
 
         public List<BEComparacionPrecio> TraerComparacionPrecios()
         {

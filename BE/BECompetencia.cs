@@ -11,5 +11,18 @@
         public string Marketplace { get; set; }
         public string Descripcion { get; set; }
         public string Estado { get; set; }
+
+        public bool Activo
+        {
+            get { return Estado == "Activo"; }
+        }
+
+        /// <summary>
+        /// Texto del botón que cambia el estado del competidor en el listado.
+        /// </summary>
+        public string AccionEstado
+        {
+            get { return Activo ? "Dar de baja" : "Reactivar"; }
+        }
     }
 }
