@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-004-014 - Ver Historial de Precios
-    public partial class HistorialPrecios : Page
+    public partial class HistorialPrecios : PaginaSegura
     {
         private const string MensajeSinProducto = "Seleccione un producto para ver su historial de precios";
         private const string MensajeSinHistorial = "El producto no posee historial de precios";
@@ -41,15 +42,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster, Administrador y Analista segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2 && usuario.CodRol != 3))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarProductos();

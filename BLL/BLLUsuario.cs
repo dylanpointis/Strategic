@@ -80,6 +80,25 @@ namespace BLL
             bllEvento.RegistrarEvento(new Evento(nombreUsuario, ModuloSesiones, "Cierre sesion", CriticidadInformativa));
         }
 
+        /// <summary>
+        /// Deja registrado que un usuario intentó abrir una pantalla que su
+        /// rol no habilita. Es grave porque no pasa navegando por el menú,
+        /// que ya filtra lo que no corresponde: pasa escribiendo la dirección.
+        /// </summary>
+        public void RegistrarAccesoDenegado(string nombreUsuario, string pantalla)
+        {
+            if (string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                return;
+            }
+
+            bllEvento.RegistrarEvento(new Evento(
+                nombreUsuario,
+                ModuloSesiones,
+                string.Format("Acceso denegado: {0}", pantalla),
+                CriticidadGrave));
+        }
+
         public BEUsuario ValidarUsuario(string nombreUsuario, string email)
         {
             return dalUsuario.ValidarUsuario(nombreUsuario, email);

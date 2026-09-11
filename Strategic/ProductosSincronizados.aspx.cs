@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +13,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-004-013 - Ver Productos Sincronizados
-    public partial class ProductosSincronizados : Page
+    public partial class ProductosSincronizados : PaginaSegura
     {
         private const string MensajeSinProductos = "No existen datos sincronizados. Realice una sincronización";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -28,13 +29,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // El CU habilita a todos los perfiles, solo se exige tener la sesion iniciada
-            if (!SessionManager.HayUsuarioLogueado)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 List<BEProducto> productos = bllProducto.TraerListaProductos();

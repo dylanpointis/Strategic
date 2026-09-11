@@ -48,67 +48,70 @@
                 </button>
                 <div id="mainNavbar" class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/">Inicio</a></li>
-                        <li class="nav-item dropdown">
+                        <li id="navInicio" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/">Inicio</a></li>
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navAnalisis" role="button" data-bs-toggle="dropdown" aria-expanded="false">Análisis</a>
                             <ul class="dropdown-menu" aria-labelledby="navAnalisis">
-                                <li><a class="dropdown-item" data-permission="Dashboard" href="Dashboard.aspx">Dashboard</a></li>
-                                <li><a class="dropdown-item" data-permission="Recomendaciones" href="Recomendaciones.aspx">Recomendaciones</a></li>
-                                <li><a class="dropdown-item" data-permission="Predicciones" href="Predicciones.aspx">Predicciones</a></li>
-                                <li><a class="dropdown-item" data-permission="CompararPrecios" href="CompararPrecios.aspx">Comparar precios</a></li>
-                                <li><a class="dropdown-item" data-permission="Reportes" href="Reportes.aspx">Reportes</a></li>
+                                <li runat="server" data-permission="Dashboard"><a class="dropdown-item" href="Dashboard.aspx">Dashboard</a></li>
+                                <li runat="server" data-permission="Recomendaciones"><a class="dropdown-item" href="Recomendaciones.aspx">Recomendaciones</a></li>
+                                <li runat="server" data-permission="Predicciones"><a class="dropdown-item" href="Predicciones.aspx">Predicciones</a></li>
+                                <li runat="server" data-permission="CompararPrecios"><a class="dropdown-item" href="CompararPrecios.aspx">Comparar precios</a></li>
+                                <li runat="server" data-permission="Reportes"><a class="dropdown-item" href="Reportes.aspx">Reportes</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navAutomatizaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Automatizaciones</a>
                             <ul class="dropdown-menu" aria-labelledby="navAutomatizaciones">
-                                <li><a class="dropdown-item" data-permission="ConsultarAutomatizaciones" href="ConsultarAutomatizaciones.aspx">Consultar automatizaciones</a></li>
-                                <li><a class="dropdown-item" data-permission="HistorialAutomatizaciones" href="HistorialAutomatizaciones.aspx">Historial</a></li>
+                                <li runat="server" data-permission="ConsultarAutomatizaciones"><a class="dropdown-item" href="ConsultarAutomatizaciones.aspx">Consultar automatizaciones</a></li>
+                                <li runat="server" data-permission="HistorialAutomatizaciones"><a class="dropdown-item" href="HistorialAutomatizaciones.aspx">Historial</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navCatalogo" role="button" data-bs-toggle="dropdown" aria-expanded="false">Catálogo</a>
                             <ul class="dropdown-menu" aria-labelledby="navCatalogo">
-                                <li><a class="dropdown-item" data-permission="ProductosSincronizados" href="ProductosSincronizados.aspx">Productos sincronizados</a></li>
-                                <li><a class="dropdown-item" data-permission="HistorialPrecios" href="HistorialPrecios.aspx">Historial de precios</a></li>
-                                <li><a class="dropdown-item" data-permission="HistorialStock" href="HistorialStock.aspx">Historial de stock</a></li>
-                                <li><a class="dropdown-item" data-permission="HistorialVentas" href="HistorialVentas.aspx">Historial de ventas</a></li>
+                                <li runat="server" data-permission="ProductosSincronizados"><a class="dropdown-item" href="ProductosSincronizados.aspx">Productos sincronizados</a></li>
+                                <li runat="server" data-permission="HistorialPrecios"><a class="dropdown-item" href="HistorialPrecios.aspx">Historial de precios</a></li>
+                                <li runat="server" data-permission="HistorialStock"><a class="dropdown-item" href="HistorialStock.aspx">Historial de stock</a></li>
+                                <li runat="server" data-permission="HistorialVentas"><a class="dropdown-item" href="HistorialVentas.aspx">Historial de ventas</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navUsuariosPermisos" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuarios y permisos</a>
                             <ul class="dropdown-menu" aria-labelledby="navUsuariosPermisos">
-                                <li><a class="dropdown-item" data-permission="ConsultarUsuarios" href="ConsultarUsuarios.aspx">Consultar usuarios</a></li>
-                                <li><a class="dropdown-item" data-permission="ConsultarRoles" href="ConsultarRoles.aspx">Consultar roles</a></li>
-                                <li><a class="dropdown-item" data-permission="ConsultarFamilias" href="ConsultarFamilias.aspx">Consultar familias</a></li>
+                                <li runat="server" data-permission="ConsultarUsuarios"><a class="dropdown-item" href="ConsultarUsuarios.aspx">Consultar usuarios</a></li>
+                                <li runat="server" data-permission="ConsultarRoles"><a class="dropdown-item" href="ConsultarRoles.aspx">Consultar roles</a></li>
+                                <li runat="server" data-permission="ConsultarFamilias"><a class="dropdown-item" href="ConsultarFamilias.aspx">Consultar familias</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navIntegraciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Integraciones</a>
                             <ul class="dropdown-menu" aria-labelledby="navIntegraciones">
-                                <li><a class="dropdown-item" data-permission="ImportarDatos" href="ImportarDatos.aspx">Importar datos</a></li>
-                                <li><a class="dropdown-item" data-permission="HistorialSincronizaciones" href="HistorialSincronizaciones.aspx">Historial de sincronizaciones</a></li>
+                                <li runat="server" data-permission="ImportarDatos"><a class="dropdown-item" href="ImportarDatos.aspx">Importar datos</a></li>
+                                <li runat="server" data-permission="HistorialSincronizaciones"><a class="dropdown-item" href="HistorialSincronizaciones.aspx">Historial de sincronizaciones</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navCompetencia" role="button" data-bs-toggle="dropdown" aria-expanded="false">Competencia</a>
                             <ul class="dropdown-menu" aria-labelledby="navCompetencia">
-                                <li><a class="dropdown-item" data-permission="ConsultarCompetidores" href="ConsultarCompetidores.aspx">Consultar competidores</a></li>
-                                <li><a class="dropdown-item" data-permission="MapearProductosCompetencia" href="MapearProductosCompetencia.aspx">Mapear productos</a></li>
-                                <li><a class="dropdown-item" data-permission="MonitoreoPublicacionesCompetidoras" href="MonitoreoPublicacionesCompetidoras.aspx">Monitoreo</a></li>
+                                <li runat="server" data-permission="ConsultarCompetidores"><a class="dropdown-item" href="ConsultarCompetidores.aspx">Consultar competidores</a></li>
+                                <li runat="server" data-permission="MapearProductosCompetencia"><a class="dropdown-item" href="MapearProductosCompetencia.aspx">Mapear productos</a></li>
+                                <li runat="server" data-permission="MonitoreoPublicacionesCompetidoras"><a class="dropdown-item" href="MonitoreoPublicacionesCompetidoras.aspx">Monitoreo</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navAuditoria" role="button" data-bs-toggle="dropdown" aria-expanded="false">Auditoría</a>
                             <ul class="dropdown-menu" aria-labelledby="navAuditoria">
-                                <li><a class="dropdown-item" data-permission="ConsultarEventosSistema" href="ConsultarEventosSistema.aspx">Eventos del sistema</a></li>
-                                <li><a class="dropdown-item" data-permission="RealizarBackup" href="RealizarBackup.aspx">Backup</a></li>
+                                <li runat="server" data-permission="ConsultarEventosSistema"><a class="dropdown-item" href="ConsultarEventosSistema.aspx">Eventos del sistema</a></li>
+                                <li runat="server" data-permission="RealizarBackup"><a class="dropdown-item" href="RealizarBackup.aspx">Backup</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" data-permission="RenovarSuscripcion" href="RenovarSuscripcion.aspx">Suscripción</a></li>
+                        <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx">Suscripción</a></li>
                     </ul>
                     <ul class="navbar-nav auth-nav">
                         <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login">Ingresar</a></li>
+                        <li id="navBienvenida" runat="server" class="nav-item nav-bienvenida">
+                            <asp:Label ID="lblBienvenida" runat="server" CssClass="nav-link"></asp:Label>
+                        </li>
                         <li id="navProfile" runat="server" class="nav-item dropdown profile-menu">
                             <a class="nav-link profile-toggle" href="#" id="navPerfil" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Perfil">
                                 <svg class="profile-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">

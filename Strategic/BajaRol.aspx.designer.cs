@@ -11,47 +11,15 @@ namespace Strategic
 {
 
 
-    public partial class BajaUsuario
+    public partial class BajaRol
     {
-
-        /// <summary>
-        /// Control pnlConfirmacion.
-        /// </summary>
         protected global::System.Web.UI.WebControls.Panel pnlConfirmacion;
-
-        /// <summary>
-        /// Control lblConfirmacion.
-        /// </summary>
         protected global::System.Web.UI.WebControls.Label lblConfirmacion;
-
-        /// <summary>
-        /// Control btnConfirmar.
-        /// </summary>
         protected global::System.Web.UI.WebControls.Button btnConfirmar;
-
-        /// <summary>
-        /// Control btnCancelar.
-        /// </summary>
         protected global::System.Web.UI.WebControls.Button btnCancelar;
-
-        /// <summary>
-        /// Control lblError.
-        /// </summary>
         protected global::System.Web.UI.WebControls.Label lblError;
-
-        /// <summary>
-        /// Control pnlSinUsuario.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Panel pnlSinUsuario;
-
-        /// <summary>
-        /// Control lblSinUsuario.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Label lblSinUsuario;
-
-        /// <summary>
-        /// Control btnVolver.
-        /// </summary>
+        protected global::System.Web.UI.WebControls.Panel pnlSinRegistro;
+        protected global::System.Web.UI.WebControls.Label lblSinRegistro;
         protected global::System.Web.UI.WebControls.Button btnVolver;
     }
 }

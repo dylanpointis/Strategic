@@ -46,7 +46,7 @@
             <div class="strategic-card-header">
                 <h2>Listado de familias</h2>
                 <div class="strategic-card-acciones">
-                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta" EnableViewState="false"></asp:Label>
+                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
                     <asp:Button ID="btnNuevo" runat="server" Text="Nueva familia" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnNuevo_Click" />
                 </div>
             </div>
@@ -92,14 +92,6 @@
                     <asp:Button ID="btnCambiarEstado" runat="server" Text="Dar de baja" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCambiarEstado_Click" />
                     <asp:Button ID="btnCerrarDetalle" runat="server" Text="Cerrar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCerrarDetalle_Click" />
                 </div>
-
-                <asp:Panel ID="pnlConfirmacion" runat="server" Visible="false">
-                    <div class="confirmacion">
-                        <p><asp:Label ID="lblConfirmacion" runat="server"></asp:Label></p>
-                        <asp:Button ID="btnConfirmar" runat="server" Text="Confirmar" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnConfirmar_Click" />
-                        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
-                    </div>
-                </asp:Panel>
             </div>
         </asp:Panel>
 

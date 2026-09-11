@@ -1,6 +1,7 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -9,22 +10,13 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-007-036 - Mapear Productos con Competencia
-    public partial class MapearProductosCompetencia : Page
+    public partial class MapearProductosCompetencia : PaginaSegura
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
         private readonly BLLProducto bllProducto = new BLLProducto();
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador, igual que el resto de la gestion de competencia
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarCombos();

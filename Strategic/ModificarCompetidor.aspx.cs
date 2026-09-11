@@ -1,6 +1,7 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -8,7 +9,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // Modificacion de Competidor
-    public partial class ModificarCompetidor : Page
+    public partial class ModificarCompetidor : PaginaSegura
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
@@ -24,15 +25,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador, igual que la gestion de usuarios
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarCompetidor(Request.QueryString["id"]);

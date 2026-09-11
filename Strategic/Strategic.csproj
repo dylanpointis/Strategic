@@ -101,6 +101,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="CambiarClave.aspx" />
+    <Content Include="AccesoDenegado.aspx" />
     <Content Include="AltaFamilia.aspx" />
     <Content Include="AltaRol.aspx" />
     <Content Include="AltaUsuario.aspx" />
@@ -116,6 +117,8 @@
     <Content Include="AltaCompetidor.aspx" />
     <Content Include="ModificarCompetidor.aspx" />
     <Content Include="BajaCompetidor.aspx" />
+    <Content Include="BajaFamilia.aspx" />
+    <Content Include="BajaRol.aspx" />
     <Content Include="MapearProductosCompetencia.aspx" />
     <Content Include="MonitoreoPublicacionesCompetidoras.aspx" />
     <Content Include="GestionarPublicacionCompetencia.aspx" />
@@ -283,6 +286,16 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="AccesoDenegado.aspx.cs">
+      <DependentUpon>AccesoDenegado.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AccesoDenegado.aspx.designer.cs">
+      <DependentUpon>AccesoDenegado.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Seguridad\PaginaSegura.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="AltaFamilia.aspx.cs">
       <DependentUpon>AltaFamilia.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -373,6 +386,20 @@
     </Compile>
     <Compile Include="ModificarCompetidor.aspx.designer.cs">
       <DependentUpon>ModificarCompetidor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaFamilia.aspx.cs">
+      <DependentUpon>BajaFamilia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaFamilia.aspx.designer.cs">
+      <DependentUpon>BajaFamilia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaRol.aspx.cs">
+      <DependentUpon>BajaRol.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaRol.aspx.designer.cs">
+      <DependentUpon>BajaRol.aspx</DependentUpon>
     </Compile>
     <Compile Include="BajaCompetidor.aspx.cs">
       <DependentUpon>BajaCompetidor.aspx</DependentUpon>

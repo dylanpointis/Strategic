@@ -1,4 +1,4 @@
-<%@ Page Title="Competidores" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ConsultarCompetidores.aspx.cs" Inherits="Strategic.ConsultarCompetidores" %>
+﻿<%@ Page Title="Competidores" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ConsultarCompetidores.aspx.cs" Inherits="Strategic.ConsultarCompetidores" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -51,7 +51,7 @@
             <div class="strategic-card-header">
                 <h2>Listado de competidores</h2>
                 <div class="strategic-card-acciones">
-                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta" EnableViewState="false"></asp:Label>
+                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
                     <asp:Button ID="btnNuevo" runat="server" Text="Nuevo competidor" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnNuevo_Click" />
                 </div>
             </div>

@@ -1,28 +1,20 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 
 namespace Strategic
 {
     // CU-005-022 - Alta Rol
-    public partial class AltaRol : Page
+    public partial class AltaRol : PaginaSegura
     {
         private readonly BLLRol bllRol = new BLLRol();
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // El alta de roles es exclusiva del WebMaster segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || usuario.CodRol != 1)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 // Los componentes vienen con su subarbol para que el selector

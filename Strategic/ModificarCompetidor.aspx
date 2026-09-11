@@ -1,4 +1,4 @@
-<%@ Page Title="Modificar competidor" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ModificarCompetidor.aspx.cs" Inherits="Strategic.ModificarCompetidor" %>
+﻿<%@ Page Title="Modificar competidor" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ModificarCompetidor.aspx.cs" Inherits="Strategic.ModificarCompetidor" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 

@@ -1,4 +1,4 @@
-<%@ Page Title="Mapear productos" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MapearProductosCompetencia.aspx.cs" Inherits="Strategic.MapearProductosCompetencia" %>
+﻿<%@ Page Title="Mapear productos" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MapearProductosCompetencia.aspx.cs" Inherits="Strategic.MapearProductosCompetencia" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 

@@ -1,13 +1,14 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 
 namespace Strategic
 {
     // CU-005-024 - Modificar Rol
-    public partial class ModificarRol : Page
+    public partial class ModificarRol : PaginaSegura
     {
         private readonly BLLRol bllRol = new BLLRol();
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
@@ -20,15 +21,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // La modificacion de roles es exclusiva del WebMaster segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || usuario.CodRol != 1)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarRol(Request.QueryString["rol"]);

@@ -1,4 +1,4 @@
-<%@ Page Title="Dar de baja competidor" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BajaCompetidor.aspx.cs" Inherits="Strategic.BajaCompetidor" %>
+﻿<%@ Page Title="Dar de baja competidor" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BajaCompetidor.aspx.cs" Inherits="Strategic.BajaCompetidor" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
