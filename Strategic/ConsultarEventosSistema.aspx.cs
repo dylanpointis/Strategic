@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace Strategic
 {
-    public partial class ConsultarEventosSistema : Page
+    public partial class ConsultarEventosSistema : PaginaSegura
     {
         private readonly BLLEvento bllEvento = new BLLEvento();
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
@@ -24,15 +25,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo puede entrar el WebMaster o el Administrador
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 List<Evento> eventos = bllEvento.TraerListaEventos();

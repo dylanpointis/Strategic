@@ -3,6 +3,7 @@ using BE.Composite;
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -11,7 +12,7 @@ namespace Strategic
 {
     // CU-005-021 - Consultar Roles
     // La baja y la reactivacion del CU-005-023 se disparan desde el detalle
-    public partial class ConsultarRoles : Page
+    public partial class ConsultarRoles : PaginaSegura
     {
         private const string MensajeSinRoles = "No existen roles registrados";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -33,15 +34,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Consultar roles lo pueden hacer WebMaster y Administrador
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 MostrarMensajeDeOtraPantalla();
@@ -94,67 +86,10 @@ namespace Strategic
 
         protected void btnCambiarEstado_Click(object sender, EventArgs e)
         {
-            try
+            if (RolSeleccionado > 0)
             {
-                BERol rol = bllRol.TraerRolPorId(RolSeleccionado);
-
-                if (rol == null)
-                {
-                    lblError.Text = "No se encontró el rol seleccionado";
-                    return;
-                }
-
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    rol.Activo
-                        ? "¿Confirmás dar de baja el rol {0}? No va a poder asignarse a nuevos usuarios."
-                        : "¿Confirmás reactivar el rol {0}?",
-                    rol.Nombre));
-
-                btnConfirmar.Text = rol.Activo ? "Dar de baja" : "Reactivar";
-                pnlConfirmacion.Visible = true;
+                Response.Redirect("~/BajaRol.aspx?rol=" + RolSeleccionado);
             }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-        }
-
-        protected void btnConfirmar_Click(object sender, EventArgs e)
-        {
-            pnlConfirmacion.Visible = false;
-
-            try
-            {
-                BERol rol = bllRol.TraerRolPorId(RolSeleccionado);
-
-                if (rol == null)
-                {
-                    lblError.Text = "No se encontró el rol seleccionado";
-                    return;
-                }
-
-                BEUsuario enSesion = SessionManager.UsuarioActual;
-                bool nuevoEstado = !rol.Activo;
-
-                bllRol.CambiarEstadoRol(rol.CodRol, nuevoEstado, enSesion.NombreUsuario);
-
-                lblExito.Text = Server.HtmlEncode(string.Format(
-                    nuevoEstado ? "Se reactivó el rol {0}" : "Se dio de baja el rol {0}",
-                    rol.Nombre));
-
-                OcultarDetalle();
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-
-            Consultar(HayFiltrosAplicados());
-        }
-
-        protected void btnCancelar_Click(object sender, EventArgs e)
-        {
-            pnlConfirmacion.Visible = false;
         }
 
         protected void btnCerrarDetalle_Click(object sender, EventArgs e)
@@ -173,6 +108,8 @@ namespace Strategic
             grillaRoles.AgregarColumna("UsuariosActivos", "Usuarios activos", "celda-numero");
             grillaRoles.AgregarColumna("EstadoTexto", "Estado");
             grillaRoles.AgregarColumnaAccion("Detalle", "VerDetalle", "Ver permisos");
+
+            btnNuevo.Visible = TienePermiso("AltaRol");
         }
 
         private void Consultar(bool vieneDeFiltros)
@@ -225,8 +162,11 @@ namespace Strategic
                 // deja insertar ese html sin envolverlo en un span
                 divArbol.InnerHtml = ArbolPermisos.Renderizar(rol.Componentes.ObtenerHijos());
 
+                // El ABM de roles es del WebMaster: un Administrador ve el
+                // detalle pero no las acciones que no puede ejecutar
+                btnModificar.Visible = TienePermiso("ModificarRol");
+                btnCambiarEstado.Visible = TienePermiso("BajaRol");
                 btnCambiarEstado.Text = rol.AccionEstado;
-                pnlConfirmacion.Visible = false;
                 pnlDetalle.Visible = true;
             }
             catch (Exception ex)
@@ -238,7 +178,6 @@ namespace Strategic
         private void OcultarDetalle()
         {
             pnlDetalle.Visible = false;
-            pnlConfirmacion.Visible = false;
             RolSeleccionado = 0;
         }
 

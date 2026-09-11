@@ -3,6 +3,7 @@ using BE.Composite;
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -11,7 +12,7 @@ namespace Strategic
 {
     // CU-005-025 - Consultar Familias
     // La baja y la reactivacion del CU-005-027 se disparan desde el detalle
-    public partial class ConsultarFamilias : Page
+    public partial class ConsultarFamilias : PaginaSegura
     {
         private const string MensajeSinFamilias = "No existen familias registradas";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -33,15 +34,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Consultar familias lo pueden hacer WebMaster y Administrador
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 MostrarMensajeDeOtraPantalla();
@@ -94,67 +86,10 @@ namespace Strategic
 
         protected void btnCambiarEstado_Click(object sender, EventArgs e)
         {
-            try
+            if (FamiliaSeleccionada > 0)
             {
-                BEFamilia familia = bllPermiso.TraerFamiliaConHijos(FamiliaSeleccionada);
-
-                if (familia == null)
-                {
-                    lblError.Text = "No se encontró la familia seleccionada";
-                    return;
-                }
-
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    familia.Activo
-                        ? "¿Confirmás dar de baja la familia {0}? No va a poder asignarse a nuevos roles."
-                        : "¿Confirmás reactivar la familia {0}?",
-                    familia.Nombre));
-
-                btnConfirmar.Text = familia.Activo ? "Dar de baja" : "Reactivar";
-                pnlConfirmacion.Visible = true;
+                Response.Redirect("~/BajaFamilia.aspx?familia=" + FamiliaSeleccionada);
             }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-        }
-
-        protected void btnConfirmar_Click(object sender, EventArgs e)
-        {
-            pnlConfirmacion.Visible = false;
-
-            try
-            {
-                BEFamilia familia = bllPermiso.TraerFamiliaConHijos(FamiliaSeleccionada);
-
-                if (familia == null)
-                {
-                    lblError.Text = "No se encontró la familia seleccionada";
-                    return;
-                }
-
-                BEUsuario enSesion = SessionManager.UsuarioActual;
-                bool nuevoEstado = !familia.Activo;
-
-                bllPermiso.CambiarEstadoFamilia(familia.CodPermiso, nuevoEstado, enSesion.NombreUsuario);
-
-                lblExito.Text = Server.HtmlEncode(string.Format(
-                    nuevoEstado ? "Se reactivó la familia {0}" : "Se dio de baja la familia {0}",
-                    familia.Nombre));
-
-                OcultarDetalle();
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = Server.HtmlEncode(ex.Message);
-            }
-
-            Consultar(HayFiltrosAplicados());
-        }
-
-        protected void btnCancelar_Click(object sender, EventArgs e)
-        {
-            pnlConfirmacion.Visible = false;
         }
 
         protected void btnCerrarDetalle_Click(object sender, EventArgs e)
@@ -173,6 +108,8 @@ namespace Strategic
             grillaFamilias.AgregarColumna("CantidadComponentesAsignados", "Elementos", "celda-numero");
             grillaFamilias.AgregarColumna("EstadoTexto", "Estado");
             grillaFamilias.AgregarColumnaAccion("Detalle", "VerDetalle", "Ver composición");
+
+            btnNuevo.Visible = TienePermiso("AltaFamilia");
         }
 
         private void Consultar(bool vieneDeFiltros)
@@ -224,8 +161,11 @@ namespace Strategic
 
                 divArbol.InnerHtml = ArbolPermisos.Renderizar(familia.ObtenerHijos());
 
+                // El ABM de familias es del WebMaster: un Administrador ve la
+                // composicion pero no las acciones que no puede ejecutar
+                btnModificar.Visible = TienePermiso("ModificarFamilia");
+                btnCambiarEstado.Visible = TienePermiso("BajaFamilia");
                 btnCambiarEstado.Text = familia.AccionEstado;
-                pnlConfirmacion.Visible = false;
                 pnlDetalle.Visible = true;
             }
             catch (Exception ex)
@@ -237,7 +177,6 @@ namespace Strategic
         private void OcultarDetalle()
         {
             pnlDetalle.Visible = false;
-            pnlConfirmacion.Visible = false;
             FamiliaSeleccionada = 0;
         }
 

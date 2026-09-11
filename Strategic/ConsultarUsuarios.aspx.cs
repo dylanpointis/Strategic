@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -11,7 +12,7 @@ namespace Strategic
 {
     // CU-005-017 - Consultar Usuarios
     // La baja y la reactivacion del CU-005-019 se disparan desde este listado
-    public partial class ConsultarUsuarios : Page
+    public partial class ConsultarUsuarios : PaginaSegura
     {
         private const string MensajeSinUsuarios = "No existen usuarios registrados";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -28,15 +29,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarRoles();
@@ -97,11 +89,22 @@ namespace Strategic
             grillaUsuarios.AgregarColumna("Email", "Email");
             grillaUsuarios.AgregarColumna("NombreRol", "Rol");
             grillaUsuarios.AgregarColumna("EstadoTexto", "Estado");
-            grillaUsuarios.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+
+            // Cada accion lleva a una pantalla con su propio permiso: la columna
+            // solo se arma si el rol la alcanza
+            if (TienePermiso("ModificarUsuario"))
+            {
+                grillaUsuarios.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+            }
 
             // El texto sale de la fila: un usuario activo se da de baja y uno
             // inactivo se reactiva
-            grillaUsuarios.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+            if (TienePermiso("BajaUsuario"))
+            {
+                grillaUsuarios.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+            }
+
+            btnNuevo.Visible = TienePermiso("AltaUsuario");
         }
 
         private void Consultar(bool vieneDeFiltros)

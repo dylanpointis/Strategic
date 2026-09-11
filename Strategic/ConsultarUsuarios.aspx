@@ -51,7 +51,7 @@
             <div class="strategic-card-header">
                 <h2>Listado de usuarios</h2>
                 <div class="strategic-card-acciones">
-                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta" EnableViewState="false"></asp:Label>
+                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
                     <asp:Button ID="btnNuevo" runat="server" Text="Nuevo usuario" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnNuevo_Click" />
                 </div>
             </div>

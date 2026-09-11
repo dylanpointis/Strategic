@@ -2,13 +2,14 @@
 using BE.Composite;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 
 namespace Strategic
 {
     // CU-005-028 - Modificar Familia
-    public partial class ModificarFamilia : Page
+    public partial class ModificarFamilia : PaginaSegura
     {
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
@@ -20,15 +21,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // La modificacion de familias es exclusiva del WebMaster segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || usuario.CodRol != 1)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarFamilia(Request.QueryString["familia"]);

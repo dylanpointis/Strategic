@@ -1,6 +1,7 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -8,7 +9,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-005-020 - Modificar Usuario
-    public partial class ModificarUsuario : Page
+    public partial class ModificarUsuario : PaginaSegura
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLRol bllRol = new BLLRol();
@@ -25,15 +26,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarRoles();

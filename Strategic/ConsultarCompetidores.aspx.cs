@@ -1,7 +1,8 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -10,7 +11,7 @@ namespace Strategic
 {
     // Consultar Competidores
     // La baja y la reactivacion se disparan desde este listado
-    public partial class ConsultarCompetidores : Page
+    public partial class ConsultarCompetidores : PaginaSegura
     {
         private const string MensajeSinCompetidores = "No existen competidores registrados";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -26,15 +27,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador, igual que la gestion de usuarios
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 MostrarMensajeDeOtraPantalla();
@@ -92,11 +84,22 @@ namespace Strategic
             grillaCompetidores.AgregarColumna("Marketplace", "Marketplace");
             grillaCompetidores.AgregarColumna("Descripcion", "Descripción");
             grillaCompetidores.AgregarColumna("Estado", "Estado");
-            grillaCompetidores.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+
+            // Cada accion lleva a una pantalla con su propio permiso: la columna
+            // solo se arma si el rol la alcanza
+            if (TienePermiso("ModificarCompetidor"))
+            {
+                grillaCompetidores.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+            }
 
             // El texto sale de la fila: un competidor activo se da de baja y
             // uno inactivo se reactiva
-            grillaCompetidores.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+            if (TienePermiso("BajaCompetidor"))
+            {
+                grillaCompetidores.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+            }
+
+            btnNuevo.Visible = TienePermiso("AltaCompetidor");
         }
 
         private void Consultar(bool vieneDeFiltros)

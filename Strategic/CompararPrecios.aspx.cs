@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-002-007 - Comparar Precios con Competidores
-    public partial class CompararPrecios : Page
+    public partial class CompararPrecios : PaginaSegura
     {
         private const string MensajeSinMapeos = "Los productos no tienen competidores asociados";
         private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
@@ -47,15 +48,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster, Administrador y Analista segun el CU
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2 && usuario.CodRol != 3))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarComparacionCompleta();

@@ -99,7 +99,7 @@
         <section class="strategic-card">
             <div class="strategic-card-header">
                 <h2>Listado de ventas</h2>
-                <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta" EnableViewState="false"></asp:Label>
+                <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
             </div>
 
             <div class="strategic-card-body sin-padding">

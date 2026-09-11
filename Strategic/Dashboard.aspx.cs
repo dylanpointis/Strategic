@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-002-004 - Visualizar Dashboard Principal
-    public partial class Dashboard : Page
+    public partial class Dashboard : PaginaSegura
     {
         private const string MensajeSinVentas = "No hay ventas registradas en el período seleccionado";
         private const string MensajeSinBajoStock = "Ningún producto está por debajo de su stock mínimo";
@@ -45,13 +46,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // El CU habilita a todos los perfiles, solo se exige tener la sesion iniciada
-            if (!SessionManager.HayUsuarioLogueado)
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 AplicarPeriodoPorDefecto();

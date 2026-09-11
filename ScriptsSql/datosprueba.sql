@@ -92,6 +92,11 @@ GO
        deja dar de baja al usuario Admin
    ------------------------------------------------------------ */
 
+-- Usuario: lgarcia     Clave: 'lucia.garcia'      Rol: Administrador
+-- Usuario: mfernandez  Clave: 'martin.fernandez'  Rol: Analista
+-- Usuario: svega       Clave: 'sofia.vega'        Rol: Usuario
+-- Usuario: rlopez      Clave: 'ramiro.lopez'      Rol: Analista (dado de baja)
+-- Usuario: jperez      Clave: 'juan.perez'        Rol: Usuario (bloqueado)
 INSERT INTO [dbo].[Usuario]
     ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos])
 VALUES

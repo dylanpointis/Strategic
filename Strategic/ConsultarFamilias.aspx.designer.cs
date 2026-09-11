@@ -35,9 +35,5 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Button btnModificar;
         protected global::System.Web.UI.WebControls.Button btnCambiarEstado;
         protected global::System.Web.UI.WebControls.Button btnCerrarDetalle;
-        protected global::System.Web.UI.WebControls.Panel pnlConfirmacion;
-        protected global::System.Web.UI.WebControls.Label lblConfirmacion;
-        protected global::System.Web.UI.WebControls.Button btnConfirmar;
-        protected global::System.Web.UI.WebControls.Button btnCancelar;
     }
 }

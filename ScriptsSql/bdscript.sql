@@ -299,51 +299,83 @@ GO
 
 /* ------------------------------------------------------------
    Permisos simples (hojas del Composite)
-   El nombre de cada permiso coincide con el nombre del aspx que
-   habilita. Estan predefinidos: no se crean ni se modifican desde
-   la aplicacion, solo se combinan en familias y se asignan a roles.
+   Un permiso por cada aspx del mapa de navegacion, con el mismo
+   nombre que el archivo: la pagina se autoriza buscando su propio
+   nombre en el arbol del rol. Estan predefinidos: no se crean ni se
+   modifican desde la aplicacion, solo se combinan en familias y se
+   asignan a roles.
+   Las pantallas de sesion (Login, Logout, CambiarClave) no llevan
+   permiso: son de todos los perfiles.
    ------------------------------------------------------------ */
 
 SET IDENTITY_INSERT [dbo].[Permiso] ON
 
 INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Activo]) VALUES
-( 1, 'Dashboard',                          'Ver el dashboard principal',                    'Simple', 1),
-( 2, 'Recomendaciones',                    'Ver las recomendaciones generadas',             'Simple', 1),
-( 3, 'Predicciones',                       'Ver las predicciones de demanda',               'Simple', 1),
-( 4, 'CompararPrecios',                    'Comparar precios con los competidores',         'Simple', 1),
-( 5, 'Reportes',                           'Generar reportes del negocio',                  'Simple', 1),
-( 6, 'ConsultarAutomatizaciones',          'Consultar las automatizaciones configuradas',   'Simple', 1),
-( 7, 'HistorialAutomatizaciones',          'Ver el historial de automatizaciones',          'Simple', 1),
-( 8, 'ProductosSincronizados',             'Ver el catalogo de productos sincronizados',    'Simple', 1),
-( 9, 'HistorialPrecios',                   'Ver el historial de precios de un producto',    'Simple', 1),
-(10, 'HistorialStock',                     'Ver el historial de stock de un producto',      'Simple', 1),
-(11, 'HistorialVentas',                    'Ver el historial de ventas',                    'Simple', 1),
-(12, 'ConsultarUsuarios',                  'Gestionar los usuarios del sistema',            'Simple', 1),
-(13, 'ConsultarRoles',                     'Gestionar los roles del sistema',               'Simple', 1),
-(14, 'ConsultarFamilias',                  'Gestionar las familias de permisos',            'Simple', 1),
-(15, 'ImportarDatos',                      'Importar y sincronizar datos del cliente',      'Simple', 1),
-(16, 'HistorialSincronizaciones',          'Ver el historial de sincronizaciones',          'Simple', 1),
-(17, 'ConsultarCompetidores',              'Gestionar los competidores registrados',        'Simple', 1),
-(18, 'MapearProductosCompetencia',         'Asociar productos con publicaciones rivales',   'Simple', 1),
-(19, 'MonitoreoPublicacionesCompetidoras', 'Monitorear las publicaciones de la competencia', 'Simple', 1),
-(20, 'ConsultarEventosSistema',            'Consultar la bitacora de eventos',              'Simple', 1),
-(21, 'RealizarBackup',                     'Generar copias de seguridad',                   'Simple', 1),
-(22, 'RenovarSuscripcion',                 'Gestionar la suscripcion del cliente',          'Simple', 1),
+-- 002. Analisis
+( 1, 'Dashboard',                          'Ver el dashboard principal',                     'Simple', 1),
+( 2, 'Recomendaciones',                    'Ver las recomendaciones generadas',              'Simple', 1),
+( 3, 'Predicciones',                       'Ver las predicciones de demanda',                'Simple', 1),
+( 4, 'CompararPrecios',                    'Comparar precios con los competidores',          'Simple', 1),
+( 5, 'Reportes',                           'Generar reportes del negocio',                   'Simple', 1),
+-- 003. Automatizaciones
+( 6, 'ConsultarAutomatizaciones',          'Consultar las automatizaciones configuradas',    'Simple', 1),
+( 7, 'PausarReactivarAutomatizacion',      'Pausar o reactivar una automatizacion',          'Simple', 1),
+( 8, 'ModificarParametroAutomatizacion',   'Modificar los parametros de una automatizacion', 'Simple', 1),
+( 9, 'HistorialAutomatizaciones',          'Ver el historial de automatizaciones',           'Simple', 1),
+-- 004. Catalogo Sincronizado
+(10, 'ProductosSincronizados',             'Ver el catalogo de productos sincronizados',     'Simple', 1),
+(11, 'HistorialPrecios',                   'Ver el historial de precios de un producto',     'Simple', 1),
+(12, 'HistorialStock',                     'Ver el historial de stock de un producto',       'Simple', 1),
+(13, 'HistorialVentas',                    'Ver el historial de ventas',                     'Simple', 1),
+-- 005. Gestion de Usuarios y Permisos
+(14, 'ConsultarUsuarios',                  'Consultar los usuarios del sistema',             'Simple', 1),
+(15, 'AltaUsuario',                        'Dar de alta un usuario',                         'Simple', 1),
+(16, 'BajaUsuario',                        'Dar de baja o reactivar un usuario',             'Simple', 1),
+(17, 'ModificarUsuario',                   'Modificar los datos de un usuario',              'Simple', 1),
+(18, 'ConsultarRoles',                     'Consultar los roles y sus permisos',             'Simple', 1),
+(19, 'AltaRol',                            'Crear un rol',                                   'Simple', 1),
+(20, 'BajaRol',                            'Dar de baja o reactivar un rol',                 'Simple', 1),
+(21, 'ModificarRol',                       'Modificar un rol y sus permisos',                'Simple', 1),
+(22, 'ConsultarFamilias',                  'Consultar las familias de permisos',             'Simple', 1),
+(23, 'AltaFamilia',                        'Crear una familia de permisos',                  'Simple', 1),
+(24, 'BajaFamilia',                        'Dar de baja o reactivar una familia',            'Simple', 1),
+(25, 'ModificarFamilia',                   'Modificar una familia y su composicion',         'Simple', 1),
+-- 006. Integraciones y Sincronizacion
+(26, 'ImportarDatos',                      'Importar y sincronizar datos del cliente',       'Simple', 1),
+(27, 'HistorialSincronizaciones',          'Ver el historial de sincronizaciones',           'Simple', 1),
+-- 007. Gestionar Competencia
+(28, 'ConsultarCompetidores',              'Consultar los competidores registrados',         'Simple', 1),
+(29, 'AltaCompetidor',                     'Registrar un competidor',                        'Simple', 1),
+(30, 'BajaCompetidor',                     'Dar de baja o reactivar un competidor',          'Simple', 1),
+(31, 'ModificarCompetidor',                'Modificar los datos de un competidor',           'Simple', 1),
+(32, 'MapearProductosCompetencia',         'Asociar productos con publicaciones rivales',    'Simple', 1),
+(33, 'MonitoreoPublicacionesCompetidoras', 'Monitorear las publicaciones de la competencia', 'Simple', 1),
+-- 008. Auditoria y Mantenimiento
+(34, 'ConsultarEventosSistema',            'Consultar la bitacora de eventos',               'Simple', 1),
+(35, 'RealizarBackup',                     'Generar copias de seguridad',                    'Simple', 1),
+-- 009. Suscripciones
+(36, 'RenovarSuscripcion',                 'Gestionar la suscripcion del cliente',           'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
-   Agrupan permisos por modulo. "Acceso total" es una familia de
-   familias: muestra que el arbol admite mas de un nivel.
+   Estan armadas para que cada rol del mapa de navegacion salga de
+   combinar familias, con algun permiso suelto donde el mapa lo pide.
+   "Automatizaciones" contiene a "Automatizaciones consulta" y
+   "Roles y familias" a "Roles y familias consulta": son familias de
+   familias, y "Acceso total" suma un tercer nivel.
    Se pueden crear otras desde el CU-005-026.
    ------------------------------------------------------------ */
-(23, 'Modulo Analisis',         'Pantallas de analisis del negocio',            'Familia', 1),
-(24, 'Modulo Catalogo',         'Pantallas del catalogo sincronizado',          'Familia', 1),
-(25, 'Modulo Automatizaciones', 'Pantallas de automatizaciones',                'Familia', 1),
-(26, 'Modulo Competencia',      'Pantallas de gestion de competencia',          'Familia', 1),
-(27, 'Modulo Integraciones',    'Pantallas de importacion y sincronizacion',    'Familia', 1),
-(28, 'Modulo Seguridad',        'Pantallas de usuarios, roles y familias',      'Familia', 1),
-(29, 'Modulo Auditoria',        'Pantallas de bitacora y backup',               'Familia', 1),
-(30, 'Acceso total',            'Todas las pantallas del sistema',              'Familia', 1)
+(37, 'Analisis',                    'Pantallas de analisis del negocio',                       'Familia', 1),
+(38, 'Automatizaciones consulta',   'Consulta e historial de automatizaciones',                'Familia', 1),
+(39, 'Automatizaciones',            'Consulta y gestion de automatizaciones',                  'Familia', 1),
+(40, 'Catalogo',                    'Pantallas del catalogo sincronizado',                     'Familia', 1),
+(41, 'Usuarios',                    'Alta, baja, modificacion y consulta de usuarios',         'Familia', 1),
+(42, 'Roles y familias consulta',   'Consulta de roles y familias de permisos',                'Familia', 1),
+(43, 'Roles y familias',            'Consulta y gestion de roles y familias de permisos',      'Familia', 1),
+(44, 'Integraciones',               'Importacion y sincronizacion de datos',                   'Familia', 1),
+(45, 'Competencia',                 'Gestion completa de la competencia',                      'Familia', 1),
+(46, 'Auditoria',                   'Bitacora de eventos y backup',                            'Familia', 1),
+(47, 'Acceso total',                'Todas las pantallas del sistema',                         'Familia', 1)
 
 SET IDENTITY_INSERT [dbo].[Permiso] OFF
 GO
@@ -356,41 +388,56 @@ GO
    ------------------------------------------------------------ */
 
 INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
--- Modulo Analisis
-(23,  1), (23,  2), (23,  3), (23,  4), (23,  5),
--- Modulo Catalogo
-(24,  8), (24,  9), (24, 10), (24, 11),
--- Modulo Automatizaciones
-(25,  6), (25,  7),
--- Modulo Competencia
-(26, 17), (26, 18), (26, 19),
--- Modulo Integraciones
-(27, 15), (27, 16),
--- Modulo Seguridad
-(28, 12), (28, 13), (28, 14),
--- Modulo Auditoria
-(29, 20), (29, 21),
--- Acceso total: contiene a las demas familias y un permiso suelto
-(30, 23), (30, 24), (30, 25), (30, 26), (30, 27), (30, 28), (30, 29), (30, 22)
+-- Analisis
+(37,  1), (37,  2), (37,  3), (37,  4), (37,  5),
+-- Automatizaciones consulta
+(38,  6), (38,  9),
+-- Automatizaciones: la consulta mas la gestion
+(39, 38), (39,  7), (39,  8),
+-- Catalogo
+(40, 10), (40, 11), (40, 12), (40, 13),
+-- Usuarios
+(41, 14), (41, 15), (41, 16), (41, 17),
+-- Roles y familias consulta
+(42, 18), (42, 22),
+-- Roles y familias: la consulta mas el ABM
+(43, 42), (43, 19), (43, 20), (43, 21), (43, 23), (43, 24), (43, 25),
+-- Integraciones
+(44, 26), (44, 27),
+-- Competencia
+(45, 28), (45, 29), (45, 30), (45, 31), (45, 32), (45, 33),
+-- Auditoria
+(46, 34), (46, 35),
+-- Acceso total: contiene a las familias de mayor nivel y el permiso suelto
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36)
 GO
 
 
 /* ------------------------------------------------------------
    Rol_Permiso: el rol se asocia a cualquier componente, sea un
    permiso simple o una familia. No distingue entre los dos.
+   Cada rol queda con exactamente las pantallas de su mapa de
+   navegacion:
+     WebMaster      36 pantallas (todo)
+     Administrador  30 pantallas
+     Analista       13 pantallas
+     Usuario         2 pantallas
    ------------------------------------------------------------ */
 
 INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 -- WebMaster: una sola familia que lo alcanza todo
-(1, 30),
--- Administrador: varias familias mas un permiso simple suelto
-(2, 23), (2, 24), (2, 25), (2, 26), (2, 27), (2, 28), (2, 20),
--- Analista: solo consulta
-(3, 23), (3, 24),
--- Usuario: apenas el dashboard
-(4,  1)
+(1, 47),
+-- Administrador: familias de cada modulo; de roles y familias solo la
+-- consulta (el ABM es del WebMaster) y la suscripcion suelta
+(2, 37), (2, 39), (2, 40), (2, 41), (2, 42), (2, 44), (2, 45), (2, 46), (2, 36),
+-- Analista: consulta de analisis, automatizaciones y catalogo, mas dos
+-- pantallas sueltas que el mapa le da sin el resto de su modulo
+(3, 37), (3, 38), (3, 40), (3, 27), (3, 28),
+-- Usuario: dos permisos simples
+(4,  1), (4, 10)
 GO
 
+-- Usuario: Admin  Clave: 'Admin123'  Rol: WebMaster
 INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
 ('Admin', 'Admin', 'Strategic', 'admin@strategic.local', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 1, 0, 1, 0)
 GO

@@ -21,6 +21,11 @@ namespace Strategic
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navInicio;
+
+        /// <summary>
+        /// Control navLogin.
+        /// </summary>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navLogin;
 
         /// <summary>
@@ -30,6 +35,16 @@ namespace Strategic
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navBienvenida;
+
+        /// <summary>
+        /// Control lblBienvenida.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblBienvenida;
+
+        /// <summary>
+        /// Control navProfile.
+        /// </summary>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navProfile;
 
         /// <summary>

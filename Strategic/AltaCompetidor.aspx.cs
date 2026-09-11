@@ -1,27 +1,16 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 
 namespace Strategic
 {
     // Alta de Competidor
-    public partial class AltaCompetidor : Page
+    public partial class AltaCompetidor : PaginaSegura
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            // Solo WebMaster y Administrador, igual que la gestion de usuarios
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-        }
 
         protected void btnCrear_Click(object sender, EventArgs e)
         {
