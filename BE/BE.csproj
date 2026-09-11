@@ -40,6 +40,7 @@
     <Compile Include="BEVentaPorCategoria.cs" />
     <Compile Include="BETopProducto.cs" />
     <Compile Include="BECompetencia.cs" />
+    <Compile Include="BEPublicacionCompetencia.cs" />
     <Compile Include="BEComparacionPrecio.cs" />
     <Compile Include="BEHistorialPrecioCompetencia.cs" />
     <Compile Include="BEResumenComparacion.cs" />

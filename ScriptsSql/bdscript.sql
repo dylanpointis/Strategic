@@ -900,7 +900,7 @@ BEGIN
         ORDER BY H.FechaConsulta DESC
     ) UP
     WHERE P.BorradoLogico = 0
-      AND PC.Estado = N'Activo'
+      AND PC.Estado = N'Activa'
     ORDER BY P.Nombre ASC, C.Nombre ASC
 END
 GO
@@ -942,7 +942,7 @@ BEGIN
         ORDER BY H.FechaConsulta DESC
     ) UP
     WHERE P.BorradoLogico = 0
-      AND PC.Estado = N'Activo'
+      AND PC.Estado = N'Activa'
       AND (@IdProducto IS NULL OR P.IdProducto = @IdProducto)
       AND (@Categoria IS NULL OR P.Categoria = @Categoria)
       AND (@IdCompetencia IS NULL OR C.IdCompetencia = @IdCompetencia)
@@ -1167,6 +1167,122 @@ BEGIN
     VALUES (@IdProducto, @IdCompetencia, @Url, N'Activa')
 
     SELECT SCOPE_IDENTITY() AS IdProductoCompetencia
+END
+GO
+
+/* ------------------------------------------------------------
+   CU-007-037 - Gestionar Monitoreo de publicaciones competidoras
+   El ultimo precio relevado sale del mismo patron de OUTER APPLY
+   que usa CU-002-007 Comparar Precios.
+   ------------------------------------------------------------ */
+
+CREATE PROCEDURE [dbo].[TraerPublicacionesMonitoreo]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        PC.Estado,
+        UP.PrecioCompetencia     AS UltimoPrecio,
+        PC.FechaUltimaVerificacion
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1) H.PrecioCompetencia
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    ORDER BY P.Nombre ASC, C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[FiltrarPublicacionesMonitoreo]
+    @IdProducto INT = NULL,
+    @IdCompetencia INT = NULL,
+    @Estado NVARCHAR(20) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        PC.Estado,
+        UP.PrecioCompetencia     AS UltimoPrecio,
+        PC.FechaUltimaVerificacion
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1) H.PrecioCompetencia
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE (@IdProducto IS NULL OR P.IdProducto = @IdProducto)
+      AND (@IdCompetencia IS NULL OR C.IdCompetencia = @IdCompetencia)
+      AND (@Estado IS NULL OR PC.Estado = @Estado)
+    ORDER BY P.Nombre ASC, C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerPublicacionMonitoreoPorId]
+    @IdProductoCompetencia INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        PC.IdProductoCompetencia,
+        P.IdProducto,
+        P.Codigo                 AS CodigoProducto,
+        P.Nombre                 AS NombreProducto,
+        C.IdCompetencia,
+        C.Nombre                 AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        PC.Estado,
+        UP.PrecioCompetencia     AS UltimoPrecio,
+        PC.FechaUltimaVerificacion
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = PC.IdProducto
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1) H.PrecioCompetencia
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE PC.IdProductoCompetencia = @IdProductoCompetencia
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoPublicacion]
+    @IdProductoCompetencia INT,
+    @Estado NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[ProductoCompetencia]
+    SET [Estado] = @Estado
+    WHERE [IdProductoCompetencia] = @IdProductoCompetencia
 END
 GO
 

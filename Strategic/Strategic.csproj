@@ -117,6 +117,8 @@
     <Content Include="ModificarCompetidor.aspx" />
     <Content Include="BajaCompetidor.aspx" />
     <Content Include="MapearProductosCompetencia.aspx" />
+    <Content Include="MonitoreoPublicacionesCompetidoras.aspx" />
+    <Content Include="GestionarPublicacionCompetencia.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Dashboard.aspx" />
@@ -385,6 +387,20 @@
     </Compile>
     <Compile Include="MapearProductosCompetencia.aspx.designer.cs">
       <DependentUpon>MapearProductosCompetencia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MonitoreoPublicacionesCompetidoras.aspx.cs">
+      <DependentUpon>MonitoreoPublicacionesCompetidoras.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MonitoreoPublicacionesCompetidoras.aspx.designer.cs">
+      <DependentUpon>MonitoreoPublicacionesCompetidoras.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionarPublicacionCompetencia.aspx.cs">
+      <DependentUpon>GestionarPublicacionCompetencia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GestionarPublicacionCompetencia.aspx.designer.cs">
+      <DependentUpon>GestionarPublicacionCompetencia.aspx</DependentUpon>
     </Compile>
     <Compile Include="CompararPrecios.aspx.cs">
       <DependentUpon>CompararPrecios.aspx</DependentUpon>

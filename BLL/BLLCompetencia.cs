@@ -322,5 +322,101 @@ namespace BLL
         {
             return string.IsNullOrWhiteSpace(valor) ? null : valor.Trim();
         }
+
+        #region Monitoreo de publicaciones (CU-007-037)
+
+        public List<BEPublicacionCompetencia> TraerListaPublicacionesMonitoreo()
+        {
+            return dalCompetencia.TraerListaPublicacionesMonitoreo();
+        }
+
+        public List<BEPublicacionCompetencia> FiltrarPublicacionesMonitoreo(int? idProducto, int? idCompetencia, string estado)
+        {
+            if (idProducto.HasValue && idProducto.Value <= 0)
+            {
+                throw new Exception("Debe seleccionar un producto valido");
+            }
+
+            if (idCompetencia.HasValue && idCompetencia.Value <= 0)
+            {
+                throw new Exception("Debe seleccionar un competidor valido");
+            }
+
+            return dalCompetencia.FiltrarPublicacionesMonitoreo(idProducto, idCompetencia, Normalizar(estado));
+        }
+
+        public BEPublicacionCompetencia TraerPublicacionMonitoreoPorId(int idProductoCompetencia)
+        {
+            ValidarMapeo(idProductoCompetencia);
+
+            return dalCompetencia.TraerPublicacionMonitoreoPorId(idProductoCompetencia);
+        }
+
+        /// <summary>
+        /// Aplica la accion elegida en el panel de monitoreo (Pausar, Reactivar o
+        /// Desactivar) validando que tenga sentido contra el estado actual de la
+        /// publicacion. Desactivar es terminal: una vez Finalizada no se puede
+        /// volver a mover.
+        /// </summary>
+        public void CambiarEstadoPublicacion(int idProductoCompetencia, string accion, string nombreUsuarioEnSesion)
+        {
+            ValidarMapeo(idProductoCompetencia);
+
+            BEPublicacionCompetencia publicacion = dalCompetencia.TraerPublicacionMonitoreoPorId(idProductoCompetencia);
+
+            if (publicacion == null)
+            {
+                throw new Exception("No se encontro la publicacion seleccionada");
+            }
+
+            string nuevoEstado = CalcularNuevoEstado(publicacion.Estado, accion);
+
+            dalCompetencia.ModificarEstadoPublicacion(idProductoCompetencia, nuevoEstado);
+
+            RegistrarEvento(
+                nombreUsuarioEnSesion,
+                string.Format("{0} de publicacion monitoreada", accion),
+                string.Format("{0} - {1}", publicacion.NombreProducto, publicacion.NombreCompetidor));
+        }
+
+        private string CalcularNuevoEstado(string estadoActual, string accion)
+        {
+            switch (accion)
+            {
+                case "Pausar":
+                    if (estadoActual != "Activa")
+                    {
+                        throw new Exception("Solo se puede pausar una publicacion activa");
+                    }
+
+                    return "Pausada";
+
+                case "Reactivar":
+                    if (estadoActual == "Activa")
+                    {
+                        throw new Exception("La publicacion ya esta activa");
+                    }
+
+                    if (estadoActual == "Finalizada")
+                    {
+                        throw new Exception("No se puede reactivar una publicacion desactivada");
+                    }
+
+                    return "Activa";
+
+                case "Desactivar":
+                    if (estadoActual == "Finalizada")
+                    {
+                        throw new Exception("La publicacion ya esta desactivada");
+                    }
+
+                    return "Finalizada";
+
+                default:
+                    throw new Exception("Accion no reconocida");
+            }
+        }
+
+        #endregion
     }
 }

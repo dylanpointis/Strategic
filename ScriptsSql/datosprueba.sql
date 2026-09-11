@@ -246,9 +246,11 @@ GO
    Casos preparados a proposito:
      - el mapeo 7 se muestra sin precio de la competencia porque
        todavia no tiene ninguna consulta registrada
-     - el mapeo 8 esta inactivo (no se monitorea mas) y el 9 apunta
+     - el mapeo 8 esta finalizado (no se monitorea mas) y el 9 apunta
        al producto con borrado logico: los dos quedan fuera de la
        comparacion de precios
+   El Estado usa el vocabulario de CU-007-037 (Activa / Pausada /
+   Finalizada / No encontrada / Error), no Activo/Inactivo.
    ------------------------------------------------------------ */
 
 SET IDENTITY_INSERT [dbo].[ProductoCompetencia] ON
@@ -256,15 +258,15 @@ SET IDENTITY_INSERT [dbo].[ProductoCompetencia] ON
 INSERT INTO [dbo].[ProductoCompetencia]
     ([IdProductoCompetencia], [IdProducto], [IdCompetencia], [URL], [Estado], [FechaAlta], [FechaUltimaVerificacion])
 VALUES
-    (1, 1, 1, N'https://articulo.mercadolibre.com.ar/MLA-1101-teclado-mecanico-rgb-87-teclas-_JM',  N'Activo',   '2026-07-10T10:00:00', '2026-09-05T06:00:00'),
-    (2, 1, 3, N'https://articulo.mercadolibre.com.ar/MLA-1102-teclado-gamer-mecanico-rgb-_JM',      N'Activo',   '2026-07-10T10:05:00', '2026-09-05T06:00:00'),
-    (3, 2, 1, N'https://articulo.mercadolibre.com.ar/MLA-1103-mouse-inalambrico-24ghz-_JM',         N'Activo',   '2026-07-10T10:10:00', '2026-09-05T06:00:00'),
-    (4, 3, 2, N'https://articulo.mercadolibre.com.ar/MLA-1104-monitor-27-pulgadas-144hz-_JM',       N'Activo',   '2026-07-12T09:00:00', '2026-09-05T06:00:00'),
-    (5, 3, 3, N'https://articulo.mercadolibre.com.ar/MLA-1105-monitor-gamer-27-144hz-_JM',          N'Activo',   '2026-08-15T09:00:00', '2026-09-05T06:00:00'),
-    (6, 5, 2, N'https://articulo.mercadolibre.com.ar/MLA-1106-notebook-14-core-i5-16gb-_JM',        N'Activo',   '2026-08-01T09:00:00', '2026-09-08T06:00:00'),
-    (7, 4, 1, N'https://articulo.mercadolibre.com.ar/MLA-1107-auriculares-bluetooth-anc-_JM',       N'Activo',   '2026-09-07T18:00:00', NULL),
-    (8, 2, 2, N'https://articulo.mercadolibre.com.ar/MLA-1108-mouse-inalambrico-oficina-_JM',       N'Inactivo', '2026-07-15T09:00:00', '2026-09-05T06:00:00'),
-    (9, 6, 1, N'https://articulo.mercadolibre.com.ar/MLA-1109-webcam-hd-720p-_JM',                  N'Activo',   '2026-06-20T09:00:00', '2026-07-01T06:00:00')
+    (1, 1, 1, N'https://articulo.mercadolibre.com.ar/MLA-1101-teclado-mecanico-rgb-87-teclas-_JM',  N'Activa',     '2026-07-10T10:00:00', '2026-09-05T06:00:00'),
+    (2, 1, 3, N'https://articulo.mercadolibre.com.ar/MLA-1102-teclado-gamer-mecanico-rgb-_JM',      N'Activa',     '2026-07-10T10:05:00', '2026-09-05T06:00:00'),
+    (3, 2, 1, N'https://articulo.mercadolibre.com.ar/MLA-1103-mouse-inalambrico-24ghz-_JM',         N'Activa',     '2026-07-10T10:10:00', '2026-09-05T06:00:00'),
+    (4, 3, 2, N'https://articulo.mercadolibre.com.ar/MLA-1104-monitor-27-pulgadas-144hz-_JM',       N'Activa',     '2026-07-12T09:00:00', '2026-09-05T06:00:00'),
+    (5, 3, 3, N'https://articulo.mercadolibre.com.ar/MLA-1105-monitor-gamer-27-144hz-_JM',          N'Activa',     '2026-08-15T09:00:00', '2026-09-05T06:00:00'),
+    (6, 5, 2, N'https://articulo.mercadolibre.com.ar/MLA-1106-notebook-14-core-i5-16gb-_JM',        N'Activa',     '2026-08-01T09:00:00', '2026-09-08T06:00:00'),
+    (7, 4, 1, N'https://articulo.mercadolibre.com.ar/MLA-1107-auriculares-bluetooth-anc-_JM',       N'Activa',     '2026-09-07T18:00:00', NULL),
+    (8, 2, 2, N'https://articulo.mercadolibre.com.ar/MLA-1108-mouse-inalambrico-oficina-_JM',       N'Finalizada', '2026-07-15T09:00:00', '2026-09-05T06:00:00'),
+    (9, 6, 1, N'https://articulo.mercadolibre.com.ar/MLA-1109-webcam-hd-720p-_JM',                  N'Activa',     '2026-06-20T09:00:00', '2026-07-01T06:00:00')
 
 SET IDENTITY_INSERT [dbo].[ProductoCompetencia] OFF
 GO
@@ -338,7 +340,7 @@ SELECT COUNT(*) AS MapeosComparables
 FROM [dbo].[ProductoCompetencia] PC
 INNER JOIN [dbo].[Producto] P ON P.[IdProducto] = PC.[IdProducto]
 WHERE P.[BorradoLogico] = 0
-  AND PC.[Estado] = N'Activo'
+  AND PC.[Estado] = N'Activa'
   AND P.[Codigo] LIKE 'SKU-1%'
 GO
 

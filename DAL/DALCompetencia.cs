@@ -225,6 +225,76 @@ namespace DAL
             return historial;
         }
 
+        public List<BEPublicacionCompetencia> TraerListaPublicacionesMonitoreo()
+        {
+            return MapearPublicaciones(dalCon.ConsultaProcAlmacenado("TraerPublicacionesMonitoreo", null));
+        }
+
+        public List<BEPublicacionCompetencia> FiltrarPublicacionesMonitoreo(int? idProducto, int? idCompetencia, string estado)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto),
+                new SqlParameter("@IdCompetencia", idCompetencia),
+                new SqlParameter("@Estado", estado)
+            };
+
+            return MapearPublicaciones(dalCon.ConsultaProcAlmacenado("FiltrarPublicacionesMonitoreo", parametros));
+        }
+
+        public BEPublicacionCompetencia TraerPublicacionMonitoreoPorId(int idProductoCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProductoCompetencia", idProductoCompetencia)
+            };
+
+            List<BEPublicacionCompetencia> publicaciones = MapearPublicaciones(
+                dalCon.ConsultaProcAlmacenado("TraerPublicacionMonitoreoPorId", parametros));
+
+            return publicaciones.Count > 0 ? publicaciones[0] : null;
+        }
+
+        public void ModificarEstadoPublicacion(int idProductoCompetencia, string estado)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProductoCompetencia", idProductoCompetencia),
+                new SqlParameter("@Estado", estado)
+            };
+
+            dalCon.EjecutarProcAlmacenado("ModificarEstadoPublicacion", parametros);
+        }
+
+        private List<BEPublicacionCompetencia> MapearPublicaciones(DataTable tabla)
+        {
+            List<BEPublicacionCompetencia> publicaciones = new List<BEPublicacionCompetencia>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                publicaciones.Add(new BEPublicacionCompetencia
+                {
+                    IdProductoCompetencia = Convert.ToInt32(row["IdProductoCompetencia"]),
+                    IdProducto = Convert.ToInt32(row["IdProducto"]),
+                    CodigoProducto = row["CodigoProducto"].ToString(),
+                    NombreProducto = row["NombreProducto"].ToString(),
+                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
+                    NombreCompetidor = row["NombreCompetidor"].ToString(),
+                    Marketplace = row["Marketplace"].ToString(),
+                    Url = row["URL"].ToString(),
+                    Estado = row["Estado"].ToString(),
+                    UltimoPrecio = row["UltimoPrecio"] == DBNull.Value
+                        ? (decimal?)null
+                        : Convert.ToDecimal(row["UltimoPrecio"]),
+                    FechaUltimaVerificacion = row["FechaUltimaVerificacion"] == DBNull.Value
+                        ? (DateTime?)null
+                        : Convert.ToDateTime(row["FechaUltimaVerificacion"])
+                });
+            }
+
+            return publicaciones;
+        }
+
         private List<BECompetencia> MapearCompetidores(DataTable tabla)
         {
             List<BECompetencia> competidores = new List<BECompetencia>();
