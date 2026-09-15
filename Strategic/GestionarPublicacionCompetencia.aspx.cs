@@ -11,10 +11,10 @@ namespace Strategic
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
-        /// <summary>
+        
         /// Publicacion sobre la que se esta pidiendo confirmacion. Viaja en el
         /// ViewState entre el clic y la confirmacion.
-        /// </summary>
+        
         private int PublicacionAConfirmar
         {
             get { return ViewState["PublicacionAConfirmar"] == null ? 0 : Convert.ToInt32(ViewState["PublicacionAConfirmar"]); }
@@ -74,10 +74,10 @@ namespace Strategic
             Response.Redirect("~/MonitoreoPublicacionesCompetidoras.aspx");
         }
 
-        /// <summary>
+        
         /// "PausarReactivar" resuelve la accion real segun el estado actual de
         /// la fila, igual que hace la grilla para elegir el texto del boton.
-        /// </summary>
+        
         private void CargarPublicacion(string idTexto, string accionSolicitada)
         {
             int idProductoCompetencia;
@@ -121,11 +121,11 @@ namespace Strategic
             }
         }
 
-        /// <summary>
+        
         /// Traduce el comando que llega de la grilla a la accion concreta.
         /// Devuelve null si la accion no tiene sentido contra el estado actual,
         /// para no ofrecer un boton que la BLL va a terminar rechazando.
-        /// </summary>
+        
         private string ResolverAccion(string accionSolicitada, string estadoActual)
         {
             if (accionSolicitada == "Desactivar")

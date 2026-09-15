@@ -29,6 +29,30 @@ namespace DAL
             return MapearVentas(dalCon.ConsultaProcAlmacenado("FiltrarVentas", parametros));
         }
 
+        
+        /// Unidades vendidas por día de un producto, sin las ventas canceladas.
+        /// Es la serie sobre la que se proyecta la demanda.
+        
+        public List<KeyValuePair<DateTime, int>> TraerUnidadesPorDia(int idProducto)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerVentasDiariasProducto", parametros);
+            List<KeyValuePair<DateTime, int>> unidades = new List<KeyValuePair<DateTime, int>>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                unidades.Add(new KeyValuePair<DateTime, int>(
+                    Convert.ToDateTime(row["Fecha"]),
+                    Convert.ToInt32(row["Unidades"])));
+            }
+
+            return unidades;
+        }
+
         private List<BEVenta> MapearVentas(DataTable tabla)
         {
             List<BEVenta> ventas = new List<BEVenta>();

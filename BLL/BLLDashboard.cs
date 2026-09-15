@@ -37,12 +37,12 @@ namespace BLL
             return dalDashboard.TraerTopProductos(fechaInicio, fechaFin, Normalizar(categoria), TopProductosMostrados);
         }
 
-        /// <summary>
+        
         /// Deja la torta de categorías en una cantidad legible de porciones: conserva
         /// las más vendidas y suma el resto en una porción "Otras".
         /// Espera la lista ya ordenada por unidades de mayor a menor, que es como la
         /// devuelve TraerVentasPorCategoria.
-        /// </summary>
+        
         public List<BEVentaPorCategoria> AgruparCategoriasMenores(List<BEVentaPorCategoria> categorias)
         {
             // Si sobra una sola categoria no vale la pena agruparla: se muestran todas
@@ -73,18 +73,18 @@ namespace BLL
             return agrupadas;
         }
 
-        /// <summary>
+        
         /// Productos cuyo stock quedó en el mínimo definido por el cliente o por debajo.
         /// Es la foto actual del stock, no depende del rango de fechas.
-        /// </summary>
+        
         public List<BEProducto> TraerProductosBajoStock(string categoria)
         {
             return dalProducto.TraerProductosBajoStock(Normalizar(categoria));
         }
 
-        /// <summary>
+        
         /// Período que el dashboard muestra por defecto: el mes en curso.
-        /// </summary>
+        
         public void ObtenerPeriodoPorDefecto(out DateTime fechaInicio, out DateTime fechaFin)
         {
             DateTime hoy = DateTime.Today;

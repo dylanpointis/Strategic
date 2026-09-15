@@ -1,8 +1,8 @@
 ﻿namespace BE
 {
-    /// <summary>
+    
     /// Unidades y monto vendidos agrupados por categoría de producto.
-    /// </summary>
+    
     public class BEVentaPorCategoria
     {
         public string Categoria { get; set; }

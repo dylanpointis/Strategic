@@ -19,11 +19,11 @@ namespace BLL
 
         private const int IntentosAntesDeBloquear = 3;
 
-        /// <summary>
+        
         /// Roles habilitados para gestionar usuarios. Queda fijo hasta que esté
         /// el sistema de permisos: en ese momento la lista sale de consultar
         /// qué roles tienen el permiso SEGURIDAD_USUARIOS.
-        /// </summary>
+        
         private static readonly int[] RolesConGestionDeUsuarios = new int[] { 1, 2 };
 
         private readonly DALUsuario dalUsuario = new DALUsuario();
@@ -66,10 +66,10 @@ namespace BLL
             return usuario;
         }
 
-        /// <summary>
+        
         /// Deja registrado en la bitácora que el usuario cerró su sesión. Se
         /// llama antes de limpiar la sesión, que es de donde sale el nombre.
-        /// </summary>
+        
         public void RegistrarCierreSesion(string nombreUsuario)
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario))
@@ -80,11 +80,11 @@ namespace BLL
             bllEvento.RegistrarEvento(new Evento(nombreUsuario, ModuloSesiones, "Cierre sesion", CriticidadInformativa));
         }
 
-        /// <summary>
+        
         /// Deja registrado que un usuario intentó abrir una pantalla que su
         /// rol no habilita. Es grave porque no pasa navegando por el menú,
         /// que ya filtra lo que no corresponde: pasa escribiendo la dirección.
-        /// </summary>
+        
         public void RegistrarAccesoDenegado(string nombreUsuario, string pantalla)
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario))
@@ -147,11 +147,11 @@ namespace BLL
 
         #region Alta - CU-005-018
 
-        /// <summary>
+        
         /// Registra el usuario y devuelve la clave por defecto sin encriptar,
         /// para que la pantalla se la pueda mostrar al administrador una única
         /// vez: en la base solo queda guardado el hash.
-        /// </summary>
+        
         public string AltaUsuario(BEUsuario usuario, string nombreUsuarioEnSesion)
         {
             ValidarDatos(usuario, true);
@@ -291,12 +291,12 @@ namespace BLL
             }
         }
 
-        /// <summary>
+        
         /// Evita que el sistema quede sin ningún usuario capaz de administrar
         /// usuarios. Sin esta validación un administrador podría dar de baja al
         /// último que queda y nadie podría volver a entrar a gestionarlos.
         /// Un usuario bloqueado no cuenta: no puede iniciar sesión.
-        /// </summary>
+        
         private void ValidarQueQuedeAlgunAdministrador(BEUsuario usuarioAfectado)
         {
             if (!EsRolDeGestion(usuarioAfectado.CodRol))

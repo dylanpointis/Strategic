@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace BLL
 {
-    /// <summary>
+    
     /// Reglas de negocio de los roles (CU-005-021 a CU-005-024).
     /// El rol es el cliente del Composite: se le asignan componentes sin
     /// distinguir si son permisos simples o familias.
-    /// </summary>
+    
     public class BLLRol
     {
         private const string ModuloRoles = "Roles";
@@ -23,9 +23,9 @@ namespace BLL
 
         #region Consulta - CU-005-021
 
-        /// <summary>
+        
         /// Roles activos, para los desplegables de la gestión de usuarios.
-        /// </summary>
+        
         public List<BERol> TraerListaRoles()
         {
             return dalRol.TraerListaRoles();
@@ -43,10 +43,10 @@ namespace BLL
             return dalRol.TraerRolPorId(codRol);
         }
 
-        /// <summary>
+        
         /// Rol con su árbol de permisos cargado, para el detalle y para el
         /// formulario de modificación.
-        /// </summary>
+        
         public BERol TraerRolConComponentes(int codRol)
         {
             ValidarCodigo(codRol);

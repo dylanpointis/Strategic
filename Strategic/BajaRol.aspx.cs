@@ -12,10 +12,10 @@ namespace Strategic
     {
         private readonly BLLRol bllRol = new BLLRol();
 
-        /// <summary>
+        
         /// Rol sobre el que se está pidiendo confirmación. Viaja en el
         /// ViewState entre el clic y la confirmación.
-        /// </summary>
+        
         private int RolAConfirmar
         {
             get { return ViewState["RolAConfirmar"] == null ? 0 : Convert.ToInt32(ViewState["RolAConfirmar"]); }

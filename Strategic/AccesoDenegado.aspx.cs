@@ -4,11 +4,11 @@ using System.Web.UI;
 
 namespace Strategic
 {
-    /// <summary>
+    
     /// Pantalla a la que llega un usuario logueado cuando intenta abrir una
     /// página que su rol no habilita. No hereda de PaginaSegura porque no
     /// tiene permiso propio: la ve cualquiera con sesión.
-    /// </summary>
+    
     public partial class AccesoDenegado : Page
     {
         protected void Page_Load(object sender, EventArgs e)

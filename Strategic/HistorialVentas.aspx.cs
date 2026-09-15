@@ -20,10 +20,10 @@ namespace Strategic
         private readonly BLLVenta bllVenta = new BLLVenta();
         private readonly BLLProducto bllProducto = new BLLProducto();
 
-        /// <summary>
+        
         /// JSON que consume Chart.js. Viaja en el ViewState para que el gráfico
         /// sobreviva a los postbacks del paginado de la grilla.
-        /// </summary>
+        
         protected string DatosGraficoJson
         {
             get

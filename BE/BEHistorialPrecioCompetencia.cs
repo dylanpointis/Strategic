@@ -2,11 +2,11 @@
 
 namespace BE
 {
-    /// <summary>
+    
     /// Precio relevado de una publicación de la competencia en una fecha.
     /// Guarda también el precio propio de ese momento para poder comparar
     /// la evolución de los dos precios.
-    /// </summary>
+    
     public class BEHistorialPrecioCompetencia
     {
         public int IdPrecioCompetencia { get; set; }

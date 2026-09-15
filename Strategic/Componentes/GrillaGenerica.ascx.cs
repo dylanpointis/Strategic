@@ -6,27 +6,27 @@ using System.Web.UI.WebControls;
 
 namespace Strategic.Componentes
 {
-    /// <summary>
+    
     /// Componente reutilizable que representa una grilla de datos con paginado.
     /// La página contenedora define las columnas en su evento Page_Init, le pasa el
     /// origen de datos con Cargar() y se entera de las acciones sobre una fila
     /// mediante el evento AccionSeleccionada.
-    /// </summary>
+    
     public partial class GrillaGenerica : UserControl
     {
         // Cantidad de números de página que se muestran a la vez en el paginador
         private const int VentanaPaginas = 5;
 
-        /// <summary>
+        
         /// Se dispara cuando el usuario ejecuta una acción sobre una fila de la grilla.
-        /// </summary>
+        
         public event EventHandler<AccionGrillaEventArgs> AccionSeleccionada;
 
         #region Propiedades de configuracion
 
-        /// <summary>
+        
         /// Campos clave de la grilla, separados por coma (equivale a DataKeyNames).
-        /// </summary>
+        
         public string ClavePrimaria
         {
             get { return Convert.ToString(ViewState["ClavePrimaria"]); }
@@ -37,18 +37,18 @@ namespace Strategic.Componentes
             }
         }
 
-        /// <summary>
+        
         /// Cantidad de filas que se muestran por página.
-        /// </summary>
+        
         public int FilasPorPagina
         {
             get { return ViewState["FilasPorPagina"] == null ? 10 : Convert.ToInt32(ViewState["FilasPorPagina"]); }
             set { ViewState["FilasPorPagina"] = value < 1 ? 1 : value; }
         }
 
-        /// <summary>
+        
         /// Mensaje que se muestra cuando la consulta no devuelve registros.
-        /// </summary>
+        
         public string MensajeVacio
         {
             get
@@ -59,9 +59,9 @@ namespace Strategic.Componentes
             set { ViewState["MensajeVacio"] = value; }
         }
 
-        /// <summary>
+        
         /// Indica si se muestra el selector de filas por página.
-        /// </summary>
+        
         public bool MostrarSelectorFilas
         {
             get { return ViewState["MostrarSelectorFilas"] == null || Convert.ToBoolean(ViewState["MostrarSelectorFilas"]); }
@@ -72,27 +72,27 @@ namespace Strategic.Componentes
 
         #region Propiedades de solo lectura
 
-        /// <summary>
+        
         /// Cantidad total de registros del último origen de datos cargado.
-        /// </summary>
+        
         public int CantidadRegistros
         {
             get { return ViewState["CantidadRegistros"] == null ? 0 : Convert.ToInt32(ViewState["CantidadRegistros"]); }
             private set { ViewState["CantidadRegistros"] = value; }
         }
 
-        /// <summary>
+        
         /// Página que se está mostrando, empezando en cero.
-        /// </summary>
+        
         public int PaginaActual
         {
             get { return ViewState["PaginaActual"] == null ? 0 : Convert.ToInt32(ViewState["PaginaActual"]); }
             private set { ViewState["PaginaActual"] = value; }
         }
 
-        /// <summary>
+        
         /// Cantidad total de páginas del último origen de datos cargado.
-        /// </summary>
+        
         public int TotalPaginas
         {
             get { return ViewState["TotalPaginas"] == null ? 0 : Convert.ToInt32(ViewState["TotalPaginas"]); }
@@ -103,17 +103,17 @@ namespace Strategic.Componentes
 
         #region Configuracion de columnas
 
-        /// <summary>
+        
         /// Agrega una columna de datos a la grilla.
-        /// </summary>
+        
         public void AgregarColumna(string campo, string titulo)
         {
             AgregarColumna(campo, titulo, null);
         }
 
-        /// <summary>
+        
         /// Agrega una columna de datos a la grilla con una clase css para la celda.
-        /// </summary>
+        
         public void AgregarColumna(string campo, string titulo, string claseCss)
         {
             BoundField columna = new BoundField();
@@ -132,10 +132,10 @@ namespace Strategic.Componentes
             gvDatos.Columns.Add(columna);
         }
 
-        /// <summary>
+        
         /// Agrega una columna de datos aplicando un formato de salida.
         /// El formato usa la sintaxis de DataFormatString, por ejemplo "{0:dd/MM/yyyy}".
-        /// </summary>
+        
         public void AgregarColumna(string campo, string titulo, string claseCss, string formato)
         {
             BoundField columna = new BoundField();
@@ -155,20 +155,20 @@ namespace Strategic.Componentes
             gvDatos.Columns.Add(columna);
         }
 
-        /// <summary>
+        
         /// Agrega una columna con un botón de acción por fila. El comando viaja
         /// hacia la página contenedora en el evento AccionSeleccionada.
-        /// </summary>
+        
         public void AgregarColumnaAccion(string titulo, string comando, string texto)
         {
             gvDatos.Columns.Add(CrearColumnaAccion(titulo, comando, texto));
         }
 
-        /// <summary>
+        
         /// Agrega una columna de acción cuyo texto sale de un campo del origen
         /// de datos, para cuando la acción depende del estado de la fila
         /// (por ejemplo "Dar de baja" o "Reactivar" según el usuario).
-        /// </summary>
+        
         public void AgregarColumnaAccion(string titulo, string comando, string texto, string campoTexto)
         {
             ButtonField columna = CrearColumnaAccion(titulo, comando, texto);
@@ -194,9 +194,9 @@ namespace Strategic.Componentes
             return columna;
         }
 
-        /// <summary>
+        
         /// Quita todas las columnas definidas.
-        /// </summary>
+        
         public void LimpiarColumnas()
         {
             gvDatos.Columns.Clear();
@@ -206,9 +206,9 @@ namespace Strategic.Componentes
 
         #region Carga de datos
 
-        /// <summary>
+        
         /// Carga el origen de datos en la grilla y se posiciona en la primera página.
-        /// </summary>
+        
         public void Cargar(object origenDatos)
         {
             Session[ClaveDatos] = origenDatos;
@@ -216,18 +216,18 @@ namespace Strategic.Componentes
             Enlazar();
         }
 
-        /// <summary>
+        
         /// Carga el origen de datos indicando el mensaje a mostrar si no hay registros.
-        /// </summary>
+        
         public void Cargar(object origenDatos, string mensajeVacio)
         {
             MensajeVacio = mensajeVacio;
             Cargar(origenDatos);
         }
 
-        /// <summary>
+        
         /// Libera el origen de datos guardado para esta grilla.
-        /// </summary>
+        
         public void Limpiar()
         {
             Session.Remove(ClaveDatos);
@@ -500,10 +500,10 @@ namespace Strategic.Componentes
         #endregion
     }
 
-    /// <summary>
+    
     /// Datos que la grilla le envía a la página contenedora cuando el usuario
     /// ejecuta una acción sobre una fila.
-    /// </summary>
+    
     public class AccionGrillaEventArgs : EventArgs
     {
         public AccionGrillaEventArgs(string comando, DataKey claves, int indice, object elemento)
@@ -514,29 +514,29 @@ namespace Strategic.Componentes
             Elemento = elemento;
         }
 
-        /// <summary>
+        
         /// Nombre del comando definido en AgregarColumnaAccion.
-        /// </summary>
+        
         public string Comando { get; private set; }
 
-        /// <summary>
+        
         /// Claves de la fila seleccionada (los campos indicados en ClavePrimaria).
-        /// </summary>
+        
         public DataKey Claves { get; private set; }
 
-        /// <summary>
+        
         /// Posición de la fila dentro del origen de datos completo.
-        /// </summary>
+        
         public int Indice { get; private set; }
 
-        /// <summary>
+        
         /// Objeto de negocio enlazado a la fila seleccionada.
-        /// </summary>
+        
         public object Elemento { get; private set; }
 
-        /// <summary>
+        
         /// Devuelve el valor de una de las claves de la fila como texto.
-        /// </summary>
+        
         public string ObtenerClave(string nombreCampo)
         {
             if (Claves == null || Claves[nombreCampo] == null)

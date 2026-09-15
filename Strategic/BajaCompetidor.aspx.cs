@@ -12,10 +12,10 @@ namespace Strategic
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
-        /// <summary>
+        
         /// Competidor sobre el que se está pidiendo confirmación. Viaja en el
         /// ViewState entre el clic y la confirmación.
-        /// </summary>
+        
         private int CompetidorAConfirmar
         {
             get { return ViewState["CompetidorAConfirmar"] == null ? 0 : Convert.ToInt32(ViewState["CompetidorAConfirmar"]); }
@@ -108,10 +108,10 @@ namespace Strategic
             }
         }
 
-        /// <summary>
+        
         /// CU-007-034, paso 2: si el competidor se está dando de baja y tiene
         /// publicaciones mapeadas activas, se advierte que también se pausarán.
-        /// </summary>
+        
         private void MostrarAdvertenciaPublicaciones(BECompetencia competidor)
         {
             if (!competidor.Activo)

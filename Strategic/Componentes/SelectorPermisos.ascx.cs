@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 namespace Strategic.Componentes
 {
-    /// <summary>
+    
     /// Componente reutilizable que arma la composición de un rol o de una
     /// familia: a la izquierda los permisos simples y familias disponibles,
     /// a la derecha lo que se le va asignando.
@@ -15,13 +15,13 @@ namespace Strategic.Componentes
     /// familias en ningún momento. Lo único que consulta del árbol es
     /// Contiene(), para avisar cuando un permiso que se está por agregar ya
     /// venía incluido dentro de una familia elegida.
-    /// </summary>
+    
     public partial class SelectorPermisos : UserControl
     {
-        /// <summary>
+        
         /// Componentes disponibles con su subárbol cargado, guardados en la
         /// Session igual que hace GrillaGenerica con su origen de datos.
-        /// </summary>
+        
         private Dictionary<int, BEComponente> Catalogo
         {
             get
@@ -38,19 +38,19 @@ namespace Strategic.Componentes
             get { return string.Concat("SelectorPermisos_", Page.GetType().FullName, "_", UniqueID); }
         }
 
-        /// <summary>
+        
         /// Cantidad de componentes elegidos.
-        /// </summary>
+        
         public int CantidadSeleccionados
         {
             get { return lstSeleccionados.Items.Count; }
         }
 
-        /// <summary>
+        
         /// Carga el componente. "disponibles" tiene que venir con el subárbol
         /// de cada elemento armado, para poder detectar los que ya están
         /// incluidos dentro de una familia.
-        /// </summary>
+        
         public void Cargar(List<BEComponente> disponibles, List<BEComponente> seleccionados)
         {
             Dictionary<int, BEComponente> catalogo = new Dictionary<int, BEComponente>();
@@ -95,10 +95,10 @@ namespace Strategic.Componentes
             ActualizarResumen();
         }
 
-        /// <summary>
+        
         /// Quita del listado de disponibles un componente puntual. Se usa al
         /// modificar una familia, que no puede contenerse a sí misma.
-        /// </summary>
+        
         public void ExcluirDeDisponibles(int codPermiso)
         {
             ListItem item = lstDisponibles.Items.FindByValue(codPermiso.ToString());
@@ -109,9 +109,9 @@ namespace Strategic.Componentes
             }
         }
 
-        /// <summary>
+        
         /// Códigos de los componentes elegidos, en el orden en que se ven.
-        /// </summary>
+        
         public List<int> ObtenerSeleccionados()
         {
             List<int> seleccionados = new List<int>();
@@ -175,11 +175,11 @@ namespace Strategic.Componentes
             ActualizarResumen();
         }
 
-        /// <summary>
+        
         /// Devuelve el nombre del componente ya elegido que contiene al que se
         /// está por agregar, o null si no hay ninguno. Es la consulta que
         /// resuelve el propio Composite recorriendo su árbol.
-        /// </summary>
+        
         private string BuscarQuienLoIncluye(int codPermiso)
         {
             Dictionary<int, BEComponente> catalogo = Catalogo;

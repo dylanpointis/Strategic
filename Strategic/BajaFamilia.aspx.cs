@@ -13,10 +13,10 @@ namespace Strategic
     {
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
-        /// <summary>
+        
         /// Familia sobre la que se está pidiendo confirmación. Viaja en el
         /// ViewState entre el clic y la confirmación.
-        /// </summary>
+        
         private int FamiliaAConfirmar
         {
             get { return ViewState["FamiliaAConfirmar"] == null ? 0 : Convert.ToInt32(ViewState["FamiliaAConfirmar"]); }

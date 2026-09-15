@@ -21,10 +21,10 @@ namespace Strategic
         private readonly BLLDashboard bllDashboard = new BLLDashboard();
         private readonly BLLProducto bllProducto = new BLLProducto();
 
-        /// <summary>
+        
         /// JSON de los gráficos. Viajan en el ViewState para sobrevivir a los
         /// postbacks del paginado de la grilla de bajo stock.
-        /// </summary>
+        
         protected string DatosCategoriaJson
         {
             get { return LeerJson("DatosCategoriaJson"); }
@@ -78,9 +78,9 @@ namespace Strategic
             grillaBajoStock.AgregarColumna("StockMinimo", "Stock mínimo", "celda-numero");
         }
 
-        /// <summary>
+        
         /// Deja el filtro de fechas en el período que el dashboard muestra por defecto.
-        /// </summary>
+        
         private void AplicarPeriodoPorDefecto()
         {
             DateTime fechaInicio;

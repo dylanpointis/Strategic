@@ -907,6 +907,11 @@ textarea {
     font-variant-numeric: tabular-nums;
 }
 
+.indicador-nota {
+    font-size: 0.78rem;
+    color: #8a6d80;
+}
+
 /* Celda numerica alineada a la derecha dentro de la grilla */
 .celda-numero {
     text-align: right;

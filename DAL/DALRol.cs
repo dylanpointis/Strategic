@@ -50,9 +50,9 @@ namespace DAL
             return roles.Count > 0 ? roles[0] : null;
         }
 
-        /// <summary>
+        
         /// Rol con su árbol de permisos cargado.
-        /// </summary>
+        
         public BERol TraerRolConComponentes(int codRol)
         {
             BERol rol = TraerRolPorId(codRol);

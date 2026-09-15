@@ -83,10 +83,10 @@ namespace BLL
 
         #region Baja
 
-        /// <summary>
+        
         /// Publicaciones mapeadas activas que se pausarian si se diera de baja
         /// al competidor. Se usa para advertir antes de confirmar la baja.
-        /// </summary>
+        
         public int ContarPublicacionesActivasPorCompetidor(int idCompetencia)
         {
             ValidarCodigo(idCompetencia);
@@ -260,10 +260,10 @@ namespace BLL
             return dalCompetencia.TraerHistorialPrecioCompetencia(idProductoCompetencia);
         }
 
-        /// <summary>
+        
         /// Arma los indicadores de la comparacion que se esta viendo. Se calcula
         /// sobre la lista ya consultada para no repetir el filtro en la base.
-        /// </summary>
+        
         public BEResumenComparacion CalcularResumen(List<BEComparacionPrecio> comparaciones)
         {
             BEResumenComparacion resumen = new BEResumenComparacion();
@@ -352,12 +352,12 @@ namespace BLL
             return dalCompetencia.TraerPublicacionMonitoreoPorId(idProductoCompetencia);
         }
 
-        /// <summary>
+        
         /// Aplica la accion elegida en el panel de monitoreo (Pausar, Reactivar o
         /// Desactivar) validando que tenga sentido contra el estado actual de la
         /// publicacion. Desactivar es terminal: una vez Finalizada no se puede
         /// volver a mover.
-        /// </summary>
+        
         public void CambiarEstadoPublicacion(int idProductoCompetencia, string accion, string nombreUsuarioEnSesion)
         {
             ValidarMapeo(idProductoCompetencia);

@@ -2,11 +2,11 @@ using System;
 
 namespace BE
 {
-    /// <summary>
+    
     /// Publicación de un competidor mapeada a un producto propio, tal como se
     /// gestiona desde el panel de monitoreo (CU-007-037). Cada instancia
     /// representa un mapeo de ProductoCompetencia con su estado operativo.
-    /// </summary>
+    
     public class BEPublicacionCompetencia
     {
         public int IdProductoCompetencia { get; set; }
@@ -19,18 +19,18 @@ namespace BE
         public string Url { get; set; }
         public string Estado { get; set; }
 
-        /// <summary>
+        
         /// Último precio relevado de la publicación. Queda en null cuando
         /// todavía no se registró ninguna consulta.
-        /// </summary>
+        
         public decimal? UltimoPrecio { get; set; }
 
         public DateTime? FechaUltimaVerificacion { get; set; }
 
-        /// <summary>
+        
         /// Texto del botón que pausa o reactiva el monitoreo, según el estado
         /// actual de la fila.
-        /// </summary>
+        
         public string AccionPausarReactivar
         {
             get { return Estado == "Activa" ? "Pausar" : "Reactivar"; }

@@ -92,10 +92,10 @@ namespace Strategic
             grillaPublicaciones.AgregarColumnaAccion("Desactivar", "Desactivar", "Desactivar");
         }
 
-        /// <summary>
+        
         /// Alternativa 2.1 del CU: si no hay ningun mapeo registrado se muestra
         /// el estado vacio con el acceso directo a CU-007-036, sin filtros.
-        /// </summary>
+        
         private void CargarPantalla()
         {
             List<BEPublicacionCompetencia> publicaciones = bllCompetencia.TraerListaPublicacionesMonitoreo();
@@ -147,10 +147,10 @@ namespace Strategic
                 : string.Format("{0} publicaciones", publicaciones.Count);
         }
 
-        /// <summary>
+        
         /// La confirmación de pausar, reactivar o desactivar vuelve a este
         /// listado con un mensaje para mostrar.
-        /// </summary>
+        
         private void MostrarMensajeDeOtraPantalla()
         {
             string mensaje = Convert.ToString(Session["MensajePublicaciones"]);

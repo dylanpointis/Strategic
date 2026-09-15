@@ -13,10 +13,10 @@ namespace Strategic
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
-        /// <summary>
+        
         /// Competidor que se está editando. Se guarda en el ViewState y no se
         /// vuelve a leer de la query string en cada postback.
-        /// </summary>
+        
         private int CompetidorEditado
         {
             get { return ViewState["CompetidorEditado"] == null ? 0 : Convert.ToInt32(ViewState["CompetidorEditado"]); }
@@ -99,11 +99,11 @@ namespace Strategic
             }
         }
 
-        /// <summary>
+        
         /// Si el competidor tiene un marketplace que no está entre las opciones
         /// del desplegable (dato viejo cargado como texto libre) se agrega para
         /// no perder el valor actual al mostrar el formulario.
-        /// </summary>
+        
         private void SeleccionarMarketplace(string marketplace)
         {
             if (ddlMarketplace.Items.FindByValue(marketplace) == null)

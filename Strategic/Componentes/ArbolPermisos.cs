@@ -5,13 +5,13 @@ using System.Web;
 
 namespace Strategic.Componentes
 {
-    /// <summary>
+    
     /// Dibuja un árbol de componentes como listas anidadas.
     ///
     /// El recorrido es el mismo para hojas y familias: se pide el nombre y se
     /// piden los hijos. Una hoja devuelve la lista vacía y la recursión corta
     /// sola, sin preguntar de qué tipo es cada nodo.
-    /// </summary>
+    
     public static class ArbolPermisos
     {
         public static string Renderizar(List<BEComponente> componentes)

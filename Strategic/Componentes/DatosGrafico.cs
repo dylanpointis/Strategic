@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Strategic.Componentes
 {
-    /// <summary>
+    
     /// Arma el JSON que consumen los gráficos de Chart.js desde las páginas.
     /// Con una sola serie el formato es { "etiquetas": [...], "valores": [...] }
-    /// y con varias { "etiquetas": [...], "series": [{ "nombre", "valores" }] }.
-    /// </summary>
+    /// y con varias { "etiquetas": [...], "series": [{ "nombre", "valores", "punteada" }] }.
+    
     public static class DatosGrafico
     {
         public static string Serializar(List<string> etiquetas, List<decimal> valores)
@@ -15,10 +15,11 @@ namespace Strategic.Componentes
             return Serializar(new { etiquetas = etiquetas, valores = valores });
         }
 
-        /// <summary>
+        
         /// Serializa un gráfico de varias series, como la comparación entre el
-        /// precio propio y el de un competidor.
-        /// </summary>
+        /// precio propio y el de un competidor. Un valor null deja un hueco en
+        /// la línea: así una serie puede ocupar solo una parte del eje.
+        
         public static string Serializar(List<string> etiquetas, List<SerieGrafico> series)
         {
             List<object> seriesJson = new List<object>();
@@ -27,7 +28,7 @@ namespace Strategic.Componentes
             // con el mismo nombre en minúscula que usan el resto de los gráficos
             foreach (SerieGrafico serie in series)
             {
-                seriesJson.Add(new { nombre = serie.Nombre, valores = serie.Valores });
+                seriesJson.Add(new { nombre = serie.Nombre, valores = serie.Valores, punteada = serie.Punteada });
             }
 
             return Serializar(new { etiquetas = etiquetas, series = seriesJson });
@@ -44,19 +45,37 @@ namespace Strategic.Componentes
         }
     }
 
-    /// <summary>
+    
     /// Una de las series de un gráfico de líneas.
-    /// </summary>
+    
     public class SerieGrafico
     {
         public SerieGrafico(string nombre, List<decimal> valores)
         {
             Nombre = nombre;
+            Valores = new List<decimal?>();
+
+            foreach (decimal valor in valores)
+            {
+                Valores.Add(valor);
+            }
+        }
+
+        
+        /// Serie que puede tener huecos y dibujarse punteada, como la parte
+        /// proyectada de una predicción.
+        
+        public SerieGrafico(string nombre, List<decimal?> valores, bool punteada)
+        {
+            Nombre = nombre;
             Valores = valores;
+            Punteada = punteada;
         }
 
         public string Nombre { get; private set; }
 
-        public List<decimal> Valores { get; private set; }
+        public List<decimal?> Valores { get; private set; }
+
+        public bool Punteada { get; private set; }
     }
 }

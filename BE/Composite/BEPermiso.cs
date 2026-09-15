@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BE.Composite
 {
-    /// <summary>
+    
     /// Leaf del patrón Composite: un permiso simple, la unidad atómica del
     /// árbol. Representa una acción concreta del sistema, que en Strategic
     /// es el acceso a una pantalla: el nombre del permiso coincide con el
@@ -11,7 +11,7 @@ namespace BE.Composite
     ///
     /// Los permisos simples vienen precargados en el script de la base y no
     /// se crean ni se modifican desde la aplicación, por eso no tienen ABM.
-    /// </summary>
+    
     public class BEPermiso : BEComponente
     {
         public const string TipoSimple = "Simple";

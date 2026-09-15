@@ -12,10 +12,10 @@ namespace Strategic
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
 
-        /// <summary>
+        
         /// Usuario sobre el que se está pidiendo confirmación. Viaja en el
         /// ViewState entre el clic y la confirmación.
-        /// </summary>
+        
         private string UsuarioAConfirmar
         {
             get { return Convert.ToString(ViewState["UsuarioAConfirmar"]); }

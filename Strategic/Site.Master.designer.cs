@@ -14,69 +14,69 @@ namespace Strategic
     public partial class SiteMaster
     {
 
-        /// <summary>
+        
         /// Control navLogin.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navInicio;
 
-        /// <summary>
+        
         /// Control navLogin.
-        /// </summary>
+        
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navLogin;
 
-        /// <summary>
+        
         /// Control navProfile.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navBienvenida;
 
-        /// <summary>
+        
         /// Control lblBienvenida.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblBienvenida;
 
-        /// <summary>
+        
         /// Control navProfile.
-        /// </summary>
+        
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navProfile;
 
-        /// <summary>
+        
         /// Control navCambiarClave.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navCambiarClave;
 
-        /// <summary>
+        
         /// Control navLogout.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl navLogout;
 
-        /// <summary>
+        
         /// Control MainContent.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
 
-        /// <summary>
+        
         /// Control ScriptsFinales.
-        /// </summary>
+        
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.

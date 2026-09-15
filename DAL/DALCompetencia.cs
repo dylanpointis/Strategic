@@ -40,10 +40,10 @@ namespace DAL
             return competidores.Count > 0 ? competidores[0] : null;
         }
 
-        /// <summary>
+        
         /// Cantidad de competidores que ya usan ese nombre.
         /// idCompetenciaExcluido deja fuera al competidor que se esta editando.
-        /// </summary>
+        
         public int ContarCompetidoresConNombre(string nombre, int? idCompetenciaExcluido)
         {
             SqlParameter[] parametros = new SqlParameter[]
@@ -105,10 +105,10 @@ namespace DAL
             dalCon.EjecutarProcAlmacenado("ModificarEstadoCompetidor", parametros);
         }
 
-        /// <summary>
+        
         /// Cantidad de publicaciones mapeadas activas de un competidor. Se usa
         /// para advertir antes de la baja, ya que tambien se pausan (CU-007-034).
-        /// </summary>
+        
         public int ContarPublicacionesActivasPorCompetidor(int idCompetencia)
         {
             SqlParameter[] parametros = new SqlParameter[]
@@ -126,10 +126,10 @@ namespace DAL
             return 0;
         }
 
-        /// <summary>
+        
         /// Cantidad de mapeos existentes para esa combinacion de producto propio
         /// y competidor. Se usa para evitar mapeos duplicados (CU-007-036).
-        /// </summary>
+        
         public int ContarMapeosProductoCompetidor(int idProducto, int idCompetencia)
         {
             SqlParameter[] parametros = new SqlParameter[]

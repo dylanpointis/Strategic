@@ -66,11 +66,11 @@ namespace Strategic
             txtUrl.Text = string.Empty;
         }
 
-        /// <summary>
+        
         /// Precondicion del CU: deben existir productos sincronizados (CU-006-002)
         /// y al menos un competidor activo (CU-007-033). Si falta alguno de los
         /// dos no tiene sentido mostrar el formulario.
-        /// </summary>
+        
         private void CargarCombos()
         {
             List<BEProducto> productos = bllProducto.TraerListaProductos();

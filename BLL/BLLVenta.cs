@@ -29,9 +29,9 @@ namespace BLL
                 Normalizar(estado));
         }
 
-        /// <summary>
+        
         /// Agrupa las ventas por dia para alimentar el grafico de facturacion.
-        /// </summary>
+        
         public List<KeyValuePair<DateTime, decimal>> AgruparFacturacionPorDia(List<BEVenta> ventas)
         {
             Dictionary<DateTime, decimal> acumulado = new Dictionary<DateTime, decimal>();
@@ -63,9 +63,9 @@ namespace BLL
             return facturacion;
         }
 
-        /// <summary>
+        
         /// Monto total facturado por el conjunto de ventas recibido.
-        /// </summary>
+        
         public decimal CalcularFacturacionTotal(List<BEVenta> ventas)
         {
             decimal total = 0;
@@ -78,9 +78,9 @@ namespace BLL
             return total;
         }
 
-        /// <summary>
+        
         /// Monto promedio por venta (ticket promedio).
-        /// </summary>
+        
         public decimal CalcularTicketPromedio(List<BEVenta> ventas)
         {
             if (ventas.Count == 0)

@@ -7,7 +7,7 @@ using System.Web.UI;
 
 namespace Strategic.Seguridad
 {
-    /// <summary>
+    
     /// Página base de todas las pantallas que exigen permiso.
     ///
     /// El permiso que habilita una pantalla lleva el mismo nombre que el aspx,
@@ -19,37 +19,37 @@ namespace Strategic.Seguridad
     ///
     /// Sin sesión se redirige al login; con sesión pero sin permiso se
     /// registra el intento en la bitácora y se muestra Acceso denegado.
-    /// </summary>
+    
     public abstract class PaginaSegura : Page
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
 
-        /// <summary>
+        
         /// Usuario logueado. Queda disponible desde el Page_Init en adelante.
-        /// </summary>
+        
         protected BEUsuario UsuarioEnSesion { get; private set; }
 
-        /// <summary>
+        
         /// Nombre del aspx sin extensión, que es el nombre del permiso.
-        /// </summary>
+        
         protected string NombrePagina
         {
             get { return Path.GetFileNameWithoutExtension(Request.AppRelativeCurrentExecutionFilePath); }
         }
 
-        /// <summary>
+        
         /// Permiso que habilita la página. Por defecto es el nombre del aspx;
         /// una página puede sobreescribirlo si se protege con otro.
-        /// </summary>
+        
         protected virtual string PermisoRequerido
         {
             get { return NombrePagina; }
         }
 
-        /// <summary>
+        
         /// Indica si el usuario en sesión alcanza un permiso. Las pantallas lo
         /// usan para ocultar botones que llevan a páginas que no podría abrir.
-        /// </summary>
+        
         protected bool TienePermiso(string nombrePermiso)
         {
             return UsuarioEnSesion != null

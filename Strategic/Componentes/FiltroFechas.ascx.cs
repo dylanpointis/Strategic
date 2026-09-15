@@ -4,29 +4,29 @@ using System.Web.UI;
 
 namespace Strategic.Componentes
 {
-    /// <summary>
+    
     /// Componente reutilizable que representa un selector de rango de fechas
     /// compuesto por dos campos de fecha (Desde y Hasta) y un botón de aplicar filtro.
     /// Expone las fechas seleccionadas como propiedades públicas y notifica a la
     /// página contenedora mediante el evento FiltroAplicado cuando el usuario confirma
     /// el filtrado.
-    /// </summary>
+    
     public partial class FiltroFechas : UserControl
     {
         // Formato que envía el navegador en los campos con TextMode="Date"
         private const string FormatoFecha = "yyyy-MM-dd";
 
-        /// <summary>
+        
         /// Se dispara cuando el usuario confirma el filtrado con el botón del componente.
         /// Solo se dispara si el rango seleccionado es válido.
-        /// </summary>
+        
         public event EventHandler<RangoFechasEventArgs> FiltroAplicado;
 
         #region Propiedades de configuracion
 
-        /// <summary>
+        
         /// Texto de la etiqueta del campo Desde.
-        /// </summary>
+        
         public string EtiquetaDesde
         {
             get
@@ -37,9 +37,9 @@ namespace Strategic.Componentes
             set { ViewState["EtiquetaDesde"] = value; }
         }
 
-        /// <summary>
+        
         /// Texto de la etiqueta del campo Hasta.
-        /// </summary>
+        
         public string EtiquetaHasta
         {
             get
@@ -50,9 +50,9 @@ namespace Strategic.Componentes
             set { ViewState["EtiquetaHasta"] = value; }
         }
 
-        /// <summary>
+        
         /// Texto del botón de aplicar filtro.
-        /// </summary>
+        
         public string TextoBoton
         {
             get
@@ -63,11 +63,11 @@ namespace Strategic.Componentes
             set { ViewState["TextoBoton"] = value; }
         }
 
-        /// <summary>
+        
         /// Indica si el componente muestra su propio botón de aplicar filtro.
         /// Se pone en false cuando la página contenedora ya tiene un botón que
         /// dispara el filtrado junto con otros campos.
-        /// </summary>
+        
         public bool MostrarBoton
         {
             get { return ViewState["MostrarBoton"] == null || Convert.ToBoolean(ViewState["MostrarBoton"]); }
@@ -78,28 +78,28 @@ namespace Strategic.Componentes
 
         #region Fechas seleccionadas
 
-        /// <summary>
+        
         /// Fecha desde seleccionada, o null si el campo está vacío.
-        /// </summary>
+        
         public DateTime? FechaDesde
         {
             get { return ConvertirFecha(txtDesde.Text); }
             set { txtDesde.Text = FormatearFecha(value); }
         }
 
-        /// <summary>
+        
         /// Fecha hasta seleccionada, o null si el campo está vacío.
-        /// </summary>
+        
         public DateTime? FechaHasta
         {
             get { return ConvertirFecha(txtHasta.Text); }
             set { txtHasta.Text = FormatearFecha(value); }
         }
 
-        /// <summary>
+        
         /// Indica si el rango seleccionado es coherente (la fecha hasta no es
         /// anterior a la fecha desde).
-        /// </summary>
+        
         public bool EsRangoValido
         {
             get
@@ -120,10 +120,10 @@ namespace Strategic.Componentes
 
         #region Metodos publicos
 
-        /// <summary>
+        
         /// Valida el rango y muestra el mensaje de error dentro del componente
         /// si la fecha hasta es anterior a la fecha desde.
-        /// </summary>
+        
         public bool Validar()
         {
             if (EsRangoValido)
@@ -136,9 +136,9 @@ namespace Strategic.Componentes
             return false;
         }
 
-        /// <summary>
+        
         /// Establece el rango de fechas del componente.
-        /// </summary>
+        
         public void EstablecerRango(DateTime? fechaDesde, DateTime? fechaHasta)
         {
             FechaDesde = fechaDesde;
@@ -146,9 +146,9 @@ namespace Strategic.Componentes
             OcultarError();
         }
 
-        /// <summary>
+        
         /// Vacía los dos campos de fecha.
-        /// </summary>
+        
         public void Limpiar()
         {
             EstablecerRango(null, null);
@@ -229,10 +229,10 @@ namespace Strategic.Componentes
         #endregion
     }
 
-    /// <summary>
+    
     /// Datos que el filtro le envía a la página contenedora cuando el usuario
     /// confirma el filtrado.
-    /// </summary>
+    
     public class RangoFechasEventArgs : EventArgs
     {
         public RangoFechasEventArgs(DateTime? fechaDesde, DateTime? fechaHasta)
@@ -241,14 +241,14 @@ namespace Strategic.Componentes
             FechaHasta = fechaHasta;
         }
 
-        /// <summary>
+        
         /// Fecha desde seleccionada, o null si el campo está vacío.
-        /// </summary>
+        
         public DateTime? FechaDesde { get; private set; }
 
-        /// <summary>
+        
         /// Fecha hasta seleccionada, o null si el campo está vacío.
-        /// </summary>
+        
         public DateTime? FechaHasta { get; private set; }
     }
 }

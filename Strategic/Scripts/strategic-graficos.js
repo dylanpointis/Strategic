@@ -66,7 +66,8 @@ Strategic.grafico = (function () {
 
     function todosEnteros(valores) {
         for (var i = 0; i < valores.length; i++) {
-            if (valores[i] % 1 !== 0) {
+            // Los huecos (null) de una serie parcial no cuentan
+            if (valores[i] !== null && valores[i] % 1 !== 0) {
                 return false;
             }
         }
@@ -185,8 +186,11 @@ Strategic.grafico = (function () {
                 pointBackgroundColor: color,
                 pointRadius: 3,
                 borderWidth: 2,
+                // La serie punteada marca lo proyectado frente a lo medido
+                borderDash: serie.punteada ? [6, 4] : [],
                 fill: false,
-                tension: 0.25
+                tension: 0.25,
+                spanGaps: false
             });
 
             todosLosValores = todosLosValores.concat(serie.valores);

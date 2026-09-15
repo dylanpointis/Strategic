@@ -14,99 +14,99 @@ namespace Strategic
     public partial class HistorialVentas
     {
 
-        /// <summary>
+        
         /// Control filtroFechas.
-        /// </summary>
+        
         protected global::Strategic.Componentes.FiltroFechas filtroFechas;
 
-        /// <summary>
+        
         /// Control lblProducto.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblProducto;
 
-        /// <summary>
+        
         /// Control ddlProducto.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.DropDownList ddlProducto;
 
-        /// <summary>
+        
         /// Control lblCategoria.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblCategoria;
 
-        /// <summary>
+        
         /// Control ddlCategoria.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
 
-        /// <summary>
+        
         /// Control lblEstado.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblEstado;
 
-        /// <summary>
+        
         /// Control ddlEstado.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
-        /// <summary>
+        
         /// Control btnFiltrar.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
 
-        /// <summary>
+        
         /// Control btnLimpiar.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
-        /// <summary>
+        
         /// Control lblError.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblError;
 
-        /// <summary>
+        
         /// Control lblFacturacionTotal.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblFacturacionTotal;
 
-        /// <summary>
+        
         /// Control lblCantidadVentas.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblCantidadVentas;
 
-        /// <summary>
+        
         /// Control lblTicketPromedio.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblTicketPromedio;
 
-        /// <summary>
+        
         /// Control lblUnidadesVendidas.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblUnidadesVendidas;
 
-        /// <summary>
+        
         /// Control pnlGrafico.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Panel pnlGrafico;
 
-        /// <summary>
+        
         /// Control pnlSinGrafico.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Panel pnlSinGrafico;
 
-        /// <summary>
+        
         /// Control lblSinGrafico.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblSinGrafico;
 
-        /// <summary>
+        
         /// Control lblCantidad.
-        /// </summary>
+        
         protected global::System.Web.UI.WebControls.Label lblCantidad;
 
-        /// <summary>
+        
         /// Control grillaVentas.
-        /// </summary>
+        
         protected global::Strategic.Componentes.GrillaGenerica grillaVentas;
     }
 }

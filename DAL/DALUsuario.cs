@@ -101,10 +101,10 @@ namespace DAL
             return usuarios.Count > 0 ? usuarios[0] : null;
         }
 
-        /// <summary>
+        
         /// Cantidad de usuarios que ya usan ese nombre de usuario o ese email.
         /// nombreUsuarioExcluido deja fuera al usuario que se esta editando.
-        /// </summary>
+        
         public int ContarUsuariosConDatos(string nombreUsuario, string email, string nombreUsuarioExcluido)
         {
             SqlParameter[] parametros = new SqlParameter[]

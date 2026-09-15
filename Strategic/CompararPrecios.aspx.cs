@@ -25,10 +25,10 @@ namespace Strategic
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
         private readonly BLLProducto bllProducto = new BLLProducto();
 
-        /// <summary>
+        
         /// JSON que consume Chart.js. Viaja en el ViewState para que el gráfico
         /// sobreviva a los postbacks del paginado de las grillas.
-        /// </summary>
+        
         protected string DatosHistorialJson
         {
             get
@@ -145,10 +145,10 @@ namespace Strategic
             grillaHistorial.AgregarColumna("DiferenciaPorcentaje", "Diferencia", "celda-numero", FormatoDiferencia);
         }
 
-        /// <summary>
+        
         /// Carga la comparación sin filtros. Es el estado inicial de la pantalla
         /// y el que deja el botón de limpiar filtros.
-        /// </summary>
+        
         private void CargarComparacionCompleta()
         {
             // Se consulta una sola vez por request: alimenta los combos y define
@@ -218,11 +218,11 @@ namespace Strategic
             pnlDetalle.Visible = true;
         }
 
-        /// <summary>
+        
         /// Muestra el enlace a la publicación del competidor. Si la dirección
         /// guardada no es una URL web se muestra como texto: un enlace armado
         /// con otro esquema podría ejecutar código en el navegador.
-        /// </summary>
+        
         private void MostrarPublicacion(string url)
         {
             bool esEnlaceWeb = EsEnlaceWeb(url);
@@ -297,10 +297,10 @@ namespace Strategic
             DatosHistorialJson = null;
         }
 
-        /// <summary>
+        
         /// Llena los tres filtros y devuelve los productos consultados, que la
         /// pantalla reutiliza para decidir los avisos.
-        /// </summary>
+        
         private List<BEProducto> CargarCombos()
         {
             List<BEProducto> productos = bllProducto.TraerListaProductos();

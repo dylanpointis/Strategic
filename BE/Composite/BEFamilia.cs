@@ -2,11 +2,11 @@
 
 namespace BE.Composite
 {
-    /// <summary>
+    
     /// Composite del patrón: agrupa permisos simples y otras familias, con la
     /// profundidad que haga falta. Las familias sí se crean desde la
     /// aplicación, combinando piezas que ya existen (CU-005-026).
-    /// </summary>
+    
     public class BEFamilia : BEComponente
     {
         public const string TipoFamilia = "Familia";
@@ -30,16 +30,16 @@ namespace BE.Composite
             get { return true; }
         }
 
-        /// <summary>
+        
         /// Cantidad de componentes que contiene en forma directa, tal como la
         /// devuelve la consulta del listado. El listado de familias no carga
         /// el arbol entero, solo necesita el numero.
-        /// </summary>
+        
         public int CantidadComponentesAsignados { get; set; }
 
-        /// <summary>
+        
         /// Agrega un componente. Si ya estaba en forma directa no se duplica.
-        /// </summary>
+        
         public override void AgregarHijo(BEComponente hijo)
         {
             if (hijo == null || TieneHijoDirecto(hijo.CodPermiso))
@@ -66,10 +66,10 @@ namespace BE.Composite
             }
         }
 
-        /// <summary>
+        
         /// Devuelve una copia de la lista: los hijos se agregan y se quitan
         /// con los métodos de la clase, no manipulando la lista desde afuera.
-        /// </summary>
+        
         public override List<BEComponente> ObtenerHijos()
         {
             return new List<BEComponente>(hijos);

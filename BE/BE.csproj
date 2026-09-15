@@ -44,6 +44,7 @@
     <Compile Include="BEComparacionPrecio.cs" />
     <Compile Include="BEHistorialPrecioCompetencia.cs" />
     <Compile Include="BEResumenComparacion.cs" />
+    <Compile Include="BEPrediccion.cs" />
     <Compile Include="BEProducto.cs" />
     <Compile Include="BEHistorialPrecio.cs" />
     <Compile Include="BEHistorialStock.cs" />

@@ -29,9 +29,9 @@ namespace DAL
             return MapearProductos(dalCon.ConsultaProcAlmacenado("FiltrarProductos", parametros));
         }
 
-        /// <summary>
+        
         /// Productos cuyo stock esta en el minimo definido o por debajo.
-        /// </summary>
+        
         public List<BEProducto> TraerProductosBajoStock(string categoria)
         {
             SqlParameter[] parametros = new SqlParameter[]

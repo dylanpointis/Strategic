@@ -138,10 +138,10 @@ namespace Strategic
                 : string.Format("{0} usuarios", usuarios.Count);
         }
 
-        /// <summary>
+        
         /// El alta y la modificación vuelven a este listado con un mensaje para
         /// mostrar, porque el resultado de la operación se confirma acá.
-        /// </summary>
+        
         private void MostrarMensajeDeOtraPantalla()
         {
             string mensaje = Convert.ToString(Session["MensajeUsuarios"]);

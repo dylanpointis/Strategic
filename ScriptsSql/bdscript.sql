@@ -1909,3 +1909,30 @@ BEGIN
     FROM [dbo].[Permiso_Componente] PC
 END
 GO
+
+/* ============================================================
+   002. Analisis - CU-002-006 Generar Predicciones
+   ------------------------------------------------------------
+   Las predicciones de precio y stock usan los historiales que ya
+   existen (TraerHistorialPrecios / TraerHistorialStock). La de
+   demanda necesita las unidades vendidas de un producto por dia.
+   Las ventas canceladas quedan fuera, igual que en el dashboard.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerVentasDiariasProducto]
+    @IdProducto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CONVERT(DATE, V.Fecha) AS Fecha,
+        SUM(IV.Cantidad)       AS Unidades
+    FROM [dbo].[Venta] V
+    INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+    WHERE IV.IdProducto = @IdProducto
+      AND V.Estado <> 'Cancelada'
+    GROUP BY CONVERT(DATE, V.Fecha)
+    ORDER BY Fecha ASC
+END
+GO

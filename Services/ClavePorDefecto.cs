@@ -3,11 +3,11 @@ using System.Text;
 
 namespace Services
 {
-    /// <summary>
+    
     /// Arma la contraseña con la que nace un usuario dado de alta desde el
     /// CU-005-018. El formato definido es nombre.apellido en minúsculas, sin
     /// espacios ni acentos: "Juan Pérez" queda como "juan.perez".
-    /// </summary>
+    
     public static class ClavePorDefecto
     {
         public static string Generar(string nombre, string apellido)

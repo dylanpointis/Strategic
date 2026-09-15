@@ -14,10 +14,10 @@ namespace Strategic
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLRol bllRol = new BLLRol();
 
-        /// <summary>
+        
         /// Usuario que se está editando. Se guarda en el ViewState y no se
         /// vuelve a leer de la query string en cada postback.
-        /// </summary>
+        
         private string UsuarioEditado
         {
             get { return Convert.ToString(ViewState["UsuarioEditado"]); }

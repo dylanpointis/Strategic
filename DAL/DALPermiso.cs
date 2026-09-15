@@ -6,14 +6,14 @@ using System.Data.SqlClient;
 
 namespace DAL
 {
-    /// <summary>
+    
     /// Acceso a los permisos y familias, y armado del árbol del Composite.
     ///
     /// El árbol se construye a partir de dos consultas -todos los nodos y
     /// todas las relaciones- y se ensambla en memoria. La alternativa sería
     /// una consulta por cada familia que se abre, que en un árbol de varios
     /// niveles se multiplica rápido.
-    /// </summary>
+    
     public class DALPermiso
     {
         private readonly DALConexion dalCon = new DALConexion();
@@ -114,26 +114,26 @@ namespace DAL
 
         #region Armado del arbol
 
-        /// <summary>
+        
         /// Devuelve la familia con todo su subárbol cargado.
-        /// </summary>
+        
         public BEFamilia TraerArbolDeFamilia(int codPermiso)
         {
             return TraerArbolDeComponente(codPermiso) as BEFamilia;
         }
 
-        /// <summary>
+        
         /// Devuelve el componente con su subárbol, sea hoja o familia.
-        /// </summary>
+        
         public BEComponente TraerArbolDeComponente(int codPermiso)
         {
             return Armar(codPermiso, TraerCatalogo(), new List<int>());
         }
 
-        /// <summary>
+        
         /// Arma varios componentes de una sola pasada. Consulta el catálogo
         /// una vez sola, en lugar de una vez por componente.
-        /// </summary>
+        
         public List<BEComponente> TraerArbolesDeComponentes(List<int> codigos)
         {
             CatalogoPermisos catalogo = TraerCatalogo();
@@ -152,11 +152,11 @@ namespace DAL
             return componentes;
         }
 
-        /// <summary>
+        
         /// Árbol de permisos de un rol. La raíz es una familia sin persistir
         /// que agrupa los componentes asignados en Rol_Permiso; cada uno se
         /// devuelve con su subárbol completo.
-        /// </summary>
+        
         public BEFamilia TraerArbolDeRol(int codRol)
         {
             SqlParameter[] parametros = new SqlParameter[]

@@ -34,13 +34,13 @@ namespace Strategic
             FiltrarMenu(SessionManager.UsuarioActual);
         }
 
-        /// <summary>
+        
         /// Deja visibles solo las opciones que el rol del usuario habilita.
         ///
         /// No hace falta recorrer familias acá: el rol ya sabe responder si
         /// alcanza un permiso, porque la recursión vive en el Composite. El
         /// menú pregunta ítem por ítem y listo. Sin sesión se oculta todo.
-        /// </summary>
+        
         private void FiltrarMenu(BEUsuario usuario)
         {
             BERol rol = usuario != null ? usuario.Rol : null;

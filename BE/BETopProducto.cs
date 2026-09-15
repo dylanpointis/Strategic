@@ -1,8 +1,8 @@
 ﻿namespace BE
 {
-    /// <summary>
+    
     /// Producto dentro del ranking de más vendidos del período.
-    /// </summary>
+    
     public class BETopProducto
     {
         public int IdProducto { get; set; }

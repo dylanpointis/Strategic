@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace BLL
 {
-    /// <summary>
+    
     /// Reglas de negocio de los permisos y las familias.
     /// Los permisos simples no tienen ABM: vienen precargados en la base.
     /// Las familias sí (CU-005-025 a CU-005-028).
-    /// </summary>
+    
     public class BLLPermiso
     {
         private const string ModuloFamilias = "Familias";
@@ -21,21 +21,21 @@ namespace BLL
 
         #region Consulta - CU-005-025
 
-        /// <summary>
+        
         /// Componentes que se pueden elegir al armar un rol o una familia:
         /// permisos simples y familias, todos activos. El selector los trata
         /// por igual porque los dos son BEComponente.
-        /// </summary>
+        
         public List<BEComponente> TraerComponentesDisponibles()
         {
             return dalPermiso.TraerListaPermisos(null, true);
         }
 
-        /// <summary>
+        
         /// Lo mismo, pero con el subárbol de cada componente ya cargado. Es lo
         /// que necesita el selector para avisar cuando un permiso ya viene
         /// incluido dentro de una familia elegida.
-        /// </summary>
+        
         public List<BEComponente> TraerComponentesDisponiblesConArbol()
         {
             List<int> codigos = new List<int>();
@@ -196,7 +196,7 @@ namespace BLL
             }
         }
 
-        /// <summary>
+        
         /// Controla que todos los componentes elegidos existan y que ninguno
         /// genere una referencia circular.
         ///
@@ -206,7 +206,7 @@ namespace BLL
         /// cerraría el ciclo. Al recorrer todo el subárbol también quedan
         /// cubiertos los ciclos indirectos, no solo el caso de elegirse a
         /// sí misma.
-        /// </summary>
+        
         private void ValidarComponentes(List<int> componentes, int codPermisoEditado)
         {
             List<BEComponente> armados = dalPermiso.TraerArbolesDeComponentes(componentes);
