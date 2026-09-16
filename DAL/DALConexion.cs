@@ -13,6 +13,42 @@ namespace DAL
             return new SqlConnection(connectionString);
         }
 
+        // Nombre de la base configurada en la cadena de conexion
+        public string NombreBaseDeDatos
+        {
+            get
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["StrategicConnection"].ConnectionString;
+                return new SqlConnectionStringBuilder(connectionString).InitialCatalog;
+            }
+        }
+
+        // Conexion a master: hace falta para el restore, porque no se puede
+        // restaurar la base a la que se esta conectado
+        private SqlConnection CrearConexionConMaster()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["StrategicConnection"].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+            builder.InitialCatalog = "master";
+            return new SqlConnection(builder.ConnectionString);
+        }
+
+        // Ejecuta un comando escrito contra master. Solo lo usan el backup y el
+        // restore, que no pueden ir en un stored procedure de la propia base
+        public void EjecutarComandoEnMaster(string comando, SqlParameter[] parametros)
+        {
+            using (SqlConnection con = CrearConexionConMaster())
+            using (SqlCommand command = new SqlCommand(comando, con))
+            {
+                command.CommandType = CommandType.Text;
+                command.CommandTimeout = 600;
+                AgregarParametros(command, parametros);
+
+                con.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
         public DataTable ConsultaProcAlmacenado(string nombreProc, SqlParameter[] parametros)
         {
             DataTable tabla = new DataTable();

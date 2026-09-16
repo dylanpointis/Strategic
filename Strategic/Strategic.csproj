@@ -170,6 +170,8 @@
     <Content Include="ConsultarUsuarios.aspx" />
     <Content Include="ModificarUsuario.aspx" />
     <Content Include="BajaUsuario.aspx" />
+    <Content Include="RealizarBackup.aspx" />
+    <Content Include="RealizarRestore.aspx" />
     <Content Include="ConsultarCompetidores.aspx" />
     <Content Include="AltaCompetidor.aspx" />
     <Content Include="ModificarCompetidor.aspx" />
@@ -423,6 +425,20 @@
     </Compile>
     <Compile Include="BajaUsuario.aspx.designer.cs">
       <DependentUpon>BajaUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RealizarBackup.aspx.cs">
+      <DependentUpon>RealizarBackup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RealizarBackup.aspx.designer.cs">
+      <DependentUpon>RealizarBackup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RealizarRestore.aspx.cs">
+      <DependentUpon>RealizarRestore.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RealizarRestore.aspx.designer.cs">
+      <DependentUpon>RealizarRestore.aspx</DependentUpon>
     </Compile>
     <Compile Include="ConsultarCompetidores.aspx.cs">
       <DependentUpon>ConsultarCompetidores.aspx</DependentUpon>

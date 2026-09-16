@@ -355,6 +355,9 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 (35, 'RealizarBackup',                     'Generar copias de seguridad',                    'Simple', 1),
 -- 009. Suscripciones
 (36, 'RenovarSuscripcion',                 'Gestionar la suscripcion del cliente',           'Simple', 1),
+-- 008. Auditoria y Mantenimiento (continuacion): el restore es solo del
+-- WebMaster, por eso no entra en la familia Auditoria que usa el Administrador
+(48, 'RealizarRestore',                    'Restaurar la base de datos desde un backup',     'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -408,8 +411,8 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 (45, 28), (45, 29), (45, 30), (45, 31), (45, 32), (45, 33),
 -- Auditoria
 (46, 34), (46, 35),
--- Acceso total: contiene a las familias de mayor nivel y el permiso suelto
-(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36)
+-- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48)
 GO
 
 
@@ -418,7 +421,7 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      36 pantallas (todo)
+     WebMaster      37 pantallas (todo)
      Administrador  30 pantallas
      Analista       13 pantallas
      Usuario         2 pantallas
