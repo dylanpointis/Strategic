@@ -435,5 +435,17 @@ FROM [dbo].[Usuario]
 WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
 GO
 
+/* ------------------------------------------------------------
+   Los datos de prueba se cargan por fuera del sistema, asi que
+   el digito verificador guardado ya no sirve. Se limpia para que
+   el proximo inicio de sesion tome estos datos como referencia
+   en vez de reportarlos como inconsistencia.
+   ------------------------------------------------------------ */
+
+UPDATE [dbo].[DigitoVerificador] SET [DVH] = NULL, [DVV] = NULL
+DELETE FROM [dbo].[DVH_Fila]
+DELETE FROM [dbo].[DVV_Columna]
+GO
+
 PRINT 'Datos de prueba cargados correctamente'
 GO

@@ -45,6 +45,7 @@
     <Compile Include="BLLProducto.cs" />
     <Compile Include="BLLRol.cs" />
     <Compile Include="BLLRespaldo.cs" />
+    <Compile Include="BLLDigitoVerificador.cs" />
     <Compile Include="BLLVenta.cs" />
     <Compile Include="BLLUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

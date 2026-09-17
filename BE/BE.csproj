@@ -41,6 +41,10 @@
     <Compile Include="BETopProducto.cs" />
     <Compile Include="BECompetencia.cs" />
     <Compile Include="BERespaldo.cs" />
+    <Compile Include="DigitoVerificador\BEDigitoVerificador.cs" />
+    <Compile Include="DigitoVerificador\BEDigitoVerificadorFila.cs" />
+    <Compile Include="DigitoVerificador\BEDigitoVerificadorColumna.cs" />
+    <Compile Include="DigitoVerificador\BEInconsistenciaDV.cs" />
     <Compile Include="BEPublicacionCompetencia.cs" />
     <Compile Include="BEComparacionPrecio.cs" />
     <Compile Include="BEHistorialPrecioCompetencia.cs" />

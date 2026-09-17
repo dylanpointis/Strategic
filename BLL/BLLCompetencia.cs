@@ -13,6 +13,7 @@ namespace BLL
 
         private readonly DALCompetencia dalCompetencia = new DALCompetencia();
         private readonly BLLEvento bllEvento = new BLLEvento();
+        private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
 
         #region Consulta
 
@@ -47,6 +48,7 @@ namespace BLL
             }
 
             int idCompetencia = dalCompetencia.AltaCompetidor(competidor);
+            bllDigitoVerificador.PersistirDV("Competencia");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Alta de competidor", competidor.Nombre);
 
@@ -75,6 +77,7 @@ namespace BLL
             }
 
             dalCompetencia.ModificarCompetidor(competidor);
+            bllDigitoVerificador.PersistirDV("Competencia");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Modificacion de competidor", competidor.Nombre);
         }
@@ -113,6 +116,7 @@ namespace BLL
             }
 
             dalCompetencia.ModificarEstado(idCompetencia, activo);
+            bllDigitoVerificador.PersistirDV("Competencia");
 
             RegistrarEvento(
                 nombreUsuarioEnSesion,
@@ -197,6 +201,7 @@ namespace BLL
             }
 
             int idProductoCompetencia = dalCompetencia.MapearProducto(idProducto, idCompetencia, url.Trim());
+            bllDigitoVerificador.PersistirDV("ProductoCompetencia");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Mapeo de producto con competencia", competidor.Nombre);
 
@@ -372,6 +377,7 @@ namespace BLL
             string nuevoEstado = CalcularNuevoEstado(publicacion.Estado, accion);
 
             dalCompetencia.ModificarEstadoPublicacion(idProductoCompetencia, nuevoEstado);
+            bllDigitoVerificador.PersistirDV("ProductoCompetencia");
 
             RegistrarEvento(
                 nombreUsuarioEnSesion,

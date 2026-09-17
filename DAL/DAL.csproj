@@ -46,6 +46,7 @@
     <Compile Include="DALProducto.cs" />
     <Compile Include="DALRol.cs" />
     <Compile Include="DALRespaldo.cs" />
+    <Compile Include="DALDigitoVerificador.cs" />
     <Compile Include="DALVenta.cs" />
     <Compile Include="DALUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

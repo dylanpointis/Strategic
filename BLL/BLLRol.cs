@@ -20,6 +20,7 @@ namespace BLL
         private readonly DALRol dalRol = new DALRol();
         private readonly DALPermiso dalPermiso = new DALPermiso();
         private readonly BLLEvento bllEvento = new BLLEvento();
+        private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
 
         #region Consulta - CU-005-021
 
@@ -71,6 +72,8 @@ namespace BLL
             ValidarComponentes(componentes);
 
             int codRol = dalRol.AltaRol(nombre.Trim(), componentes);
+            bllDigitoVerificador.PersistirDV("Rol");
+            bllDigitoVerificador.PersistirDV("Rol_Permiso");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Alta de rol", nombre.Trim());
 
@@ -102,6 +105,8 @@ namespace BLL
             ValidarComponentes(componentes);
 
             dalRol.ModificarRol(codRol, nombre.Trim(), componentes);
+            bllDigitoVerificador.PersistirDV("Rol");
+            bllDigitoVerificador.PersistirDV("Rol_Permiso");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Modificacion de rol", nombre.Trim());
         }
@@ -135,6 +140,7 @@ namespace BLL
             }
 
             dalRol.ModificarEstadoRol(codRol, activo);
+            bllDigitoVerificador.PersistirDV("Rol");
 
             RegistrarEvento(
                 nombreUsuarioEnSesion,

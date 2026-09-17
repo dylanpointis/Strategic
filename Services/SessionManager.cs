@@ -1,4 +1,5 @@
 ﻿using BE;
+using System.Collections.Generic;
 using System.Web;
 
 namespace Services
@@ -40,6 +41,33 @@ namespace Services
             {
                 return UsuarioActual != null;
             }
+        }
+
+        // Inconsistencias de digito verificador detectadas al iniciar sesion.
+        // Mientras haya, el sistema esta fuera de servicio y el WebMaster solo
+        // puede repararlo o restaurar un backup
+        public static List<BEInconsistenciaDV> InconsistenciasDV
+        {
+            get
+            {
+                return HttpContext.Current.Session["InconsistenciasDV"] as List<BEInconsistenciaDV>;
+            }
+            set
+            {
+                if (value == null || value.Count == 0)
+                {
+                    HttpContext.Current.Session.Remove("InconsistenciasDV");
+                }
+                else
+                {
+                    HttpContext.Current.Session["InconsistenciasDV"] = value;
+                }
+            }
+        }
+
+        public static bool SistemaInconsistente
+        {
+            get { return InconsistenciasDV != null; }
         }
 
         public static void CerrarSesion()

@@ -172,6 +172,7 @@
     <Content Include="BajaUsuario.aspx" />
     <Content Include="RealizarBackup.aspx" />
     <Content Include="RealizarRestore.aspx" />
+    <Content Include="RepararDigitoVerificador.aspx" />
     <Content Include="ConsultarCompetidores.aspx" />
     <Content Include="AltaCompetidor.aspx" />
     <Content Include="ModificarCompetidor.aspx" />
@@ -439,6 +440,13 @@
     </Compile>
     <Compile Include="RealizarRestore.aspx.designer.cs">
       <DependentUpon>RealizarRestore.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RepararDigitoVerificador.aspx.cs">
+      <DependentUpon>RepararDigitoVerificador.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RepararDigitoVerificador.aspx.designer.cs">
+      <DependentUpon>RepararDigitoVerificador.aspx</DependentUpon>
     </Compile>
     <Compile Include="ConsultarCompetidores.aspx.cs">
       <DependentUpon>ConsultarCompetidores.aspx</DependentUpon>

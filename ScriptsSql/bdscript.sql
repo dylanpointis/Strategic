@@ -88,6 +88,25 @@ CREATE TABLE [dbo].[DigitoVerificador](
 )
 GO
 
+-- DVH de cada registro de las tablas controladas. La clave son los valores
+-- de la clave primaria separados por "|". Con esto se sabe que registro cambio
+CREATE TABLE [dbo].[DVH_Fila](
+    [Tabla] NVARCHAR(50) NOT NULL,
+    [Clave] NVARCHAR(400) NOT NULL,
+    [DVH] VARCHAR(64) NULL,
+    CONSTRAINT [PK_DVH_Fila] PRIMARY KEY CLUSTERED ([Tabla] ASC, [Clave] ASC)
+)
+GO
+
+-- DVV de cada columna de las tablas controladas. Con esto se sabe que campo cambio
+CREATE TABLE [dbo].[DVV_Columna](
+    [Tabla] NVARCHAR(50) NOT NULL,
+    [Columna] NVARCHAR(128) NOT NULL,
+    [DVV] VARCHAR(64) NULL,
+    CONSTRAINT [PK_DVV_Columna] PRIMARY KEY CLUSTERED ([Tabla] ASC, [Columna] ASC)
+)
+GO
+
 /* ============================================================
    Tablas de negocio
    ============================================================ */
@@ -358,6 +377,7 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 -- 008. Auditoria y Mantenimiento (continuacion): el restore es solo del
 -- WebMaster, por eso no entra en la familia Auditoria que usa el Administrador
 (48, 'RealizarRestore',                    'Restaurar la base de datos desde un backup',     'Simple', 1),
+(49, 'RepararDigitoVerificador',           'Reparar el digito verificador',                  'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -412,7 +432,7 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 -- Auditoria
 (46, 34), (46, 35),
 -- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
-(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48)
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49)
 GO
 
 
@@ -421,7 +441,7 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      37 pantallas (todo)
+     WebMaster      38 pantallas (todo)
      Administrador  30 pantallas
      Analista       13 pantallas
      Usuario         2 pantallas
@@ -453,15 +473,19 @@ INSERT INTO [dbo].[CatalogoAutomatizacion] ([IdCatalogoAutomatizacion], [Nombre]
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] OFF
 GO
 
+-- Tablas controladas por digito verificador (Eventos queda afuera: es solo
+-- de auditoria y crece de a miles). Quedan sin DV: la primera vez
+-- que el sistema las compara (en el login) toma los datos actuales como
+-- referencia y lo calcula
 INSERT INTO [dbo].[DigitoVerificador] ([Tabla], [DVH], [DVV]) VALUES
 ('Usuario', NULL, NULL),
 ('Rol', NULL, NULL),
 ('Permiso', NULL, NULL),
 ('Rol_Permiso', NULL, NULL),
 ('Permiso_Componente', NULL, NULL),
-('Eventos', NULL, NULL),
 ('Producto', NULL, NULL),
 ('Competencia', NULL, NULL),
+('ProductoCompetencia', NULL, NULL),
 ('Automatizacion', NULL, NULL)
 GO
 
@@ -1937,5 +1961,149 @@ BEGIN
       AND V.Estado <> 'Cancelada'
     GROUP BY CONVERT(DATE, V.Fecha)
     ORDER BY Fecha ASC
+END
+GO
+
+/* ============================================================
+   008. Auditoria - CU-008-041 Reparar Digito Verificador
+   ------------------------------------------------------------
+   El calculo del hash se hace en la BLL; aca solo se traen las
+   tablas controladas y se guardan los resultados. Las tablas se
+   leen con SQL dinamico porque el nombre es un dato, pero solo
+   se acepta uno que figure en DigitoVerificador y se arma con
+   QUOTENAME.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerTablaDigitoVerificador]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT [Tabla], [DVH], [DVV]
+    FROM [dbo].[DigitoVerificador]
+    ORDER BY [Tabla]
+END
+GO
+
+-- Columnas de la clave primaria de una tabla controlada, en orden
+CREATE PROCEDURE [dbo].[TraerColumnasClaveDV]
+    @Tabla NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT C.name AS Columna
+    FROM sys.indexes I
+    INNER JOIN sys.index_columns IC ON IC.object_id = I.object_id AND IC.index_id = I.index_id
+    INNER JOIN sys.columns C ON C.object_id = IC.object_id AND C.column_id = IC.column_id
+    WHERE I.object_id = OBJECT_ID('dbo.' + QUOTENAME(@Tabla))
+      AND I.is_primary_key = 1
+    ORDER BY IC.key_ordinal
+END
+GO
+
+-- Todas las filas de una tabla controlada, ordenadas por su clave primaria
+-- para que el calculo de siempre el mismo resultado
+CREATE PROCEDURE [dbo].[TraerTablaParaDV]
+    @Tabla NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM [dbo].[DigitoVerificador] WHERE [Tabla] = @Tabla)
+    BEGIN
+        THROW 50000, 'La tabla no esta controlada por digito verificador', 1;
+    END
+
+    DECLARE @Orden NVARCHAR(MAX);
+
+    SELECT @Orden = STRING_AGG(QUOTENAME(C.name), ', ') WITHIN GROUP (ORDER BY IC.key_ordinal)
+    FROM sys.indexes I
+    INNER JOIN sys.index_columns IC ON IC.object_id = I.object_id AND IC.index_id = I.index_id
+    INNER JOIN sys.columns C ON C.object_id = IC.object_id AND C.column_id = IC.column_id
+    WHERE I.object_id = OBJECT_ID('dbo.' + QUOTENAME(@Tabla))
+      AND I.is_primary_key = 1;
+
+    DECLARE @Sql NVARCHAR(MAX) = N'SELECT * FROM dbo.' + QUOTENAME(@Tabla)
+        + ISNULL(N' ORDER BY ' + @Orden, N'');
+
+    EXEC sp_executesql @Sql;
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerDVHFilas]
+    @Tabla NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT [Clave], [DVH]
+    FROM [dbo].[DVH_Fila]
+    WHERE [Tabla] = @Tabla
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerDVVColumnas]
+    @Tabla NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT [Columna], [DVV]
+    FROM [dbo].[DVV_Columna]
+    WHERE [Tabla] = @Tabla
+END
+GO
+
+-- Guarda el DV global de la tabla y borra su detalle por fila y por columna,
+-- que despues se vuelve a cargar registro por registro con los dos SP de abajo
+CREATE PROCEDURE [dbo].[PersistirDV]
+    @Tabla NVARCHAR(50),
+    @DVH VARCHAR(64),
+    @DVV VARCHAR(64)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM [dbo].[DigitoVerificador] WHERE [Tabla] = @Tabla)
+    BEGIN
+        UPDATE [dbo].[DigitoVerificador]
+        SET [DVH] = @DVH, [DVV] = @DVV
+        WHERE [Tabla] = @Tabla;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO [dbo].[DigitoVerificador] ([Tabla], [DVH], [DVV])
+        VALUES (@Tabla, @DVH, @DVV);
+    END
+
+    DELETE FROM [dbo].[DVH_Fila] WHERE [Tabla] = @Tabla;
+    DELETE FROM [dbo].[DVV_Columna] WHERE [Tabla] = @Tabla;
+END
+GO
+
+CREATE PROCEDURE [dbo].[PersistirDVHFila]
+    @Tabla NVARCHAR(50),
+    @Clave NVARCHAR(400),
+    @DVH VARCHAR(64)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[DVH_Fila] ([Tabla], [Clave], [DVH])
+    VALUES (@Tabla, @Clave, @DVH);
+END
+GO
+
+CREATE PROCEDURE [dbo].[PersistirDVVColumna]
+    @Tabla NVARCHAR(50),
+    @Columna NVARCHAR(128),
+    @DVV VARCHAR(64)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[DVV_Columna] ([Tabla], [Columna], [DVV])
+    VALUES (@Tabla, @Columna, @DVV);
 END
 GO

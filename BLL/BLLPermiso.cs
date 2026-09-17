@@ -18,6 +18,7 @@ namespace BLL
 
         private readonly DALPermiso dalPermiso = new DALPermiso();
         private readonly BLLEvento bllEvento = new BLLEvento();
+        private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
 
         #region Consulta - CU-005-025
 
@@ -92,6 +93,8 @@ namespace BLL
             ValidarComponentes(componentes, 0);
 
             int codPermiso = dalPermiso.AltaFamilia(nombre.Trim(), Normalizar(descripcion), componentes);
+            bllDigitoVerificador.PersistirDV("Permiso");
+            bllDigitoVerificador.PersistirDV("Permiso_Componente");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Alta de familia", nombre.Trim());
 
@@ -124,6 +127,8 @@ namespace BLL
             ValidarComponentes(componentes, codPermiso);
 
             dalPermiso.ModificarFamilia(codPermiso, nombre.Trim(), Normalizar(descripcion), componentes);
+            bllDigitoVerificador.PersistirDV("Permiso");
+            bllDigitoVerificador.PersistirDV("Permiso_Componente");
 
             RegistrarEvento(nombreUsuarioEnSesion, "Modificacion de familia", nombre.Trim());
         }
@@ -166,6 +171,7 @@ namespace BLL
             }
 
             dalPermiso.ModificarEstadoFamilia(codPermiso, activo);
+            bllDigitoVerificador.PersistirDV("Permiso");
 
             RegistrarEvento(
                 nombreUsuarioEnSesion,

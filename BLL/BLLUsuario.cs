@@ -3,6 +3,7 @@ using DAL;
 using Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BLL
@@ -28,6 +29,7 @@ namespace BLL
 
         private readonly DALUsuario dalUsuario = new DALUsuario();
         private readonly BLLEvento bllEvento = new BLLEvento();
+        private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
 
         #region Sesion
 
@@ -58,6 +60,21 @@ namespace BLL
                 }
 
                 throw new Exception("Las credenciales no coinciden");
+            }
+
+            // Con las credenciales validas y antes de escribir nada se compara el
+            // digito verificador. Tiene que ser antes ya que el propio login pone
+            // ContFallidos en 0 en Usuario, y esa escritura recalcula el DV de la
+            // tabla, con lo que una alteracion externa quedaria tapada
+            List<BEInconsistenciaDV> inconsistencias = bllDigitoVerificador.CompararDV();
+
+            if (inconsistencias.Count > 0)
+            {
+                // Deja en la bitacora que el login encontro inconsistencias
+                string tablas = string.Join(", ", inconsistencias.Select(i => i.Tabla).Distinct());
+                bllEvento.RegistrarEvento(new Evento(nombreUsuario, "Integridad", "Inconsistencia de datos detectada en: " + tablas, CriticidadGrave));
+
+                throw new InconsistenciaDVException(usuario, inconsistencias);
             }
 
             ModificarContFallido(usuario.NombreUsuario, 0);
@@ -107,11 +124,13 @@ namespace BLL
         public void ModificarContFallido(string nombreUsuario, int contFallidos)
         {
             dalUsuario.ModificarContFallido(nombreUsuario, contFallidos);
+            bllDigitoVerificador.PersistirDV("Usuario");
         }
 
         public void ModificarBloqueo(string nombreUsuario, bool bloqueo)
         {
             dalUsuario.ModificarBloqueo(nombreUsuario, bloqueo);
+            bllDigitoVerificador.PersistirDV("Usuario");
         }
 
         #endregion
@@ -170,6 +189,7 @@ namespace BLL
             usuario.ContFallidos = 0;
 
             dalUsuario.AltaUsuario(usuario);
+            bllDigitoVerificador.PersistirDV("Usuario");
 
             RegistrarEventoDeUsuarios(nombreUsuarioEnSesion, "Alta de usuario", usuario.NombreUsuario);
 
@@ -204,6 +224,7 @@ namespace BLL
             }
 
             dalUsuario.ModificarEstado(usuario.NombreUsuario, activo);
+            bllDigitoVerificador.PersistirDV("Usuario");
 
             RegistrarEventoDeUsuarios(
                 nombreUsuarioEnSesion,
@@ -241,6 +262,7 @@ namespace BLL
             }
 
             dalUsuario.ModificarUsuario(usuario);
+            bllDigitoVerificador.PersistirDV("Usuario");
 
             RegistrarEventoDeUsuarios(nombreUsuarioEnSesion, "Modificacion de usuario", usuario.NombreUsuario);
 

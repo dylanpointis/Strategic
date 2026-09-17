@@ -24,6 +24,14 @@ namespace Strategic.Seguridad
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
 
+        // Con inconsistencias de digito verificador el sistema esta fuera de
+        // servicio: el WebMaster solo puede repararlo o restaurar un backup
+        private static readonly string[] PaginasConSistemaInconsistente =
+        {
+            "RepararDigitoVerificador",
+            "RealizarRestore"
+        };
+
         
         /// Usuario logueado. Queda disponible desde el Page_Init en adelante.
         
@@ -74,6 +82,12 @@ namespace Strategic.Seguridad
                 bllUsuario.RegistrarAccesoDenegado(UsuarioEnSesion.NombreUsuario, PermisoRequerido);
 
                 Response.Redirect("~/AccesoDenegado.aspx?pantalla=" + Server.UrlEncode(PermisoRequerido));
+                return;
+            }
+
+            if (SessionManager.SistemaInconsistente && Array.IndexOf(PaginasConSistemaInconsistente, NombrePagina) < 0)
+            {
+                Response.Redirect("~/RepararDigitoVerificador.aspx");
                 return;
             }
 

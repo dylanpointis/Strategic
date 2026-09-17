@@ -104,6 +104,7 @@
                                 <li runat="server" data-permission="ConsultarEventosSistema"><a class="dropdown-item" href="ConsultarEventosSistema.aspx">Eventos del sistema</a></li>
                                 <li runat="server" data-permission="RealizarBackup"><a class="dropdown-item" href="RealizarBackup.aspx">Backup</a></li>
                                 <li runat="server" data-permission="RealizarRestore"><a class="dropdown-item" href="RealizarRestore.aspx">Restore</a></li>
+                                <li runat="server" data-permission="RepararDigitoVerificador"><a class="dropdown-item" href="RepararDigitoVerificador.aspx">Dígito verificador</a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx">Suscripción</a></li>
