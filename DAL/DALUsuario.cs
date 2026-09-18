@@ -33,6 +33,7 @@ namespace DAL
                     Convert.ToBoolean(row["Bloqueado"]),
                     Convert.ToBoolean(row["Activo"]));
 
+                usuario.Salt = row["Salt"].ToString();
                 usuario.ContFallidos = Convert.ToInt32(row["ContFallidos"]);
                 usuario.Rol = new BERol(Convert.ToInt32(row["CodRol"]), row["NombreRol"].ToString());
 
@@ -133,6 +134,7 @@ namespace DAL
                 new SqlParameter("@Apellido", usuario.Apellido),
                 new SqlParameter("@Email", usuario.Email),
                 new SqlParameter("@Clave", usuario.Clave),
+                new SqlParameter("@Salt", usuario.Salt),
                 new SqlParameter("@CodRol", usuario.CodRol)
             };
 

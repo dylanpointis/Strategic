@@ -7,6 +7,8 @@
         public string Apellido { get; set; }
         public string Email { get; set; }
         public string Clave { get; set; }
+        // Sal con la que se derivo la clave (PBKDF2); viaja en base64
+        public string Salt { get; set; }
         public int CodRol { get; set; }
         public bool Bloqueado { get; set; }
         public bool Activo { get; set; }

@@ -47,7 +47,7 @@ namespace BLL
                 throw new Exception("El usuario se encuentra bloqueado o desactivado, comuniquese con el administrador del sistema");
             }
 
-            if (Encriptacion.EncriptarSHA256(clave) != usuario.Clave)
+            if (!Encriptacion.VerificarPBKDF2(clave, usuario.Salt, usuario.Clave))
             {
                 int intentosFallidos = usuario.ContFallidos + 1;
                 ModificarContFallido(usuario.NombreUsuario, intentosFallidos);
@@ -183,7 +183,9 @@ namespace BLL
 
             string clavePorDefecto = ClavePorDefecto.Generar(usuario.Nombre, usuario.Apellido);
 
-            usuario.Clave = Encriptacion.EncriptarSHA256(clavePorDefecto);
+            string salt;
+            usuario.Clave = Encriptacion.EncriptarPBKDF2(clavePorDefecto, out salt);
+            usuario.Salt = salt;
             usuario.Activo = true;
             usuario.Bloqueado = false;
             usuario.ContFallidos = 0;

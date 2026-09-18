@@ -98,14 +98,15 @@ GO
 -- Usuario: svega       Clave: 'sofia.vega'        Rol: Usuario
 -- Usuario: rlopez      Clave: 'ramiro.lopez'      Rol: Analista (dado de baja)
 -- Usuario: jperez      Clave: 'juan.perez'        Rol: Usuario (bloqueado)
+-- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario]
-    ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos])
+    ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos])
 VALUES
-    (N'lgarcia',    N'Lucía',  N'García',    N'lucia.garcia@strategic.local',    'c9258789b1901050d66382d62c2aa13c13cdbacee2f0e327f8ce89988e6e3747', 2, 0, 1, 0),
-    (N'mfernandez', N'Martín', N'Fernández', N'martin.fernandez@strategic.local', '2ebc59dfdd0d2bf245ccf856f53de38dbd8556261d4e26b8397df10ba451c81a', 3, 0, 1, 0),
-    (N'svega',      N'Sofía',  N'Vega',      N'sofia.vega@strategic.local',      'b153f79f48d794b70efc5519c53f1f20afc5e6d5be1ef41ec8845a76f82313d9', 4, 0, 1, 0),
-    (N'rlopez',     N'Ramiro', N'López',     N'ramiro.lopez@strategic.local',    '32fa5f6205b3b0b6b6569ef2db23f41e1124e798573d3f3cd2c4c01907cb4fbe', 3, 0, 0, 0),
-    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'c15f3831e1a4a86046b22fc49f728fafe6e83f9782588dc1701ae5a1a971ef82', 4, 1, 1, 3)
+    (N'lgarcia',    N'Lucía',  N'García',    N'lucia.garcia@strategic.local',    'MTwnbvXw4CIMuUcy8fpliCK1skCAuLgLqeJf+IZB9II=', 'WGTB4sU6JmRk9KKgjyjR9A==', 2, 0, 1, 0),
+    (N'mfernandez', N'Martín', N'Fernández', N'martin.fernandez@strategic.local', 'zdKh4G9jJZWSbhllcwQmLCvkCO95MAKoMiYMcoWbbFs=', 'XxEPRET0EmKo8+bR5HKCXA==', 3, 0, 1, 0),
+    (N'svega',      N'Sofía',  N'Vega',      N'sofia.vega@strategic.local',      'PA8bOrpegg6nDwaYwxSoVC1GZI1/eQnc95SoDIKI+Js=', 'YnjP4Hy8BjbY5uWqUqYXIQ==', 4, 0, 1, 0),
+    (N'rlopez',     N'Ramiro', N'López',     N'ramiro.lopez@strategic.local',    'jQwrKheogMGfCEj1xX15QfLmoQec7eQWBVgEZozvaHQ=', 'pAyR3GyUc6HfqPR/NLegPA==', 3, 0, 0, 0),
+    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'ctzZH760RFP1gI9fEx80kVA1DRiRdZpwjeNAoA+i0AA=', 'Cm45fylw3gRLLwBWTJFXbw==', 4, 1, 1, 3)
 GO
 
 

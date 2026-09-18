@@ -37,7 +37,10 @@ CREATE TABLE [dbo].[Usuario](
     [Nombre] VARCHAR(50) NOT NULL,
     [Apellido] VARCHAR(50) NOT NULL,
     [Email] VARCHAR(100) NOT NULL,
+    -- Clave derivada con PBKDF2 (HMAC-SHA256, 100.000 iteraciones) y la sal
+    -- usada para derivarla, las dos en base64
     [Clave] VARCHAR(64) NOT NULL,
+    [Salt] VARCHAR(32) NOT NULL,
     [CodRol] INT NOT NULL,
     [Bloqueado] BIT NOT NULL CONSTRAINT [DF_Usuario_Bloqueado] DEFAULT(0),
     [Activo] BIT NOT NULL CONSTRAINT [DF_Usuario_Activo] DEFAULT(1),
@@ -461,8 +464,9 @@ INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 GO
 
 -- Usuario: Admin  Clave: 'Admin123'  Rol: WebMaster
-INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
-('Admin', 'Admin', 'Strategic', 'admin@strategic.local', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 1, 0, 1, 0)
+-- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
+INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
+('Admin', 'Admin', 'Strategic', 'admin@strategic.local', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
 GO
 
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON
@@ -502,6 +506,7 @@ BEGIN
         U.Apellido,
         U.Email,
         U.Clave,
+        U.Salt,
         U.CodRol,
         U.Bloqueado,
         U.Activo,
@@ -1488,6 +1493,7 @@ CREATE PROCEDURE [dbo].[AltaUsuario]
     @Apellido VARCHAR(50),
     @Email VARCHAR(100),
     @Clave VARCHAR(64),
+    @Salt VARCHAR(32),
     @CodRol INT
 AS
 BEGIN
@@ -1495,9 +1501,9 @@ BEGIN
 
     -- El usuario nace activo, desbloqueado y sin intentos fallidos
     INSERT INTO [dbo].[Usuario]
-        ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [CodRol], [Bloqueado], [Activo], [ContFallidos])
+        ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos])
     VALUES
-        (@NombreUsuario, @Nombre, @Apellido, @Email, @Clave, @CodRol, 0, 1, 0)
+        (@NombreUsuario, @Nombre, @Apellido, @Email, @Clave, @Salt, @CodRol, 0, 1, 0)
 END
 GO
 
