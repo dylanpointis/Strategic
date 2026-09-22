@@ -133,6 +133,74 @@ namespace BLL
             bllDigitoVerificador.PersistirDV("Usuario");
         }
 
+        // CU-001-003 Cambiar Contrasena. Devuelve el usuario con la clave y la
+        // sal nuevas para que la sesion quede al dia
+        public BEUsuario CambiarClave(string nombreUsuario, string claveActual, string claveNueva, string confirmacion)
+        {
+            BEUsuario usuario = ValidarUsuario(nombreUsuario, string.Empty);
+
+            if (usuario == null)
+            {
+                throw new Exception("El usuario ingresado no existe");
+            }
+
+            // Alternativa 4.1 [#ERR014]
+            if (!Encriptacion.VerificarPBKDF2(claveActual, usuario.Salt, usuario.Clave))
+            {
+                throw new Exception("La clave actual ingresada es incorrecta");
+            }
+
+            // Alternativa 4.3 [#ERR015]
+            if (claveNueva != confirmacion)
+            {
+                throw new Exception("La nueva clave y su confirmación no coinciden");
+            }
+
+            // Alternativa 4.2 [#ERR016]
+            ValidarPoliticaDeClave(claveNueva);
+
+            if (Encriptacion.VerificarPBKDF2(claveNueva, usuario.Salt, usuario.Clave))
+            {
+                throw new Exception("La nueva clave no puede ser igual a la clave anterior");
+            }
+
+            string sal;
+            usuario.Clave = Encriptacion.EncriptarPBKDF2(claveNueva, out sal);
+            usuario.Salt = sal;
+
+            dalUsuario.ModificarClave(usuario.NombreUsuario, usuario.Clave, usuario.Salt);
+            bllDigitoVerificador.PersistirDV("Usuario");
+
+            bllEvento.RegistrarEvento(new Evento(usuario.NombreUsuario, ModuloSesiones, "Cambio de clave", CriticidadCambio));
+
+            return usuario;
+        }
+
+        // Politica de claves: minimo 8 caracteres, una mayuscula, un numero y
+        // un caracter especial
+        private void ValidarPoliticaDeClave(string clave)
+        {
+            if (string.IsNullOrEmpty(clave) || clave.Length < 8)
+            {
+                throw new Exception("La nueva clave debe tener al menos 8 caracteres");
+            }
+
+            if (!clave.Any(char.IsUpper))
+            {
+                throw new Exception("La nueva clave debe tener al menos una letra mayúscula");
+            }
+
+            if (!clave.Any(char.IsDigit))
+            {
+                throw new Exception("La nueva clave debe tener al menos un número");
+            }
+
+            if (!clave.Any(c => !char.IsLetterOrDigit(c)))
+            {
+                throw new Exception("La nueva clave debe tener al menos un carácter especial (@, #, $, !, etc.)");
+            }
+        }
+
         #endregion
 
         #region Consulta - CU-005-017

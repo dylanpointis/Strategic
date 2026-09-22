@@ -72,6 +72,18 @@ namespace DAL
             dalCon.EjecutarProcAlmacenado("ModificarContFallido", parametros);
         }
 
+        public void ModificarClave(string nombreUsuario, string clave, string salt)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@NombreUsuario", nombreUsuario),
+                new SqlParameter("@Clave", clave),
+                new SqlParameter("@Salt", salt)
+            };
+
+            dalCon.EjecutarProcAlmacenado("ModificarClaveUsuario", parametros);
+        }
+
         public System.Collections.Generic.List<BEUsuario> TraerListaUsuarios()
         {
             return MapearUsuarios(dalCon.ConsultaProcAlmacenado("TraerListaUsuarios", null));

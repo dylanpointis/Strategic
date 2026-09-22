@@ -28,6 +28,7 @@ namespace Strategic
 
             try
             {
+                // Intenta realizar el inicio de sesión y redirige al menú principal si es exitoso
                 BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), txtClave.Text);
                 SessionManager.UsuarioActual = usuario;
                 Response.Redirect("~/Default.aspx");

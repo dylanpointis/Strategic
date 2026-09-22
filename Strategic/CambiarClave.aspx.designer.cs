@@ -85,5 +85,20 @@ namespace Strategic
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelar;
+
+        /// Control rfvClaveActual.
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvClaveActual;
+
+        /// Control rfvClaveNueva.
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvClaveNueva;
+
+        /// Control rfvConfirmarClave.
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvConfirmarClave;
+
+        /// Control lblError.
+        protected global::System.Web.UI.WebControls.Label lblError;
+
+        /// Control lblExito.
+        protected global::System.Web.UI.WebControls.Label lblExito;
     }
 }

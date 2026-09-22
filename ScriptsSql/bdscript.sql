@@ -463,10 +463,10 @@ INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 (4,  1), (4, 10)
 GO
 
--- Usuario: Admin  Clave: 'Admin123'  Rol: WebMaster
+-- Usuario: WebMasterStrategic  Clave: 'Admin123'  Rol: WebMaster
 -- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
-('Admin', 'Admin', 'Strategic', 'admin@strategic.local', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
+('WebMasterStrategic', 'WebMaster', 'Strategic', 'admin@strategic.local', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
 GO
 
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON
@@ -536,6 +536,19 @@ AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE [dbo].[Usuario] SET [ContFallidos] = @ContFallidos WHERE [NombreUsuario] = @NombreUsuario
+END
+GO
+
+-- CU-001-003 Cambiar Contrasena: la clave nueva viene ya derivada con
+-- PBKDF2 y con una sal nueva
+CREATE PROCEDURE [dbo].[ModificarClaveUsuario]
+    @NombreUsuario VARCHAR(50),
+    @Clave VARCHAR(64),
+    @Salt VARCHAR(32)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[Usuario] SET [Clave] = @Clave, [Salt] = @Salt WHERE [NombreUsuario] = @NombreUsuario
 END
 GO
 
