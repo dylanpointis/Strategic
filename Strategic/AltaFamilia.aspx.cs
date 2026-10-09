@@ -12,12 +12,23 @@ namespace Strategic
     {
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("altaFamilia.titulo");
+            lblEstadoActual.Text = Traductor.T("altaFamilia.naceActiva");
+            lblNombre.Text = Traductor.T("familia.nombre");
+            valNombre.ErrorMessage = Traductor.T("familia.nombreRequerido");
+            lblDescripcion.Text = Traductor.T("familia.descripcion");
+            btnGuardar.Text = Traductor.T("altaFamilia.crear");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 selectorPermisos.Cargar(bllPermiso.TraerComponentesDisponiblesConArbol(), null);
-                lblEstadoActual.Text = "Nace activa";
             }
         }
 
@@ -38,7 +49,7 @@ namespace Strategic
                     selectorPermisos.ObtenerSeleccionados(),
                     enSesion.NombreUsuario);
 
-                Session["MensajeFamilias"] = string.Format("Se creó la familia {0}", txtNombre.Text.Trim());
+                Session["MensajeFamilias"] = Traductor.T("altaFamilia.exito", txtNombre.Text.Trim());
                 Response.Redirect("~/ConsultarFamilias.aspx");
             }
             catch (Exception ex)

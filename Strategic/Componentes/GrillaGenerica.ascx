@@ -28,11 +28,11 @@
 
         <div class="grilla-paginado-controles">
             <asp:LinkButton ID="lnkPrimera" runat="server" CssClass="pagina-boton" Text="&#171;"
-                ToolTip="Primera pagina" CausesValidation="false"
+                CausesValidation="false"
                 CommandName="Primera" OnCommand="Paginado_Command"></asp:LinkButton>
 
             <asp:LinkButton ID="lnkAnterior" runat="server" CssClass="pagina-boton" Text="&#8249;"
-                ToolTip="Pagina anterior" CausesValidation="false"
+                CausesValidation="false"
                 CommandName="Anterior" OnCommand="Paginado_Command"></asp:LinkButton>
 
             <asp:Repeater ID="rptPaginas" runat="server">
@@ -46,16 +46,16 @@
             </asp:Repeater>
 
             <asp:LinkButton ID="lnkSiguiente" runat="server" CssClass="pagina-boton" Text="&#8250;"
-                ToolTip="Pagina siguiente" CausesValidation="false"
+                CausesValidation="false"
                 CommandName="Siguiente" OnCommand="Paginado_Command"></asp:LinkButton>
 
             <asp:LinkButton ID="lnkUltima" runat="server" CssClass="pagina-boton" Text="&#187;"
-                ToolTip="Ultima pagina" CausesValidation="false"
+                CausesValidation="false"
                 CommandName="Ultima" OnCommand="Paginado_Command"></asp:LinkButton>
         </div>
 
         <asp:Panel ID="pnlFilasPorPagina" runat="server" CssClass="grilla-paginado-filas">
-            <asp:Label ID="lblFilasPorPagina" runat="server" Text="Filas por pagina"
+            <asp:Label ID="lblFilasPorPagina" runat="server"
                 AssociatedControlID="ddlFilasPorPagina" CssClass="grilla-paginado-etiqueta"></asp:Label>
 
             <asp:DropDownList ID="ddlFilasPorPagina" runat="server" CssClass="form-select" AutoPostBack="true"

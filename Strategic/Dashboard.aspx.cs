@@ -14,9 +14,9 @@ namespace Strategic
     // CU-002-004 - Visualizar Dashboard Principal
     public partial class Dashboard : PaginaSegura
     {
-        private const string MensajeSinVentas = "No hay ventas registradas en el período seleccionado";
-        private const string MensajeSinBajoStock = "Ningún producto está por debajo de su stock mínimo";
-        private const string MensajeSinFiltros = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinVentas = "dashboard.sinVentas";
+        private const string MensajeSinBajoStock = "dashboard.sinBajoStock";
+        private const string MensajeSinFiltros = "comun.sinResultadosFiltros";
 
         private readonly BLLDashboard bllDashboard = new BLLDashboard();
         private readonly BLLProducto bllProducto = new BLLProducto();
@@ -35,6 +35,23 @@ namespace Strategic
         {
             get { return LeerJson("DatosTopJson"); }
             private set { ViewState["DatosTopJson"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("dashboard.titulo");
+            lblCategoria.Text = Traductor.T("productos.categoria");
+            btnFiltrar.Text = Traductor.T("dashboard.aplicarFiltros");
+            btnLimpiar.Text = Traductor.T("dashboard.restablecer");
+
+            // Con el dashboard ya cargado (se sabe recien al recuperar el
+            // ViewState) se vuelve a armar para que todos sus textos cambien
+            if (DatosCategoriaJson != "null")
+            {
+                CargarDashboard(false, false);
+
+                ddlCategoria.Items[0].Text = Traductor.T("dashboard.todasLasCategorias");
+            }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -71,11 +88,11 @@ namespace Strategic
             grillaBajoStock.FilasPorPagina = 5;
             grillaBajoStock.MostrarSelectorFilas = false;
 
-            grillaBajoStock.AgregarColumna("Codigo", "Código", "celda-codigo");
-            grillaBajoStock.AgregarColumna("Nombre", "Nombre");
-            grillaBajoStock.AgregarColumna("Categoria", "Categoría");
-            grillaBajoStock.AgregarColumna("Stock", "Stock actual", "celda-numero");
-            grillaBajoStock.AgregarColumna("StockMinimo", "Stock mínimo", "celda-numero");
+            grillaBajoStock.AgregarColumna("Codigo", "productos.codigo", "celda-codigo");
+            grillaBajoStock.AgregarColumna("Nombre", "comun.nombre");
+            grillaBajoStock.AgregarColumna("Categoria", "productos.categoria");
+            grillaBajoStock.AgregarColumna("Stock", "dashboard.stockActual", "celda-numero");
+            grillaBajoStock.AgregarColumna("StockMinimo", "dashboard.stockMinimo", "celda-numero");
         }
 
         
@@ -125,7 +142,7 @@ namespace Strategic
 
                 if (vieneDeFiltros && resumen.CantidadVentas == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinFiltros;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinFiltros);
                 }
             }
             catch (Exception ex)
@@ -138,13 +155,13 @@ namespace Strategic
         {
             if (!fechaDesde.HasValue && !fechaHasta.HasValue)
             {
-                lblPeriodo.Text = "Todo el historial";
+                lblPeriodo.Text = Traductor.T("dashboard.todoElHistorial");
                 return;
             }
 
-            lblPeriodo.Text = string.Format("{0} al {1}",
-                fechaDesde.HasValue ? fechaDesde.Value.ToString("dd/MM/yyyy") : "inicio",
-                fechaHasta.HasValue ? fechaHasta.Value.ToString("dd/MM/yyyy") : "hoy");
+            lblPeriodo.Text = Traductor.T("dashboard.periodo",
+                fechaDesde.HasValue ? fechaDesde.Value.ToString("dd/MM/yyyy") : Traductor.T("dashboard.inicio"),
+                fechaHasta.HasValue ? fechaHasta.Value.ToString("dd/MM/yyyy") : Traductor.T("dashboard.hoy"));
         }
 
         private void MostrarIndicadores(BEResumenDashboard resumen)
@@ -174,7 +191,7 @@ namespace Strategic
 
             pnlGraficoCategoria.Visible = hayDatos;
             pnlSinCategoria.Visible = !hayDatos;
-            lblSinCategoria.Text = Server.HtmlEncode(mensajeVacio);
+            lblSinCategoria.Text = Server.HtmlEncode(Traductor.T(mensajeVacio));
         }
 
         private void MostrarGraficoTop(List<BETopProducto> topProductos, string mensajeVacio)
@@ -194,10 +211,10 @@ namespace Strategic
 
             pnlGraficoTop.Visible = hayDatos;
             pnlSinTop.Visible = !hayDatos;
-            lblSinTop.Text = Server.HtmlEncode(mensajeVacio);
+            lblSinTop.Text = Server.HtmlEncode(Traductor.T(mensajeVacio));
 
             lblTopMeta.Text = hayDatos
-                ? string.Format("Top {0} por unidades vendidas", topProductos.Count)
+                ? Traductor.T("dashboard.topMeta", topProductos.Count)
                 : string.Empty;
         }
 
@@ -206,14 +223,14 @@ namespace Strategic
             grillaBajoStock.Cargar(bajoStock, MensajeSinBajoStock);
 
             lblCantidadBajoStock.Text = bajoStock.Count == 1
-                ? "1 producto"
-                : string.Format("{0} productos", bajoStock.Count);
+                ? Traductor.T("productos.cantidadUno")
+                : Traductor.T("productos.cantidad", bajoStock.Count);
         }
 
         private void CargarCategorias(List<BEProducto> productos)
         {
             ddlCategoria.Items.Clear();
-            ddlCategoria.Items.Add(new ListItem("Todas las categorías", string.Empty));
+            ddlCategoria.Items.Add(new ListItem(Traductor.T("dashboard.todasLasCategorias"), string.Empty));
 
             List<string> categorias = productos
                 .Select(producto => producto.Categoria)

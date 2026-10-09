@@ -1,5 +1,6 @@
 ﻿using BE;
 using DAL;
+using Services;
 using System;
 using System.Collections.Generic;
 
@@ -18,17 +19,17 @@ namespace BLL
         {
             if (precioMinimo.HasValue && precioMinimo.Value < 0)
             {
-                throw new Exception("El precio minimo no puede ser negativo");
+                throw new Exception(Traductor.T("error.precioMinimoNegativo"));
             }
 
             if (precioMaximo.HasValue && precioMaximo.Value < 0)
             {
-                throw new Exception("El precio maximo no puede ser negativo");
+                throw new Exception(Traductor.T("error.precioMaximoNegativo"));
             }
 
             if (precioMinimo.HasValue && precioMaximo.HasValue && precioMaximo.Value < precioMinimo.Value)
             {
-                throw new Exception("El precio maximo no puede ser menor al precio minimo");
+                throw new Exception(Traductor.T("error.precioMaximoMenor"));
             }
 
             return dalProducto.FiltrarProductos(
@@ -43,7 +44,7 @@ namespace BLL
         {
             if (idProducto <= 0)
             {
-                throw new Exception("Debe seleccionar un producto valido");
+                throw new Exception(Traductor.T("error.productoInvalido"));
             }
 
             return dalProducto.TraerProductoPorId(idProducto);
@@ -67,12 +68,12 @@ namespace BLL
         {
             if (idProducto <= 0)
             {
-                throw new Exception("Debe seleccionar un producto para consultar el historial");
+                throw new Exception(Traductor.T("error.seleccioneProductoHistorial"));
             }
 
             if (fechaInicio.HasValue && fechaFin.HasValue && fechaFin.Value < fechaInicio.Value)
             {
-                throw new Exception("La fecha hasta no puede ser anterior a la fecha desde");
+                throw new Exception(Traductor.T("filtroFechas.errorRango"));
             }
         }
 

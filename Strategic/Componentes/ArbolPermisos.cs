@@ -1,4 +1,5 @@
 ﻿using BE.Composite;
+using Services;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
@@ -49,13 +50,14 @@ namespace Strategic.Componentes
 
             if (componente.EsFamilia)
             {
-                html.AppendFormat("<span class=\"nodo-etiqueta\">{0} permisos</span>",
-                    componente.CantidadPermisosSimples);
+                html.AppendFormat("<span class=\"nodo-etiqueta\">{0}</span>",
+                    HttpUtility.HtmlEncode(Traductor.T("arbolPermisos.permisos", componente.CantidadPermisosSimples)));
             }
 
             if (!componente.Activo)
             {
-                html.Append("<span class=\"nodo-etiqueta nodo-baja\">dado de baja</span>");
+                html.AppendFormat("<span class=\"nodo-etiqueta nodo-baja\">{0}</span>",
+                    HttpUtility.HtmlEncode(Traductor.T("arbolPermisos.dadoDeBaja")));
             }
 
             List<BEComponente> hijos = componente.ObtenerHijos();

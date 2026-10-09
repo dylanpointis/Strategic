@@ -11,10 +11,36 @@ namespace Strategic
     // CU-008-041 - Reparar Digito Verificador
     public partial class RepararDigitoVerificador : PaginaSegura
     {
-        private const string MensajeInconsistente = "Se detectaron datos modificados por fuera del sistema. Hasta repararlo, el sistema queda fuera de servicio: podés tomar los datos actuales como correctos o volver a un respaldo anterior.";
-        private const string MensajeConsistente = "El dígito verificador de todas las tablas coincide con los datos actuales.";
+        private const string MensajeInconsistente = "repararDV.inconsistente";
+        private const string MensajeConsistente = "repararDV.consistente";
+        private const string MensajeConfirmar = "repararDV.confirmar";
 
         private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
+
+        // Clave de traduccion del mensaje de estado que se esta mostrando
+        private string EstadoActual
+        {
+            get { return Convert.ToString(ViewState["EstadoActual"]); }
+            set { ViewState["EstadoActual"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("repararDV.titulo");
+            btnRecalcular.Text = Traductor.T("repararDV.recalcular");
+            btnRestaurar.Text = Traductor.T("repararDV.restaurar");
+            btnVerificar.Text = Traductor.T("repararDV.verificar");
+            btnConfirmar.Text = Traductor.T("repararDV.siRecalcular");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnInicio.Text = Traductor.T("accesoDenegado.irAlInicio");
+            MostrarCantidad();
+
+            // El estado se conoce recien al recuperar el ViewState
+            if (!string.IsNullOrEmpty(EstadoActual))
+            {
+                MostrarEstado(EstadoActual);
+            }
+        }
 
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -48,14 +74,14 @@ namespace Strategic
 
         protected void btnRecalcular_Click(object sender, EventArgs e)
         {
-            lblEstado.Text = "¿Recalcular el dígito verificador? Los datos actuales de todas las tablas, incluidos los modificados por fuera del sistema, se van a tomar como correctos.";
+            MostrarEstado(MensajeConfirmar);
             pnlConfirmacion.Visible = true;
             pnlAcciones.Visible = false;
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            lblEstado.Text = MensajeInconsistente;
+            MostrarEstado(MensajeInconsistente);
             pnlConfirmacion.Visible = false;
             pnlAcciones.Visible = true;
         }
@@ -70,12 +96,12 @@ namespace Strategic
 
                 SessionManager.InconsistenciasDV = null;
                 Mostrar(new List<BEInconsistenciaDV>());
-                lblExito.Text = "Dígito verificador recalculado. Los datos actuales quedaron como referencia y el sistema vuelve a estar disponible.";
+                lblExito.Text = Traductor.T("repararDV.exito");
             }
             catch (Exception ex)
             {
                 pnlAcciones.Visible = true;
-                lblError.Text = Server.HtmlEncode("Error al recalcular el dígito verificador: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("repararDV.errorRecalcular", ex.Message));
             }
         }
 
@@ -100,7 +126,7 @@ namespace Strategic
             }
             catch (Exception ex)
             {
-                lblError.Text = Server.HtmlEncode("Error al verificar la integridad: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("repararDV.errorVerificar", ex.Message));
             }
         }
 
@@ -108,14 +134,29 @@ namespace Strategic
         {
             bool hayInconsistencias = inconsistencias.Count > 0;
 
-            lblEstado.Text = hayInconsistencias ? MensajeInconsistente : MensajeConsistente;
+            MostrarEstado(hayInconsistencias ? MensajeInconsistente : MensajeConsistente);
 
             pnlAcciones.Visible = hayInconsistencias;
             pnlInicio.Visible = !hayInconsistencias;
             pnlTabla.Visible = hayInconsistencias;
 
-            grillaInconsistencias.Cargar(inconsistencias, "No hay inconsistencias");
-            lblCantidad.Text = inconsistencias.Count == 1 ? "1 inconsistencia" : inconsistencias.Count + " inconsistencias";
+            grillaInconsistencias.Cargar(inconsistencias, "repararDV.sinInconsistencias");
+            MostrarCantidad();
+        }
+
+        private void MostrarEstado(string clave)
+        {
+            EstadoActual = clave;
+            lblEstado.Text = Traductor.T(clave);
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaInconsistencias.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("repararDV.cantidadUno")
+                : Traductor.T("repararDV.cantidad", cantidad);
         }
 
         private void ConfigurarGrilla()
@@ -124,10 +165,10 @@ namespace Strategic
             grillaInconsistencias.FilasPorPagina = 25;
             grillaInconsistencias.MostrarSelectorFilas = true;
 
-            grillaInconsistencias.AgregarColumna("Tabla", "Tabla");
-            grillaInconsistencias.AgregarColumna("Clave", "Registro (clave)");
-            grillaInconsistencias.AgregarColumna("Columna", "Campo");
-            grillaInconsistencias.AgregarColumna("Detalle", "Detalle");
+            grillaInconsistencias.AgregarColumna("Tabla", "repararDV.tabla");
+            grillaInconsistencias.AgregarColumna("Clave", "repararDV.registro");
+            grillaInconsistencias.AgregarColumna("Columna", "repararDV.campo");
+            grillaInconsistencias.AgregarColumnaTraducida("Detalle", "comun.detalle");
         }
     }
 }

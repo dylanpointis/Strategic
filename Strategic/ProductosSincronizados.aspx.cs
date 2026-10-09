@@ -15,10 +15,45 @@ namespace Strategic
     // CU-004-013 - Ver Productos Sincronizados
     public partial class ProductosSincronizados : PaginaSegura
     {
-        private const string MensajeSinProductos = "No existen datos sincronizados. Realice una sincronización";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinProductos = "productos.sinProductos";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLProducto bllProducto = new BLLProducto();
+
+        private int ProductoSeleccionado
+        {
+            get { return ViewState["ProductoSeleccionado"] == null ? 0 : Convert.ToInt32(ViewState["ProductoSeleccionado"]); }
+            set { ViewState["ProductoSeleccionado"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("productos.titulo");
+            lblNombre.Text = Traductor.T("productos.nombreOCodigo");
+            txtNombre.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblCategoria.Text = Traductor.T("productos.categoria");
+            lblEstado.Text = Traductor.T("comun.estado");
+            lblPrecioDesde.Text = Traductor.T("productos.precioDesde");
+            lblPrecioHasta.Text = Traductor.T("productos.precioHasta");
+            txtPrecioHasta.Attributes["placeholder"] = Traductor.T("productos.sinTope");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnCerrarDetalle.Text = Traductor.T("eventos.cerrarDetalle");
+            MostrarCantidad();
+
+            // Lo que se arma desde codigo solo existe una vez recuperado el
+            // ViewState, por eso se pregunta antes de traducirlo
+            if (ddlCategoria.Items.Count > 0)
+            {
+                ddlCategoria.Items[0].Text = Traductor.T("comun.todos");
+                ddlEstado.Items[0].Text = Traductor.T("comun.todos");
+            }
+
+            if (ProductoSeleccionado > 0)
+            {
+                MostrarDetalle(bllProducto.TraerProductoPorId(ProductoSeleccionado));
+            }
+        }
 
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -88,7 +123,7 @@ namespace Strategic
                 if (producto == null)
                 {
                     OcultarDetalle();
-                    lblError.Text = "No se encontró el producto seleccionado";
+                    lblError.Text = Traductor.T("productos.noEncontrado");
                     return;
                 }
 
@@ -111,23 +146,29 @@ namespace Strategic
             grillaProductos.FilasPorPagina = 10;
             grillaProductos.MostrarSelectorFilas = true;
 
-            grillaProductos.AgregarColumna("Codigo", "Código", "celda-codigo");
-            grillaProductos.AgregarColumna("Nombre", "Nombre");
-            grillaProductos.AgregarColumna("Marca", "Marca");
-            grillaProductos.AgregarColumna("Categoria", "Categoría");
-            grillaProductos.AgregarColumna("Estado", "Estado");
-            grillaProductos.AgregarColumna("Precio", "Precio", "celda-numero", "${0:N2}");
-            grillaProductos.AgregarColumna("Stock", "Stock", "celda-numero");
-            grillaProductos.AgregarColumnaAccion("Detalle", "VerDetalle", "Ver detalle");
+            grillaProductos.AgregarColumna("Codigo", "productos.codigo", "celda-codigo");
+            grillaProductos.AgregarColumna("Nombre", "comun.nombre");
+            grillaProductos.AgregarColumna("Marca", "productos.marca");
+            grillaProductos.AgregarColumna("Categoria", "productos.categoria");
+            grillaProductos.AgregarColumna("Estado", "comun.estado");
+            grillaProductos.AgregarColumna("Precio", "productos.precio", "celda-numero", "${0:N2}");
+            grillaProductos.AgregarColumna("Stock", "productos.stock", "celda-numero");
+            grillaProductos.AgregarColumnaAccion("comun.detalle", "VerDetalle", "productos.verDetalle");
         }
 
         private void CargarGrilla(List<BEProducto> productos, string mensajeVacio)
         {
             grillaProductos.Cargar(productos, mensajeVacio);
+            MostrarCantidad();
+        }
 
-            lblCantidad.Text = grillaProductos.CantidadRegistros == 1
-                ? "1 producto"
-                : string.Format("{0} productos", grillaProductos.CantidadRegistros);
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaProductos.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("productos.cantidadUno")
+                : Traductor.T("productos.cantidad", cantidad);
         }
 
         private void CargarCombos(List<BEProducto> productos)
@@ -139,7 +180,7 @@ namespace Strategic
         private void CargarOpciones(DropDownList lista, IEnumerable<string> valores)
         {
             lista.Items.Clear();
-            lista.Items.Add(new ListItem("Todos", string.Empty));
+            lista.Items.Add(new ListItem(Traductor.T("comun.todos"), string.Empty));
 
             List<string> opciones = valores
                 .Where(valor => !string.IsNullOrWhiteSpace(valor))
@@ -155,6 +196,8 @@ namespace Strategic
 
         private void MostrarDetalle(BEProducto producto)
         {
+            ProductoSeleccionado = producto.IdProducto;
+
             lblDetalleCodigo.Text = Server.HtmlEncode(producto.Codigo);
             lblDetalleNombre.Text = Server.HtmlEncode(producto.Nombre);
             lblDetalleMarca.Text = Server.HtmlEncode(TextoOGuion(producto.Marca));
@@ -167,7 +210,7 @@ namespace Strategic
                 producto.StockMaximo.HasValue ? producto.StockMaximo.Value.ToString() : "-"));
             lblDetalleFechaSincronizacion.Text = Server.HtmlEncode(producto.FechaSincronizacion.HasValue
                 ? producto.FechaSincronizacion.Value.ToString("dd/MM/yyyy HH:mm")
-                : "Sin sincronizar");
+                : Traductor.T("productos.sinSincronizar"));
 
             pnlDetalleProducto.Visible = true;
         }
@@ -175,12 +218,13 @@ namespace Strategic
         private void OcultarDetalle()
         {
             pnlDetalleProducto.Visible = false;
+            ProductoSeleccionado = 0;
         }
 
         private string ObtenerTextoStock(BEProducto producto)
         {
             return producto.StockBajoMinimo
-                ? string.Format("{0} (por debajo del mínimo)", producto.Stock)
+                ? Traductor.T("productos.stockBajoMinimo", producto.Stock)
                 : producto.Stock.ToString();
         }
 

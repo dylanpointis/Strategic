@@ -14,6 +14,34 @@ namespace Strategic
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLRol bllRol = new BLLRol();
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("altaUsuario.titulo");
+            lblNombreUsuario.Text = Traductor.T("usuario.nombreUsuario");
+            valNombreUsuario.ErrorMessage = Traductor.T("usuario.nombreUsuarioRequerido");
+            valFormatoUsuario.ErrorMessage = Traductor.T("usuario.formatoUsuario");
+            lblRol.Text = Traductor.T("usuario.rol");
+            valRol.ErrorMessage = Traductor.T("usuario.rolRequerido");
+            lblNombre.Text = Traductor.T("usuario.nombre");
+            valNombre.ErrorMessage = Traductor.T("usuario.nombreRequerido");
+            lblApellido.Text = Traductor.T("usuario.apellido");
+            valApellido.ErrorMessage = Traductor.T("usuario.apellidoRequerido");
+            lblEmail.Text = Traductor.T("usuario.email");
+            valEmail.ErrorMessage = Traductor.T("usuario.emailRequerido");
+            valFormatoEmail.ErrorMessage = Traductor.T("usuario.formatoEmail");
+            btnCrear.Text = Traductor.T("altaUsuario.crear");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnOtro.Text = Traductor.T("altaUsuario.crearOtro");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // La primera opcion del combo se agrega desde codigo: en el Init
+            // de un postback todavia no se recupero del ViewState
+            if (ddlRol.Items.Count > 0)
+            {
+                ddlRol.Items[0].Text = Traductor.T("usuario.seleccioneRol");
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -94,7 +122,7 @@ namespace Strategic
         private void CargarRoles()
         {
             ddlRol.Items.Clear();
-            ddlRol.Items.Add(new ListItem("Seleccione un rol", string.Empty));
+            ddlRol.Items.Add(new ListItem(Traductor.T("usuario.seleccioneRol"), string.Empty));
 
             foreach (BERol rol in bllRol.TraerListaRoles())
             {

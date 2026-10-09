@@ -19,6 +19,30 @@ namespace Strategic
             set { ViewState["FamiliaEditada"] = value; }
         }
 
+        // Clave de traduccion del estado de la familia editada
+        private string EstadoEditado
+        {
+            get { return Convert.ToString(ViewState["EstadoEditado"]); }
+            set { ViewState["EstadoEditado"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("modificarFamilia.titulo");
+            lblNombre.Text = Traductor.T("familia.nombre");
+            valNombre.ErrorMessage = Traductor.T("familia.nombreRequerido");
+            lblDescripcion.Text = Traductor.T("familia.descripcion");
+            btnGuardar.Text = Traductor.T("comun.guardarCambios");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // El estado se conoce recien al recuperar el ViewState
+            if (!string.IsNullOrEmpty(EstadoEditado))
+            {
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(EstadoEditado));
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -45,7 +69,7 @@ namespace Strategic
                     selectorPermisos.ObtenerSeleccionados(),
                     enSesion.NombreUsuario);
 
-                Session["MensajeFamilias"] = string.Format("Se actualizó la familia {0}", txtNombre.Text.Trim());
+                Session["MensajeFamilias"] = Traductor.T("modificarFamilia.exito", txtNombre.Text.Trim());
                 Response.Redirect("~/ConsultarFamilias.aspx");
             }
             catch (Exception ex)
@@ -65,7 +89,7 @@ namespace Strategic
 
             if (!int.TryParse(valor, out codPermiso))
             {
-                MostrarSinRegistro("No se indicó qué familia modificar");
+                MostrarSinRegistro(Traductor.T("modificarFamilia.sinFamilia"));
                 return;
             }
 
@@ -75,15 +99,16 @@ namespace Strategic
 
                 if (familia == null)
                 {
-                    MostrarSinRegistro("No se encontró la familia indicada");
+                    MostrarSinRegistro(Traductor.T("familia.noEncontrada"));
                     return;
                 }
 
                 FamiliaEditada = familia.CodPermiso;
+                EstadoEditado = familia.EstadoTexto;
 
                 txtNombre.Text = familia.Nombre;
                 txtDescripcion.Text = familia.Descripcion;
-                lblEstadoActual.Text = Server.HtmlEncode(familia.EstadoTexto);
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(familia.EstadoTexto));
 
                 selectorPermisos.Cargar(
                     bllPermiso.TraerComponentesDisponiblesConArbol(),

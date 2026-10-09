@@ -14,8 +14,8 @@ namespace Strategic
     // La baja y la reactivacion del CU-005-019 se disparan desde este listado
     public partial class ConsultarUsuarios : PaginaSegura
     {
-        private const string MensajeSinUsuarios = "No existen usuarios registrados";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinUsuarios = "consultarUsuarios.sinUsuarios";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLRol bllRol = new BLLRol();
@@ -25,6 +25,29 @@ namespace Strategic
             // Las columnas se arman en el Init para que la grilla pueda
             // reconstruirse en cada postback a partir de su ViewState
             ConfigurarGrilla();
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("consultarUsuarios.titulo");
+            lblTexto.Text = Traductor.T("consultarUsuarios.filtroTexto");
+            txtTexto.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblRol.Text = Traductor.T("usuario.rol");
+            lblEstado.Text = Traductor.T("comun.estado");
+            ddlEstado.Items[0].Text = Traductor.T("comun.activos");
+            ddlEstado.Items[1].Text = Traductor.T("comun.inactivos");
+            ddlEstado.Items[2].Text = Traductor.T("comun.todos");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnNuevo.Text = Traductor.T("consultarUsuarios.nuevo");
+            MostrarCantidad();
+
+            // La opcion "Todos los roles" se agrega desde codigo y en el Init
+            // de un postback todavia no se recupero del ViewState
+            if (ddlRol.Items.Count > 0)
+            {
+                ddlRol.Items[0].Text = Traductor.T("consultarUsuarios.todosLosRoles");
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -83,25 +106,25 @@ namespace Strategic
             grillaUsuarios.FilasPorPagina = 10;
             grillaUsuarios.MostrarSelectorFilas = true;
 
-            grillaUsuarios.AgregarColumna("NombreUsuario", "Usuario", "celda-usuario");
-            grillaUsuarios.AgregarColumna("Nombre", "Nombre");
-            grillaUsuarios.AgregarColumna("Apellido", "Apellido");
-            grillaUsuarios.AgregarColumna("Email", "Email");
-            grillaUsuarios.AgregarColumna("NombreRol", "Rol");
-            grillaUsuarios.AgregarColumna("EstadoTexto", "Estado");
+            grillaUsuarios.AgregarColumna("NombreUsuario", "usuario.usuario", "celda-usuario");
+            grillaUsuarios.AgregarColumna("Nombre", "usuario.nombre");
+            grillaUsuarios.AgregarColumna("Apellido", "usuario.apellido");
+            grillaUsuarios.AgregarColumna("Email", "usuario.email");
+            grillaUsuarios.AgregarColumna("NombreRol", "usuario.rol");
+            grillaUsuarios.AgregarColumnaTraducida("EstadoTexto", "comun.estado");
 
             // Cada accion lleva a una pantalla con su propio permiso: la columna
             // solo se arma si el rol la alcanza
             if (TienePermiso("ModificarUsuario"))
             {
-                grillaUsuarios.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+                grillaUsuarios.AgregarColumnaAccion("comun.modificar", "Modificar", "comun.modificar");
             }
 
             // El texto sale de la fila: un usuario activo se da de baja y uno
             // inactivo se reactiva
             if (TienePermiso("BajaUsuario"))
             {
-                grillaUsuarios.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+                grillaUsuarios.AgregarColumnaAccion("comun.estado", "CambiarEstado", "comun.cambiarEstado", "AccionEstado");
             }
 
             btnNuevo.Visible = TienePermiso("AltaUsuario");
@@ -119,7 +142,7 @@ namespace Strategic
 
                 if (vieneDeFiltros && usuarios.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -132,10 +155,16 @@ namespace Strategic
         private void MostrarUsuarios(List<BEUsuario> usuarios, string mensajeVacio)
         {
             grillaUsuarios.Cargar(usuarios, mensajeVacio);
+            MostrarCantidad();
+        }
 
-            lblCantidad.Text = usuarios.Count == 1
-                ? "1 usuario"
-                : string.Format("{0} usuarios", usuarios.Count);
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaUsuarios.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("consultarUsuarios.cantidadUno")
+                : Traductor.T("consultarUsuarios.cantidad", cantidad);
         }
 
         
@@ -158,7 +187,7 @@ namespace Strategic
         private void CargarRoles()
         {
             ddlRol.Items.Clear();
-            ddlRol.Items.Add(new ListItem("Todos los roles", string.Empty));
+            ddlRol.Items.Add(new ListItem(Traductor.T("consultarUsuarios.todosLosRoles"), string.Empty));
 
             foreach (BERol rol in bllRol.TraerListaRoles())
             {

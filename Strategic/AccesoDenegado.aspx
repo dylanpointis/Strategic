@@ -1,12 +1,12 @@
-﻿<%@ Page Title="Acceso denegado" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AccesoDenegado.aspx.cs" Inherits="Strategic.AccesoDenegado" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AccesoDenegado.aspx.cs" Inherits="Strategic.AccesoDenegado" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <main class="page-section">
 
         <div class="page-heading">
-            <h1>Acceso denegado</h1>
-            <p>Tu rol no habilita esta pantalla.</p>
+            <h1><%: Traductor.T("accesoDenegado.titulo") %></h1>
+            <p><%: Traductor.T("accesoDenegado.subtitulo") %></p>
         </div>
 
         <section class="strategic-card">
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="formulario-acciones">
-                    <asp:Button ID="btnInicio" runat="server" Text="Ir al inicio" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnInicio_Click" />
+                    <asp:Button ID="btnInicio" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnInicio_Click" />
                 </div>
             </div>
         </section>

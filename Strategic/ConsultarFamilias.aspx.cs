@@ -14,8 +14,8 @@ namespace Strategic
     // La baja y la reactivacion del CU-005-027 se disparan desde el detalle
     public partial class ConsultarFamilias : PaginaSegura
     {
-        private const string MensajeSinFamilias = "No existen familias registradas";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinFamilias = "consultarFamilias.sinFamilias";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
@@ -30,6 +30,29 @@ namespace Strategic
             // Las columnas se arman en el Init para que la grilla pueda
             // reconstruirse en cada postback a partir de su ViewState
             ConfigurarGrilla();
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("consultarFamilias.titulo");
+            lblNombre.Text = Traductor.T("comun.nombre");
+            txtNombre.Attributes["placeholder"] = Traductor.T("comun.todas");
+            lblEstado.Text = Traductor.T("comun.estado");
+            ddlEstado.Items[0].Text = Traductor.T("comun.activas");
+            ddlEstado.Items[1].Text = Traductor.T("comun.inactivas");
+            ddlEstado.Items[2].Text = Traductor.T("comun.todas");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnNuevo.Text = Traductor.T("consultarFamilias.nueva");
+            btnModificar.Text = Traductor.T("comun.modificar");
+            btnCerrarDetalle.Text = Traductor.T("comun.cerrar");
+            MostrarCantidad();
+
+            // El detalle abierto se conoce recien al recuperar el ViewState
+            if (FamiliaSeleccionada > 0)
+            {
+                MostrarDetalle(FamiliaSeleccionada);
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -103,11 +126,11 @@ namespace Strategic
             grillaFamilias.FilasPorPagina = 10;
             grillaFamilias.MostrarSelectorFilas = true;
 
-            grillaFamilias.AgregarColumna("Nombre", "Familia");
-            grillaFamilias.AgregarColumna("Descripcion", "Descripción");
-            grillaFamilias.AgregarColumna("CantidadComponentesAsignados", "Elementos", "celda-numero");
-            grillaFamilias.AgregarColumna("EstadoTexto", "Estado");
-            grillaFamilias.AgregarColumnaAccion("Detalle", "VerDetalle", "Ver composición");
+            grillaFamilias.AgregarColumna("Nombre", "consultarFamilias.familia");
+            grillaFamilias.AgregarColumna("Descripcion", "familia.descripcion");
+            grillaFamilias.AgregarColumna("CantidadComponentesAsignados", "consultarFamilias.elementos", "celda-numero");
+            grillaFamilias.AgregarColumnaTraducida("EstadoTexto", "comun.estado");
+            grillaFamilias.AgregarColumnaAccion("comun.detalle", "VerDetalle", "consultarFamilias.verComposicion");
 
             btnNuevo.Visible = TienePermiso("AltaFamilia");
         }
@@ -119,14 +142,11 @@ namespace Strategic
                 List<BEFamilia> familias = bllPermiso.FiltrarFamilias(txtNombre.Text, ObtenerEstadoElegido());
 
                 grillaFamilias.Cargar(familias, vieneDeFiltros ? MensajeSinResultados : MensajeSinFamilias);
-
-                lblCantidad.Text = familias.Count == 1
-                    ? "1 familia"
-                    : string.Format("{0} familias", familias.Count);
+                MostrarCantidad();
 
                 if (vieneDeFiltros && familias.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -143,7 +163,7 @@ namespace Strategic
 
                 if (familia == null)
                 {
-                    lblError.Text = "No se encontró la familia seleccionada";
+                    lblError.Text = Traductor.T("familia.noEncontrada");
                     return;
                 }
 
@@ -157,7 +177,7 @@ namespace Strategic
                 // Aplanar el arbol da las pantallas que la familia habilita,
                 // sumando las que aportan las subfamilias
                 lblDetallePantallas.Text = familia.CantidadPermisosSimples.ToString();
-                lblDetalleEstado.Text = Server.HtmlEncode(familia.EstadoTexto);
+                lblDetalleEstado.Text = Server.HtmlEncode(Traductor.T(familia.EstadoTexto));
 
                 divArbol.InnerHtml = ArbolPermisos.Renderizar(familia.ObtenerHijos());
 
@@ -165,13 +185,22 @@ namespace Strategic
                 // composicion pero no las acciones que no puede ejecutar
                 btnModificar.Visible = TienePermiso("ModificarFamilia");
                 btnCambiarEstado.Visible = TienePermiso("BajaFamilia");
-                btnCambiarEstado.Text = familia.AccionEstado;
+                btnCambiarEstado.Text = Traductor.T(familia.AccionEstado);
                 pnlDetalle.Visible = true;
             }
             catch (Exception ex)
             {
                 lblError.Text = Server.HtmlEncode(ex.Message);
             }
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaFamilias.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("consultarFamilias.cantidadUno")
+                : Traductor.T("consultarFamilias.cantidad", cantidad);
         }
 
         private void OcultarDetalle()

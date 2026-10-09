@@ -1,4 +1,5 @@
 ﻿using BE.Composite;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -16,7 +17,7 @@ namespace Strategic.Componentes
     /// Contiene(), para avisar cuando un permiso que se está por agregar ya
     /// venía incluido dentro de una familia elegida.
     
-    public partial class SelectorPermisos : UserControl
+    public partial class SelectorPermisos : UserControl, IIdiomaObserver
     {
         
         /// Componentes disponibles con su subárbol cargado, guardados en la
@@ -38,7 +39,41 @@ namespace Strategic.Componentes
             get { return string.Concat("SelectorPermisos_", Page.GetType().FullName, "_", UniqueID); }
         }
 
-        
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Traductor.Suscribir(this);
+            ActualizarIdioma();
+        }
+
+        public void ActualizarIdioma()
+        {
+            lblTituloDisponibles.Text = Traductor.T("selectorPermisos.disponibles");
+            lblAyudaDisponibles.Text = Traductor.T("selectorPermisos.ayuda");
+            lblTituloSeleccionados.Text = Traductor.T("selectorPermisos.composicion");
+            btnAgregar.Text = Traductor.T("selectorPermisos.agregar");
+            btnQuitar.Text = Traductor.T("selectorPermisos.quitar");
+
+            // Las listas ya cargadas guardan su texto en el ViewState: se
+            // vuelven a armar las etiquetas a partir del catálogo
+            Dictionary<int, BEComponente> catalogo = Catalogo;
+
+            foreach (ListBox lista in new ListBox[] { lstDisponibles, lstSeleccionados })
+            {
+                foreach (ListItem item in lista.Items)
+                {
+                    int codigo = Convert.ToInt32(item.Value);
+
+                    if (catalogo.ContainsKey(codigo))
+                    {
+                        item.Text = CrearEtiqueta(catalogo[codigo]);
+                    }
+                }
+            }
+
+            ActualizarResumen();
+        }
+
+
         /// Cantidad de componentes elegidos.
         
         public int CantidadSeleccionados
@@ -135,7 +170,7 @@ namespace Strategic.Componentes
 
             if (elegido == null)
             {
-                lblMensaje.Text = "Elegí un permiso o una familia de la lista de disponibles";
+                lblMensaje.Text = Traductor.T("selectorPermisos.elegirDisponible");
                 return;
             }
 
@@ -143,8 +178,7 @@ namespace Strategic.Componentes
 
             if (yaIncluido != null)
             {
-                lblMensaje.Text = Server.HtmlEncode(string.Format(
-                    "\"{0}\" ya viene incluido dentro de \"{1}\"", elegido.Text, yaIncluido));
+                lblMensaje.Text = Server.HtmlEncode(Traductor.T("selectorPermisos.yaIncluido", elegido.Text, yaIncluido));
                 return;
             }
 
@@ -160,7 +194,7 @@ namespace Strategic.Componentes
 
             if (elegido == null)
             {
-                lblMensaje.Text = "Elegí un elemento de la composición para quitarlo";
+                lblMensaje.Text = Traductor.T("selectorPermisos.elegirSeleccionado");
                 return;
             }
 
@@ -206,23 +240,28 @@ namespace Strategic.Componentes
 
         private ListItem CrearItem(BEComponente componente)
         {
+            return new ListItem(CrearEtiqueta(componente), componente.CodPermiso.ToString());
+        }
+
+        private string CrearEtiqueta(BEComponente componente)
+        {
             string etiqueta = componente.EsFamilia
-                ? string.Format("{0} (familia de {1} permisos)", componente.Nombre, componente.CantidadPermisosSimples)
+                ? Traductor.T("selectorPermisos.familia", componente.Nombre, componente.CantidadPermisosSimples)
                 : componente.Nombre;
 
             if (!componente.Activo)
             {
-                etiqueta = etiqueta + " - dado de baja";
+                etiqueta = etiqueta + " - " + Traductor.T("selectorPermisos.dadoDeBaja");
             }
 
-            return new ListItem(etiqueta, componente.CodPermiso.ToString());
+            return etiqueta;
         }
 
         private void ActualizarResumen()
         {
             if (lstSeleccionados.Items.Count == 0)
             {
-                lblResumen.Text = "Todavía no elegiste ningún elemento";
+                lblResumen.Text = Traductor.T("selectorPermisos.sinElementos");
                 return;
             }
 
@@ -249,7 +288,7 @@ namespace Strategic.Componentes
                 }
             }
 
-            lblResumen.Text = string.Format("{0} elemento{1} elegido{1}, {2} pantalla{3} habilitada{3}",
+            lblResumen.Text = Traductor.T("selectorPermisos.resumen",
                 lstSeleccionados.Items.Count,
                 lstSeleccionados.Items.Count == 1 ? string.Empty : "s",
                 alcanzados.Count,

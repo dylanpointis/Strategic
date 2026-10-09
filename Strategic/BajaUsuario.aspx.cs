@@ -28,6 +28,19 @@ namespace Strategic
             set { ViewState["EstadoAConfirmar"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("bajaUsuario.titulo");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // El usuario a confirmar se conoce recien al recuperar el ViewState
+            if (!string.IsNullOrEmpty(UsuarioAConfirmar))
+            {
+                MostrarConfirmacion();
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -52,8 +65,8 @@ namespace Strategic
 
                 bllUsuario.CambiarEstadoUsuario(nombreUsuario, activo, enSesion.NombreUsuario);
 
-                Session["MensajeUsuarios"] = string.Format(
-                    activo ? "Se reactivó el usuario {0}" : "Se dio de baja al usuario {0}",
+                Session["MensajeUsuarios"] = Traductor.T(
+                    activo ? "bajaUsuario.exitoReactivar" : "bajaUsuario.exitoBaja",
                     nombreUsuario);
 
                 Response.Redirect("~/ConsultarUsuarios.aspx");
@@ -73,7 +86,7 @@ namespace Strategic
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario))
             {
-                MostrarSinUsuario("No se indicó qué usuario dar de baja");
+                MostrarSinUsuario(Traductor.T("bajaUsuario.sinUsuario"));
                 return;
             }
 
@@ -83,26 +96,32 @@ namespace Strategic
 
                 if (usuario == null)
                 {
-                    MostrarSinUsuario("No se encontró el usuario indicado");
+                    MostrarSinUsuario(Traductor.T("usuario.noEncontrado"));
                     return;
                 }
 
                 UsuarioAConfirmar = usuario.NombreUsuario;
                 EstadoAConfirmar = !usuario.Activo;
 
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    usuario.Activo
-                        ? "¿Deseás dar de baja al usuario {0}? No va a poder iniciar sesión."
-                        : "¿Deseás reactivar al usuario {0}?",
-                    usuario.NombreUsuario));
-
-                btnConfirmar.Text = usuario.Activo ? "Dar de baja" : "Reactivar";
-                btnConfirmar.CssClass = usuario.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
+                MostrarConfirmacion();
             }
             catch (Exception ex)
             {
                 MostrarSinUsuario(ex.Message);
             }
+        }
+
+        private void MostrarConfirmacion()
+        {
+            // EstadoAConfirmar es el estado nuevo: false significa dar de baja
+            bool darDeBaja = !EstadoAConfirmar;
+
+            lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(
+                darDeBaja ? "bajaUsuario.confirmarBaja" : "bajaUsuario.confirmarReactivar",
+                UsuarioAConfirmar));
+
+            btnConfirmar.Text = Traductor.T(darDeBaja ? "comun.accion.darDeBaja" : "comun.accion.reactivar");
+            btnConfirmar.CssClass = darDeBaja ? "btn btn-strategic-danger" : "btn btn-strategic";
         }
 
         private void MostrarSinUsuario(string mensaje)

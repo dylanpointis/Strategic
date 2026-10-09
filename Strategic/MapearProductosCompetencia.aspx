@@ -1,48 +1,47 @@
-﻿<%@ Page Title="Mapear productos" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MapearProductosCompetencia.aspx.cs" Inherits="Strategic.MapearProductosCompetencia" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MapearProductosCompetencia.aspx.cs" Inherits="Strategic.MapearProductosCompetencia" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <main class="page-section">
 
         <div class="page-heading">
-            <h1>Mapear productos con competencia</h1>
-            <p>Asociá un producto propio con la publicación de un competidor para monitorear su precio.</p>
+            <h1><%: Traductor.T("mapearProductos.titulo") %></h1>
+            <p><%: Traductor.T("mapearProductos.subtitulo") %></p>
         </div>
 
         <asp:Panel ID="pnlFormulario" runat="server" CssClass="strategic-card">
             <div class="strategic-card-header">
-                <h2>Datos del mapeo</h2>
+                <h2><%: Traductor.T("mapearProductos.datos") %></h2>
             </div>
 
             <div class="strategic-card-body">
                 <div class="formulario-grid">
                     <div class="campo">
-                        <asp:Label ID="lblProducto" runat="server" Text="Producto propio" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
+                        <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
                         <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-control">
                         </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="valProducto" runat="server" ControlToValidate="ddlProducto"
-                            InitialValue="" ErrorMessage="Seleccioná el producto propio" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                            InitialValue="" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
                     </div>
 
                     <div class="campo">
-                        <asp:Label ID="lblCompetidor" runat="server" Text="Competidor" AssociatedControlID="ddlCompetidor" CssClass="form-label"></asp:Label>
+                        <asp:Label ID="lblCompetidor" runat="server" AssociatedControlID="ddlCompetidor" CssClass="form-label"></asp:Label>
                         <asp:DropDownList ID="ddlCompetidor" runat="server" CssClass="form-control">
                         </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="valCompetidor" runat="server" ControlToValidate="ddlCompetidor"
-                            InitialValue="" ErrorMessage="Seleccioná el competidor" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                            InitialValue="" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
                     </div>
 
                     <div class="campo campo-ancho">
-                        <asp:Label ID="lblUrl" runat="server" Text="URL de la publicación" AssociatedControlID="txtUrl" CssClass="form-label"></asp:Label>
+                        <asp:Label ID="lblUrl" runat="server" AssociatedControlID="txtUrl" CssClass="form-label"></asp:Label>
                         <asp:TextBox ID="txtUrl" runat="server" CssClass="form-control" MaxLength="500" placeholder="https://www.mercadolibre.com.ar/..."></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="valUrl" runat="server" ControlToValidate="txtUrl"
-                            ErrorMessage="Ingresá la URL de la publicación" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                        <asp:RequiredFieldValidator ID="valUrl" runat="server" ControlToValidate="txtUrl" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
                     </div>
                 </div>
 
                 <div class="formulario-acciones">
-                    <asp:Button ID="btnMapear" runat="server" Text="Mapear producto" CssClass="btn btn-strategic" ValidationGroup="Mapeo" OnClick="btnMapear_Click" />
-                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnLimpiar_Click" />
+                    <asp:Button ID="btnMapear" runat="server" CssClass="btn btn-strategic" ValidationGroup="Mapeo" OnClick="btnMapear_Click" />
+                    <asp:Button ID="btnLimpiar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnLimpiar_Click" />
                 </div>
 
                 <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>

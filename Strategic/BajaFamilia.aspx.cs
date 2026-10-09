@@ -29,6 +29,20 @@ namespace Strategic
             set { ViewState["EstadoAConfirmar"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("bajaFamilia.titulo");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // Lo que se esta confirmando se conoce recien al recuperar el
+            // ViewState: se vuelve a cargar para armar los textos en el idioma nuevo
+            if (FamiliaAConfirmar > 0)
+            {
+                CargarFamilia(Request.QueryString["familia"]);
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -54,8 +68,8 @@ namespace Strategic
 
                 bllPermiso.CambiarEstadoFamilia(codPermiso, activo, enSesion.NombreUsuario);
 
-                Session["MensajeFamilias"] = string.Format(
-                    activo ? "Se reactivó la familia {0}" : "Se dio de baja la familia {0}",
+                Session["MensajeFamilias"] = Traductor.T(
+                    activo ? "bajaFamilia.exitoReactivar" : "bajaFamilia.exitoBaja",
                     familia != null ? familia.Nombre : codPermiso.ToString());
 
                 Response.Redirect("~/ConsultarFamilias.aspx");
@@ -77,7 +91,7 @@ namespace Strategic
 
             if (!int.TryParse(valor, out codPermiso))
             {
-                MostrarSinRegistro("No se indicó qué familia dar de baja");
+                MostrarSinRegistro(Traductor.T("bajaFamilia.sinFamilia"));
                 return;
             }
 
@@ -87,20 +101,18 @@ namespace Strategic
 
                 if (familia == null)
                 {
-                    MostrarSinRegistro("No se encontró la familia indicada");
+                    MostrarSinRegistro(Traductor.T("familia.noEncontrada"));
                     return;
                 }
 
                 FamiliaAConfirmar = familia.CodPermiso;
                 EstadoAConfirmar = !familia.Activo;
 
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    familia.Activo
-                        ? "¿Deseás dar de baja la familia {0}? No va a poder asignarse a nuevos roles ni familias."
-                        : "¿Deseás reactivar la familia {0}?",
+                lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(
+                    familia.Activo ? "bajaFamilia.confirmarBaja" : "bajaFamilia.confirmarReactivar",
                     familia.Nombre));
 
-                btnConfirmar.Text = familia.Activo ? "Dar de baja" : "Reactivar";
+                btnConfirmar.Text = Traductor.T(familia.AccionEstado);
                 btnConfirmar.CssClass = familia.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
             }
             catch (Exception ex)

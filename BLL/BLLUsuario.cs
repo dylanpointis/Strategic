@@ -39,12 +39,12 @@ namespace BLL
 
             if (usuario == null)
             {
-                throw new Exception("El usuario ingresado no existe");
+                throw new Exception(Traductor.T("error.usuarioInexistente"));
             }
 
             if (usuario.Bloqueado || !usuario.Activo)
             {
-                throw new Exception("El usuario se encuentra bloqueado o desactivado, comuniquese con el administrador del sistema");
+                throw new Exception(Traductor.T("error.usuarioBloqueado"));
             }
 
             if (!Encriptacion.VerificarPBKDF2(clave, usuario.Salt, usuario.Clave))
@@ -56,10 +56,10 @@ namespace BLL
                 {
                     ModificarBloqueo(usuario.NombreUsuario, true);
                     bllEvento.RegistrarEvento(new Evento(usuario.NombreUsuario, ModuloSesiones, "Usuario bloqueado", CriticidadGrave));
-                    throw new Exception("Se ha bloqueado al usuario por superar el limite de intentos fallidos, por favor comuniquese con el administrador del sistema");
+                    throw new Exception(Traductor.T("error.usuarioBloqueadoIntentos"));
                 }
 
-                throw new Exception("Las credenciales no coinciden");
+                throw new Exception(Traductor.T("error.credencialesInvalidas"));
             }
 
             // Con las credenciales validas y antes de escribir nada se compara el
@@ -141,19 +141,19 @@ namespace BLL
 
             if (usuario == null)
             {
-                throw new Exception("El usuario ingresado no existe");
+                throw new Exception(Traductor.T("error.usuarioInexistente"));
             }
 
             // Alternativa 4.1 [#ERR014]
             if (!Encriptacion.VerificarPBKDF2(claveActual, usuario.Salt, usuario.Clave))
             {
-                throw new Exception("La clave actual ingresada es incorrecta");
+                throw new Exception(Traductor.T("error.claveActualIncorrecta"));
             }
 
             // Alternativa 4.3 [#ERR015]
             if (claveNueva != confirmacion)
             {
-                throw new Exception("La nueva clave y su confirmación no coinciden");
+                throw new Exception(Traductor.T("error.claveConfirmacion"));
             }
 
             // Alternativa 4.2 [#ERR016]
@@ -161,7 +161,7 @@ namespace BLL
 
             if (Encriptacion.VerificarPBKDF2(claveNueva, usuario.Salt, usuario.Clave))
             {
-                throw new Exception("La nueva clave no puede ser igual a la clave anterior");
+                throw new Exception(Traductor.T("error.claveIgualAnterior"));
             }
 
             string sal;
@@ -182,22 +182,22 @@ namespace BLL
         {
             if (string.IsNullOrEmpty(clave) || clave.Length < 8)
             {
-                throw new Exception("La nueva clave debe tener al menos 8 caracteres");
+                throw new Exception(Traductor.T("error.claveLargo"));
             }
 
             if (!clave.Any(char.IsUpper))
             {
-                throw new Exception("La nueva clave debe tener al menos una letra mayúscula");
+                throw new Exception(Traductor.T("error.claveMayuscula"));
             }
 
             if (!clave.Any(char.IsDigit))
             {
-                throw new Exception("La nueva clave debe tener al menos un número");
+                throw new Exception(Traductor.T("error.claveNumero"));
             }
 
             if (!clave.Any(c => !char.IsLetterOrDigit(c)))
             {
-                throw new Exception("La nueva clave debe tener al menos un carácter especial (@, #, $, !, etc.)");
+                throw new Exception(Traductor.T("error.claveEspecial"));
             }
         }
 
@@ -214,7 +214,7 @@ namespace BLL
         {
             if (codRol.HasValue && codRol.Value <= 0)
             {
-                throw new Exception("Debe seleccionar un rol valido");
+                throw new Exception(Traductor.T("error.rolInvalido"));
             }
 
             return dalUsuario.FiltrarUsuarios(Normalizar(texto), codRol, activo);
@@ -224,7 +224,7 @@ namespace BLL
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario))
             {
-                throw new Exception("Debe seleccionar un usuario");
+                throw new Exception(Traductor.T("error.seleccioneUsuario"));
             }
 
             return dalUsuario.TraerUsuarioPorNombre(nombreUsuario.Trim());
@@ -246,7 +246,7 @@ namespace BLL
             // Alternativa 5.1 del CU [#ERR021]
             if (dalUsuario.ContarUsuariosConDatos(usuario.NombreUsuario, usuario.Email, null) > 0)
             {
-                throw new Exception("El nombre de usuario o el email ya se encuentra registrado");
+                throw new Exception(Traductor.T("error.usuarioDuplicado"));
             }
 
             string clavePorDefecto = ClavePorDefecto.Generar(usuario.Nombre, usuario.Apellido);
@@ -276,14 +276,14 @@ namespace BLL
 
             if (usuario == null)
             {
-                throw new Exception("No se encontro el usuario seleccionado");
+                throw new Exception(Traductor.T("error.usuarioNoEncontrado"));
             }
 
             if (usuario.Activo == activo)
             {
                 throw new Exception(activo
-                    ? "El usuario ya se encuentra activo"
-                    : "El usuario ya se encuentra dado de baja");
+                    ? Traductor.T("error.usuarioYaActivo")
+                    : Traductor.T("error.usuarioYaDadoDeBaja"));
             }
 
             if (!activo)
@@ -314,14 +314,14 @@ namespace BLL
 
             if (actual == null)
             {
-                throw new Exception("No se encontro el usuario seleccionado");
+                throw new Exception(Traductor.T("error.usuarioNoEncontrado"));
             }
 
             // Alternativa 4.1 del CU [#ERR021]: el email no puede estar en uso
             // por otro usuario, pero si puede seguir siendo el propio
             if (dalUsuario.ContarUsuariosConDatos(null, usuario.Email, usuario.NombreUsuario) > 0)
             {
-                throw new Exception("El email ya se encuentra registrado en otro usuario");
+                throw new Exception(Traductor.T("error.emailDuplicado"));
             }
 
             // Si al usuario le sacan el rol de gestion, tiene que quedar
@@ -350,28 +350,28 @@ namespace BLL
         {
             if (usuario == null)
             {
-                throw new Exception("No se recibieron los datos del usuario");
+                throw new Exception(Traductor.T("error.sinDatosUsuario"));
             }
 
             // Alternativa de campos requeridos incompletos [#ERR001]
-            ExigirTexto(usuario.NombreUsuario, "el nombre de usuario", 50);
-            ExigirTexto(usuario.Nombre, "el nombre", 50);
-            ExigirTexto(usuario.Apellido, "el apellido", 50);
-            ExigirTexto(usuario.Email, "el email", 100);
+            ExigirTexto(usuario.NombreUsuario, "campo.elNombreUsuario", 50);
+            ExigirTexto(usuario.Nombre, "campo.elNombre", 50);
+            ExigirTexto(usuario.Apellido, "campo.elApellido", 50);
+            ExigirTexto(usuario.Email, "campo.elEmail", 100);
 
             if (!EsEmailValido(usuario.Email))
             {
-                throw new Exception("El email ingresado no tiene un formato valido");
+                throw new Exception(Traductor.T("usuario.formatoEmail"));
             }
 
             if (usuario.CodRol <= 0)
             {
-                throw new Exception("Debe seleccionar un rol para el usuario");
+                throw new Exception(Traductor.T("error.seleccioneRolUsuario"));
             }
 
             if (esAlta && !EsNombreUsuarioValido(usuario.NombreUsuario))
             {
-                throw new Exception("El nombre de usuario solo puede tener letras, numeros, punto, guion y guion bajo");
+                throw new Exception(Traductor.T("error.formatoNombreUsuario"));
             }
         }
 
@@ -379,7 +379,7 @@ namespace BLL
         {
             if (EsElMismoUsuario(nombreUsuario, nombreUsuarioEnSesion))
             {
-                throw new Exception("No se puede dar de baja al usuario con el que se inicio la sesion");
+                throw new Exception(Traductor.T("error.bajaUsuarioPropio"));
             }
         }
 
@@ -414,7 +414,7 @@ namespace BLL
 
             if (administradores == 0)
             {
-                throw new Exception("No se puede dejar al sistema sin ningun administrador habilitado");
+                throw new Exception(Traductor.T("error.sinAdministrador"));
             }
         }
 
@@ -438,16 +438,17 @@ namespace BLL
             return string.Equals(uno, otro, StringComparison.OrdinalIgnoreCase);
         }
 
+        // "campo" es la clave de traduccion del nombre del campo, por ejemplo "campo.elNombre"
         private void ExigirTexto(string valor, string campo, int largoMaximo)
         {
             if (string.IsNullOrWhiteSpace(valor))
             {
-                throw new Exception(string.Format("Debe completar {0}", campo));
+                throw new Exception(Traductor.T("error.debeCompletar", Traductor.T(campo)));
             }
 
             if (valor.Trim().Length > largoMaximo)
             {
-                throw new Exception(string.Format("El valor de {0} supera los {1} caracteres", campo, largoMaximo));
+                throw new Exception(Traductor.T("error.valorLargo", Traductor.T(campo), largoMaximo));
             }
         }
 

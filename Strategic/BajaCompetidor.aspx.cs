@@ -28,6 +28,20 @@ namespace Strategic
             set { ViewState["EstadoAConfirmar"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("bajaCompetidor.titulo");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // Lo que se esta confirmando se conoce recien al recuperar el
+            // ViewState: se vuelve a cargar para armar los textos en el idioma nuevo
+            if (CompetidorAConfirmar > 0)
+            {
+                CargarCompetidor(Request.QueryString["id"]);
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -52,8 +66,8 @@ namespace Strategic
 
                 bllCompetencia.CambiarEstadoCompetidor(idCompetencia, activo, enSesion.NombreUsuario);
 
-                Session["MensajeCompetidores"] = string.Format(
-                    activo ? "Se reactivó el competidor" : "Se dio de baja al competidor");
+                Session["MensajeCompetidores"] = Traductor.T(
+                    activo ? "bajaCompetidor.exitoReactivar" : "bajaCompetidor.exitoBaja");
 
                 Response.Redirect("~/ConsultarCompetidores.aspx");
             }
@@ -74,7 +88,7 @@ namespace Strategic
 
             if (!int.TryParse(idTexto, out idCompetencia) || idCompetencia <= 0)
             {
-                MostrarSinCompetidor("No se indicó qué competidor dar de baja");
+                MostrarSinCompetidor(Traductor.T("bajaCompetidor.sinCompetidor"));
                 return;
             }
 
@@ -84,20 +98,18 @@ namespace Strategic
 
                 if (competidor == null)
                 {
-                    MostrarSinCompetidor("No se encontró el competidor indicado");
+                    MostrarSinCompetidor(Traductor.T("competidor.noEncontrado"));
                     return;
                 }
 
                 CompetidorAConfirmar = competidor.IdCompetencia;
                 EstadoAConfirmar = !competidor.Activo;
 
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    competidor.Activo
-                        ? "¿Deseás dar de baja al competidor {0}?"
-                        : "¿Deseás reactivar al competidor {0}?",
+                lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(
+                    competidor.Activo ? "bajaCompetidor.confirmarBaja" : "bajaCompetidor.confirmarReactivar",
                     competidor.Nombre));
 
-                btnConfirmar.Text = competidor.Activo ? "Dar de baja" : "Reactivar";
+                btnConfirmar.Text = Traductor.T(competidor.AccionEstado);
                 btnConfirmar.CssClass = competidor.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
 
                 MostrarAdvertenciaPublicaciones(competidor);
@@ -129,8 +141,8 @@ namespace Strategic
             }
 
             lblAdvertenciaPublicaciones.Text = Server.HtmlEncode(publicacionesActivas == 1
-                ? "Este competidor tiene 1 publicación mapeada activa que también se pausará."
-                : string.Format("Este competidor tiene {0} publicaciones mapeadas activas que también se pausarán.", publicacionesActivas));
+                ? Traductor.T("bajaCompetidor.advertenciaUna")
+                : Traductor.T("bajaCompetidor.advertencia", publicacionesActivas));
 
             lblAdvertenciaPublicaciones.Visible = true;
         }

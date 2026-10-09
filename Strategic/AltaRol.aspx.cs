@@ -13,6 +13,17 @@ namespace Strategic
         private readonly BLLRol bllRol = new BLLRol();
         private readonly BLLPermiso bllPermiso = new BLLPermiso();
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("altaRol.titulo");
+            lblEstadoActual.Text = Traductor.T("altaRol.naceActivo");
+            lblNombre.Text = Traductor.T("rol.nombre");
+            valNombre.ErrorMessage = Traductor.T("rol.nombreRequerido");
+            btnGuardar.Text = Traductor.T("altaRol.crear");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -20,7 +31,6 @@ namespace Strategic
                 // Los componentes vienen con su subarbol para que el selector
                 // pueda avisar cuando un permiso ya esta dentro de una familia
                 selectorPermisos.Cargar(bllPermiso.TraerComponentesDisponiblesConArbol(), null);
-                lblEstadoActual.Text = "Nace activo";
             }
         }
 
@@ -37,7 +47,7 @@ namespace Strategic
 
                 bllRol.AltaRol(txtNombre.Text, selectorPermisos.ObtenerSeleccionados(), enSesion.NombreUsuario);
 
-                Session["MensajeRoles"] = string.Format("Se creó el rol {0}", txtNombre.Text.Trim());
+                Session["MensajeRoles"] = Traductor.T("altaRol.exito", txtNombre.Text.Trim());
                 Response.Redirect("~/ConsultarRoles.aspx");
             }
             catch (Exception ex)

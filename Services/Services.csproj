@@ -113,12 +113,14 @@
     <Compile Include="ClavePorDefecto.cs" />
     <Compile Include="Encriptacion.cs" />
     <Compile Include="Evento.cs" />
+    <Compile Include="IIdiomaObserver.cs" />
     <Compile Include="InconsistenciaDVException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Prediccion\CargadorNativo.cs" />
     <Compile Include="Prediccion\RegresionLineal.cs" />
     <Compile Include="Prediccion\ResultadoRegresion.cs" />
     <Compile Include="SessionManager.cs" />
+    <Compile Include="Traductor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

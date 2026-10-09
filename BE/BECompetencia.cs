@@ -17,12 +17,20 @@
             get { return Estado == "Activo"; }
         }
 
+
+        /// Clave de traducción del estado, para mostrarlo en pantalla.
+
+        public string EstadoTexto
+        {
+            get { return Activo ? "comun.estado.activo" : "comun.estado.inactivo"; }
+        }
+
         
-        /// Texto del botón que cambia el estado del competidor en el listado.
+        /// Clave de traducción del botón que cambia el estado del competidor en el listado.
         
         public string AccionEstado
         {
-            get { return Activo ? "Dar de baja" : "Reactivar"; }
+            get { return Activo ? "comun.accion.darDeBaja" : "comun.accion.reactivar"; }
         }
     }
 }

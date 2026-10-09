@@ -27,7 +27,7 @@
         
         /// Estado del usuario tal como se muestra en el listado. Un usuario
         /// bloqueado sigue estando activo, pero no puede iniciar sesión, así
-        /// que conviene distinguirlo.
+        /// que conviene distinguirlo. Devuelve la clave de traducción.
         
         public string EstadoTexto
         {
@@ -35,19 +35,19 @@
             {
                 if (!Activo)
                 {
-                    return "Inactivo";
+                    return "comun.estado.inactivo";
                 }
 
-                return Bloqueado ? "Bloqueado" : "Activo";
+                return Bloqueado ? "comun.estado.bloqueado" : "comun.estado.activo";
             }
         }
 
         
-        /// Texto del botón que cambia el estado del usuario en el listado.
+        /// Clave de traducción del botón que cambia el estado del usuario en el listado.
         
         public string AccionEstado
         {
-            get { return Activo ? "Dar de baja" : "Reactivar"; }
+            get { return Activo ? "comun.accion.darDeBaja" : "comun.accion.reactivar"; }
         }
 
         public BEUsuario()

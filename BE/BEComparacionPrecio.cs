@@ -42,7 +42,7 @@ namespace BE
         
         /// Resume la posición del precio propio frente al de la competencia.
         /// La grilla muestra esta columna para no obligar a interpretar el signo
-        /// de la diferencia porcentual.
+        /// de la diferencia porcentual. Devuelve la clave de traducción.
         
         public string Posicion
         {
@@ -50,15 +50,15 @@ namespace BE
             {
                 if (!DiferenciaPorcentaje.HasValue)
                 {
-                    return "Sin registro";
+                    return "compararPrecios.posicion.sinRegistro";
                 }
 
                 if (DiferenciaPorcentaje.Value > 0)
                 {
-                    return "Más caro";
+                    return "compararPrecios.posicion.masCaro";
                 }
 
-                return DiferenciaPorcentaje.Value < 0 ? "Más barato" : "Igual";
+                return DiferenciaPorcentaje.Value < 0 ? "compararPrecios.posicion.masBarato" : "compararPrecios.posicion.igual";
             }
         }
     }

@@ -14,12 +14,6 @@ namespace Strategic
     public partial class RealizarBackup
     {
 
-        /// Control lblCarpeta.
-        protected global::System.Web.UI.WebControls.Label lblCarpeta;
-
-        /// Control lblMaximo.
-        protected global::System.Web.UI.WebControls.Label lblMaximo;
-
         /// Control btnGenerar.
         protected global::System.Web.UI.WebControls.Button btnGenerar;
 

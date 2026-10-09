@@ -1,35 +1,34 @@
-﻿<%@ Page Title="Nuevo rol" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AltaRol.aspx.cs" Inherits="Strategic.AltaRol" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AltaRol.aspx.cs" Inherits="Strategic.AltaRol" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <main class="page-section">
 
         <div class="page-heading">
-            <h1>Nuevo rol</h1>
-            <p>Un rol agrupa permisos simples y familias completas.</p>
+            <h1><%: Traductor.T("altaRol.titulo") %></h1>
+            <p><%: Traductor.T("altaRol.subtitulo") %></p>
         </div>
 
         <asp:Panel ID="pnlFormulario" runat="server" CssClass="strategic-card">
             <div class="strategic-card-header">
-                <h2>Datos del rol</h2>
+                <h2><%: Traductor.T("rol.datos") %></h2>
                 <asp:Label ID="lblEstadoActual" runat="server" CssClass="strategic-card-meta"></asp:Label>
             </div>
 
             <div class="strategic-card-body">
                 <div class="formulario-grid">
                     <div class="campo campo-ancho">
-                        <asp:Label ID="lblNombre" runat="server" Text="Nombre del rol" AssociatedControlID="txtNombre" CssClass="form-label"></asp:Label>
+                        <asp:Label ID="lblNombre" runat="server" AssociatedControlID="txtNombre" CssClass="form-label"></asp:Label>
                         <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" MaxLength="50"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="valNombre" runat="server" ControlToValidate="txtNombre"
-                            ErrorMessage="Ingresá el nombre del rol" Display="Dynamic" CssClass="campo-error" ValidationGroup="Rol"></asp:RequiredFieldValidator>
+                        <asp:RequiredFieldValidator ID="valNombre" runat="server" ControlToValidate="txtNombre" Display="Dynamic" CssClass="campo-error" ValidationGroup="Rol"></asp:RequiredFieldValidator>
                     </div>
                 </div>
 
                 <sc:SelectorPermisos ID="selectorPermisos" runat="server" />
 
                 <div class="formulario-acciones">
-                    <asp:Button ID="btnGuardar" runat="server" Text="Crear rol" CssClass="btn btn-strategic" ValidationGroup="Rol" OnClick="btnGuardar_Click" />
-                    <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
+                    <asp:Button ID="btnGuardar" runat="server" CssClass="btn btn-strategic" ValidationGroup="Rol" OnClick="btnGuardar_Click" />
+                    <asp:Button ID="btnCancelar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
                 </div>
 
                 <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>
@@ -48,7 +47,7 @@
                 </div>
 
                 <div class="formulario-acciones">
-                    <asp:Button ID="btnVolver" runat="server" Text="Volver al listado" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnCancelar_Click" />
+                    <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnCancelar_Click" />
                 </div>
             </div>
         </asp:Panel>

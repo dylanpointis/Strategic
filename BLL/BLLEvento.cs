@@ -26,7 +26,7 @@ namespace BLL
         {
             if (fechaInicio.HasValue && fechaFin.HasValue && fechaFin.Value < fechaInicio.Value)
             {
-                throw new Exception("La fecha hasta no puede ser anterior a la fecha desde");
+                throw new Exception(Traductor.T("filtroFechas.errorRango"));
             }
 
             DataTable tabla = dalEvento.FiltrarEventos(

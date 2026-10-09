@@ -196,24 +196,24 @@ namespace BLL
             // Informar registros modificados, agregados o eliminados (Agregar a la lista de inconsistencias)
             foreach (string clave in modificadas)
             {
-                lista.Add(new BEInconsistenciaDV(tabla, clave, columnas, "Registro modificado fuera del sistema"));
+                lista.Add(new BEInconsistenciaDV(tabla, clave, columnas, "repararDV.detalle.modificado"));
             }
 
             foreach (string clave in agregadas)
             {
-                lista.Add(new BEInconsistenciaDV(tabla, clave, string.Empty, "Registro agregado fuera del sistema"));
+                lista.Add(new BEInconsistenciaDV(tabla, clave, string.Empty, "repararDV.detalle.agregado"));
             }
 
             foreach (string clave in eliminadas)
             {
-                lista.Add(new BEInconsistenciaDV(tabla, clave, string.Empty, "Registro eliminado fuera del sistema"));
+                lista.Add(new BEInconsistenciaDV(tabla, clave, string.Empty, "repararDV.detalle.eliminado"));
             }
 
             if (lista.Count == 0)
             {
                 // El global no coincide pero el detalle por fila si: paso algo con
                 // los DV guardados (por ejemplo, se borraron los de las filas)
-                lista.Add(new BEInconsistenciaDV(tabla, string.Empty, columnas, "El digito verificador de la tabla no coincide"));
+                lista.Add(new BEInconsistenciaDV(tabla, string.Empty, columnas, "repararDV.detalle.tablaNoCoincide"));
             }
 
             return lista;

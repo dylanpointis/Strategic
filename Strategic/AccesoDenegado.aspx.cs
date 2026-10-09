@@ -1,6 +1,6 @@
 ﻿using Services;
+using Strategic.Componentes;
 using System;
-using System.Web.UI;
 
 namespace Strategic
 {
@@ -9,21 +9,26 @@ namespace Strategic
     /// página que su rol no habilita. No hereda de PaginaSegura porque no
     /// tiene permiso propio: la ve cualquiera con sesión.
     
-    public partial class AccesoDenegado : Page
+    public partial class AccesoDenegado : PaginaBase
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!SessionManager.HayUsuarioLogueado)
             {
                 Response.Redirect("~/Login.aspx");
-                return;
             }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("accesoDenegado.titulo");
+            btnInicio.Text = Traductor.T("accesoDenegado.irAlInicio");
 
             string pantalla = Request.QueryString["pantalla"];
 
             lblMensaje.Text = Server.HtmlEncode(string.IsNullOrWhiteSpace(pantalla)
-                ? "No tenés permiso para acceder a la pantalla solicitada."
-                : string.Format("No tenés permiso para acceder a {0}. Si creés que deberías tenerlo, pedile a un administrador que revise tu rol.", pantalla));
+                ? Traductor.T("accesoDenegado.mensaje")
+                : Traductor.T("accesoDenegado.mensajePantalla", pantalla));
         }
 
         protected void btnInicio_Click(object sender, EventArgs e)

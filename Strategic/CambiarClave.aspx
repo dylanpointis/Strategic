@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Cambiar clave" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CambiarClave.aspx.cs" Inherits="Strategic.CambiarClave" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CambiarClave.aspx.cs" Inherits="Strategic.CambiarClave" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -33,33 +33,33 @@
     <main class="login-page">
         <section class="auth-card">
             <div class="login-heading">
-                <h1>Cambiar clave</h1>
-                <p>Actualiza la clave de acceso de tu usuario.</p>
+                <h1><%: Traductor.T("cambiarClave.titulo") %></h1>
+                <p><%: Traductor.T("cambiarClave.subtitulo") %></p>
             </div>
 
             <div class="mb-3">
-                <asp:Label ID="lblClaveActual" runat="server" Text="Clave actual" AssociatedControlID="txtClaveActual" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lblClaveActual" runat="server" AssociatedControlID="txtClaveActual" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txtClaveActual" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvClaveActual" runat="server" ControlToValidate="txtClaveActual" ErrorMessage="Debe escribir la clave actual" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="rfvClaveActual" runat="server" ControlToValidate="txtClaveActual" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
             </div>
 
             <div class="mb-3">
-                <asp:Label ID="lblClaveNueva" runat="server" Text="Nueva clave" AssociatedControlID="txtClaveNueva" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lblClaveNueva" runat="server" AssociatedControlID="txtClaveNueva" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txtClaveNueva" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvClaveNueva" runat="server" ControlToValidate="txtClaveNueva" ErrorMessage="Debe escribir la nueva clave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="rfvClaveNueva" runat="server" ControlToValidate="txtClaveNueva" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
             </div>
 
             <div class="mb-3">
-                <asp:Label ID="lblConfirmarClave" runat="server" Text="Confirmar nueva clave" AssociatedControlID="txtConfirmarClave" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lblConfirmarClave" runat="server" AssociatedControlID="txtConfirmarClave" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txtConfirmarClave" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvConfirmarClave" runat="server" ControlToValidate="txtConfirmarClave" ErrorMessage="Debe confirmar la nueva clave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="rfvConfirmarClave" runat="server" ControlToValidate="txtConfirmarClave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
             </div>
 
-            <span class="campo-ayuda">La nueva clave debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial, y ser distinta de la anterior.</span>
+            <span class="campo-ayuda"><%: Traductor.T("cambiarClave.ayuda") %></span>
 
             <div class="auth-actions">
-                <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-strategic" OnClick="btnGuardar_Click" />
-                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
+                <asp:Button ID="btnGuardar" runat="server" CssClass="btn btn-strategic" OnClick="btnGuardar_Click" />
+                <asp:Button ID="btnCancelar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
             </div>
 
             <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>

@@ -24,6 +24,44 @@ namespace Strategic
             set { ViewState["UsuarioEditado"] = value; }
         }
 
+        // Clave de traduccion del estado del usuario editado
+        private string EstadoEditado
+        {
+            get { return Convert.ToString(ViewState["EstadoEditado"]); }
+            set { ViewState["EstadoEditado"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("modificarUsuario.titulo");
+            lblNombreUsuario.Text = Traductor.T("usuario.nombreUsuario");
+            lblRol.Text = Traductor.T("usuario.rol");
+            valRol.ErrorMessage = Traductor.T("usuario.rolRequerido");
+            lblNombre.Text = Traductor.T("usuario.nombre");
+            valNombre.ErrorMessage = Traductor.T("usuario.nombreRequerido");
+            lblApellido.Text = Traductor.T("usuario.apellido");
+            valApellido.ErrorMessage = Traductor.T("usuario.apellidoRequerido");
+            lblEmail.Text = Traductor.T("usuario.email");
+            valEmail.ErrorMessage = Traductor.T("usuario.emailRequerido");
+            valFormatoEmail.ErrorMessage = Traductor.T("usuario.formatoEmail");
+            chkBloqueado.Text = Traductor.T("modificarUsuario.bloqueado");
+            btnGuardar.Text = Traductor.T("comun.guardarCambios");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // Lo que se arma al cargar el usuario solo existe una vez
+            // recuperado el ViewState, por eso se pregunta antes de traducirlo
+            if (ddlRol.Items.Count > 0)
+            {
+                ddlRol.Items[0].Text = Traductor.T("usuario.seleccioneRol");
+            }
+
+            if (!string.IsNullOrEmpty(EstadoEditado))
+            {
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(EstadoEditado));
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -56,7 +94,7 @@ namespace Strategic
                 bllUsuario.ModificarUsuario(usuario, enSesion.NombreUsuario);
 
                 // El listado es el que confirma el resultado de la operacion
-                Session["MensajeUsuarios"] = string.Format("Se actualizaron los datos del usuario {0}", usuario.NombreUsuario);
+                Session["MensajeUsuarios"] = Traductor.T("modificarUsuario.exito", usuario.NombreUsuario);
                 Response.Redirect("~/ConsultarUsuarios.aspx");
             }
             catch (Exception ex)
@@ -74,7 +112,7 @@ namespace Strategic
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario))
             {
-                MostrarSinUsuario("No se indicó qué usuario modificar");
+                MostrarSinUsuario(Traductor.T("modificarUsuario.sinUsuario"));
                 return;
             }
 
@@ -84,14 +122,15 @@ namespace Strategic
 
                 if (usuario == null)
                 {
-                    MostrarSinUsuario("No se encontró el usuario indicado");
+                    MostrarSinUsuario(Traductor.T("usuario.noEncontrado"));
                     return;
                 }
 
                 UsuarioEditado = usuario.NombreUsuario;
+                EstadoEditado = usuario.EstadoTexto;
 
                 lblUsuarioEditado.Text = Server.HtmlEncode(usuario.NombreUsuario);
-                lblEstadoActual.Text = Server.HtmlEncode(usuario.EstadoTexto);
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(usuario.EstadoTexto));
                 txtNombre.Text = usuario.Nombre;
                 txtApellido.Text = usuario.Apellido;
                 txtEmail.Text = usuario.Email;
@@ -122,7 +161,7 @@ namespace Strategic
         private void CargarRoles()
         {
             ddlRol.Items.Clear();
-            ddlRol.Items.Add(new ListItem("Seleccione un rol", string.Empty));
+            ddlRol.Items.Add(new ListItem(Traductor.T("usuario.seleccioneRol"), string.Empty));
 
             foreach (BERol rol in bllRol.TraerListaRoles())
             {

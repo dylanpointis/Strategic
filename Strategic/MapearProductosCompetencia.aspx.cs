@@ -15,6 +15,27 @@ namespace Strategic
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
         private readonly BLLProducto bllProducto = new BLLProducto();
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("mapearProductos.titulo");
+            lblProducto.Text = Traductor.T("mapearProductos.productoPropio");
+            valProducto.ErrorMessage = Traductor.T("mapearProductos.productoRequerido");
+            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
+            valCompetidor.ErrorMessage = Traductor.T("mapearProductos.competidorRequerido");
+            lblUrl.Text = Traductor.T("mapearProductos.url");
+            valUrl.ErrorMessage = Traductor.T("mapearProductos.urlRequerida");
+            btnMapear.Text = Traductor.T("mapearProductos.mapear");
+            btnLimpiar.Text = Traductor.T("comun.limpiar");
+
+            // Las primeras opciones de los combos se agregan desde codigo: en
+            // el Init de un postback todavia no se recuperaron del ViewState
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("mapearProductos.seleccioneProducto");
+                ddlCompetidor.Items[0].Text = Traductor.T("mapearProductos.seleccioneCompetidor");
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -39,7 +60,7 @@ namespace Strategic
 
                 bllCompetencia.MapearProducto(idProducto, idCompetencia, txtUrl.Text.Trim(), enSesion.NombreUsuario);
 
-                lblExito.Text = "Se registró el mapeo. La publicación será monitoreada en el próximo ciclo automático.";
+                lblExito.Text = Traductor.T("mapearProductos.exito");
                 lblError.Text = string.Empty;
 
                 LimpiarFormulario();
@@ -77,7 +98,7 @@ namespace Strategic
             List<BECompetencia> competidores = bllCompetencia.FiltrarCompetidores(null, null, true);
 
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Seleccioná un producto", string.Empty));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("mapearProductos.seleccioneProducto"), string.Empty));
 
             foreach (BEProducto producto in productos)
             {
@@ -87,7 +108,7 @@ namespace Strategic
             }
 
             ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem("Seleccioná un competidor", string.Empty));
+            ddlCompetidor.Items.Add(new ListItem(Traductor.T("mapearProductos.seleccioneCompetidor"), string.Empty));
 
             foreach (BECompetencia competidor in competidores)
             {
@@ -104,8 +125,8 @@ namespace Strategic
             if (faltanDatos)
             {
                 lblSinDatos.Text = productos.Count == 0
-                    ? "No existen productos sincronizados. Sincronizá el catálogo antes de mapear productos."
-                    : "No existen competidores activos registrados. Registrá un competidor antes de mapear productos.";
+                    ? Traductor.T("mapearProductos.sinProductos")
+                    : Traductor.T("mapearProductos.sinCompetidores");
             }
         }
     }

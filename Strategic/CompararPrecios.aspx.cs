@@ -14,9 +14,9 @@ namespace Strategic
     // CU-002-007 - Comparar Precios con Competidores
     public partial class CompararPrecios : PaginaSegura
     {
-        private const string MensajeSinMapeos = "Los productos no tienen competidores asociados";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
-        private const string MensajeSinHistorial = "La publicación todavía no tiene precios registrados";
+        private const string MensajeSinMapeos = "compararPrecios.sinMapeos";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
+        private const string MensajeSinHistorial = "compararPrecios.sinHistorial";
 
         // Formato con signo: deja a la vista si el precio propio quedó por
         // encima o por debajo del de la competencia
@@ -37,6 +37,38 @@ namespace Strategic
                 return string.IsNullOrEmpty(json) ? "null" : json;
             }
             private set { ViewState["DatosHistorialJson"] = value; }
+        }
+
+        private int PublicacionSeleccionada
+        {
+            get { return ViewState["PublicacionSeleccionada"] == null ? 0 : Convert.ToInt32(ViewState["PublicacionSeleccionada"]); }
+            set { ViewState["PublicacionSeleccionada"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("compararPrecios.titulo");
+            lblProducto.Text = Traductor.T("monitoreo.producto");
+            lblCategoria.Text = Traductor.T("productos.categoria");
+            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnCerrarDetalle.Text = Traductor.T("compararPrecios.cerrarHistorial");
+            MostrarCantidad();
+
+            // Lo que se arma desde codigo solo existe una vez recuperado el
+            // ViewState, por eso se pregunta antes de traducirlo
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("monitoreo.todosLosProductos");
+                ddlCategoria.Items[0].Text = Traductor.T("dashboard.todasLasCategorias");
+                ddlCompetidor.Items[0].Text = Traductor.T("monitoreo.todosLosCompetidores");
+            }
+
+            if (PublicacionSeleccionada > 0)
+            {
+                VerHistorial(PublicacionSeleccionada);
+            }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -68,7 +100,7 @@ namespace Strategic
 
                 if (comparaciones.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -94,19 +126,23 @@ namespace Strategic
                 return;
             }
 
+            VerHistorial(Convert.ToInt32(e.ObtenerClave("IdProductoCompetencia")));
+        }
+
+        private void VerHistorial(int idProductoCompetencia)
+        {
             try
             {
-                int idProductoCompetencia = Convert.ToInt32(e.ObtenerClave("IdProductoCompetencia"));
-
                 BEComparacionPrecio comparacion = bllCompetencia.TraerComparacionPrecioPorId(idProductoCompetencia);
 
                 if (comparacion == null)
                 {
                     OcultarDetalle();
-                    lblError.Text = "No se encontró la publicación seleccionada";
+                    lblError.Text = Traductor.T("gestionarPublicacion.noEncontrada");
                     return;
                 }
 
+                PublicacionSeleccionada = idProductoCompetencia;
                 MostrarDetalle(comparacion, bllCompetencia.TraerHistorialPrecioCompetencia(idProductoCompetencia));
             }
             catch (Exception ex)
@@ -126,23 +162,23 @@ namespace Strategic
             grillaComparacion.FilasPorPagina = 10;
             grillaComparacion.MostrarSelectorFilas = true;
 
-            grillaComparacion.AgregarColumna("NombreProducto", "Producto propio");
-            grillaComparacion.AgregarColumna("NombreCompetidor", "Competidor");
-            grillaComparacion.AgregarColumna("PrecioPropio", "Precio propio", "celda-numero", "${0:N2}");
-            grillaComparacion.AgregarColumna("PrecioCompetencia", "Precio competencia", "celda-numero", "${0:N2}");
-            grillaComparacion.AgregarColumna("DiferenciaPorcentaje", "Diferencia", "celda-numero", FormatoDiferencia);
-            grillaComparacion.AgregarColumna("Posicion", "Posición");
-            grillaComparacion.AgregarColumna("FechaConsulta", "Última consulta", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaComparacion.AgregarColumnaAccion("Historial", "VerHistorial", "Ver historial");
+            grillaComparacion.AgregarColumna("NombreProducto", "mapearProductos.productoPropio");
+            grillaComparacion.AgregarColumna("NombreCompetidor", "mapearProductos.competidor");
+            grillaComparacion.AgregarColumna("PrecioPropio", "compararPrecios.precioPropio", "celda-numero", "${0:N2}");
+            grillaComparacion.AgregarColumna("PrecioCompetencia", "compararPrecios.precioCompetencia", "celda-numero", "${0:N2}");
+            grillaComparacion.AgregarColumna("DiferenciaPorcentaje", "compararPrecios.diferencia", "celda-numero", FormatoDiferencia);
+            grillaComparacion.AgregarColumnaTraducida("Posicion", "compararPrecios.posicion");
+            grillaComparacion.AgregarColumna("FechaConsulta", "compararPrecios.ultimaConsulta", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaComparacion.AgregarColumnaAccion("compararPrecios.historial", "VerHistorial", "compararPrecios.verHistorial");
 
             grillaHistorial.ClavePrimaria = "IdPrecioCompetencia";
             grillaHistorial.FilasPorPagina = 10;
             grillaHistorial.MostrarSelectorFilas = false;
 
-            grillaHistorial.AgregarColumna("FechaConsulta", "Fecha de consulta", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaHistorial.AgregarColumna("PrecioPropio", "Precio propio", "celda-numero", "${0:N2}");
-            grillaHistorial.AgregarColumna("PrecioCompetencia", "Precio competencia", "celda-numero", "${0:N2}");
-            grillaHistorial.AgregarColumna("DiferenciaPorcentaje", "Diferencia", "celda-numero", FormatoDiferencia);
+            grillaHistorial.AgregarColumna("FechaConsulta", "compararPrecios.fechaConsulta", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaHistorial.AgregarColumna("PrecioPropio", "compararPrecios.precioPropio", "celda-numero", "${0:N2}");
+            grillaHistorial.AgregarColumna("PrecioCompetencia", "compararPrecios.precioCompetencia", "celda-numero", "${0:N2}");
+            grillaHistorial.AgregarColumna("DiferenciaPorcentaje", "compararPrecios.diferencia", "celda-numero", FormatoDiferencia);
         }
 
         
@@ -171,12 +207,18 @@ namespace Strategic
         private void MostrarComparacion(List<BEComparacionPrecio> comparaciones, string mensajeVacio)
         {
             grillaComparacion.Cargar(comparaciones, mensajeVacio);
-
-            lblCantidad.Text = comparaciones.Count == 1
-                ? "1 publicación"
-                : string.Format("{0} publicaciones", comparaciones.Count);
+            MostrarCantidad();
 
             MostrarIndicadores(bllCompetencia.CalcularResumen(comparaciones));
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaComparacion.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("monitoreo.cantidadUno")
+                : Traductor.T("monitoreo.cantidad", cantidad);
         }
 
         private void MostrarIndicadores(BEResumenComparacion resumen)
@@ -200,17 +242,17 @@ namespace Strategic
 
             lblDetallePrecioCompetencia.Text = Server.HtmlEncode(comparacion.PrecioCompetencia.HasValue
                 ? string.Format("${0:N2}", comparacion.PrecioCompetencia.Value)
-                : "Sin registro");
+                : Traductor.T("compararPrecios.posicion.sinRegistro"));
 
             lblDetalleDiferencia.Text = Server.HtmlEncode(comparacion.DiferenciaPorcentaje.HasValue
                 ? string.Format("{0} ({1})",
                     string.Format(FormatoDiferencia, comparacion.DiferenciaPorcentaje.Value),
-                    comparacion.Posicion)
-                : comparacion.Posicion);
+                    Traductor.T(comparacion.Posicion))
+                : Traductor.T(comparacion.Posicion));
 
             lblDetalleUltimaConsulta.Text = Server.HtmlEncode(comparacion.FechaConsulta.HasValue
                 ? comparacion.FechaConsulta.Value.ToString("dd/MM/yyyy HH:mm")
-                : "Sin consultas");
+                : Traductor.T("compararPrecios.sinConsultas"));
 
             MostrarPublicacion(comparacion.Url);
             MostrarHistorial(historial);
@@ -237,7 +279,7 @@ namespace Strategic
                 return;
             }
 
-            lblPublicacion.Text = Server.HtmlEncode(string.IsNullOrWhiteSpace(url) ? "Sin publicación" : url);
+            lblPublicacion.Text = Server.HtmlEncode(string.IsNullOrWhiteSpace(url) ? Traductor.T("compararPrecios.sinPublicacion") : url);
         }
 
         private bool EsEnlaceWeb(string url)
@@ -257,8 +299,8 @@ namespace Strategic
             grillaHistorial.Cargar(historial, MensajeSinHistorial);
 
             lblCantidadHistorial.Text = historial.Count == 1
-                ? "1 consulta de precio"
-                : string.Format("{0} consultas de precio", historial.Count);
+                ? Traductor.T("compararPrecios.consultasUno")
+                : Traductor.T("compararPrecios.consultas", historial.Count);
 
             ArmarGrafico(historial);
         }
@@ -278,8 +320,8 @@ namespace Strategic
 
             List<SerieGrafico> series = new List<SerieGrafico>();
 
-            series.Add(new SerieGrafico("Precio propio", propios));
-            series.Add(new SerieGrafico("Precio competencia", competencia));
+            series.Add(new SerieGrafico(Traductor.T("compararPrecios.precioPropio"), propios));
+            series.Add(new SerieGrafico(Traductor.T("compararPrecios.precioCompetencia"), competencia));
 
             DatosHistorialJson = DatosGrafico.Serializar(etiquetas, series);
 
@@ -287,12 +329,13 @@ namespace Strategic
 
             pnlGraficoHistorial.Visible = hayDatos;
             pnlSinHistorial.Visible = !hayDatos;
-            lblSinHistorial.Text = MensajeSinHistorial;
+            lblSinHistorial.Text = Traductor.T(MensajeSinHistorial);
         }
 
         private void OcultarDetalle()
         {
             pnlDetalle.Visible = false;
+            PublicacionSeleccionada = 0;
             grillaHistorial.Limpiar();
             DatosHistorialJson = null;
         }
@@ -306,7 +349,7 @@ namespace Strategic
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Todos los productos", string.Empty));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosProductos"), string.Empty));
 
             foreach (BEProducto producto in productos)
             {
@@ -316,7 +359,7 @@ namespace Strategic
             }
 
             ddlCategoria.Items.Clear();
-            ddlCategoria.Items.Add(new ListItem("Todas las categorías", string.Empty));
+            ddlCategoria.Items.Add(new ListItem(Traductor.T("dashboard.todasLasCategorias"), string.Empty));
 
             List<string> categorias = productos
                 .Select(producto => producto.Categoria)
@@ -331,7 +374,7 @@ namespace Strategic
             }
 
             ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem("Todos los competidores", string.Empty));
+            ddlCompetidor.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosCompetidores"), string.Empty));
 
             foreach (BECompetencia competidor in bllCompetencia.TraerListaCompetidores())
             {

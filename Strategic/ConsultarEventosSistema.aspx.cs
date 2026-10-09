@@ -16,6 +16,39 @@ namespace Strategic
         private readonly BLLEvento bllEvento = new BLLEvento();
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
 
+        // Clave de traduccion del estado del usuario que se muestra en el detalle
+        private string EstadoDetalle
+        {
+            get { return Convert.ToString(ViewState["EstadoDetalle"]); }
+            set { ViewState["EstadoDetalle"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("eventos.titulo");
+            lblUsuario.Text = Traductor.T("usuario.usuario");
+            txtUsuario.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblModulo.Text = Traductor.T("eventos.modulo");
+            lblEvento.Text = Traductor.T("eventos.evento");
+            txtEvento.Attributes["placeholder"] = Traductor.T("comun.todos");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnCerrarDetalle.Text = Traductor.T("eventos.cerrarDetalle");
+            MostrarCantidad();
+
+            // Lo que se arma desde codigo solo existe una vez recuperado el
+            // ViewState, por eso se pregunta antes de traducirlo
+            if (ddlModulo.Items.Count > 0)
+            {
+                ddlModulo.Items[0].Text = Traductor.T("comun.todos");
+            }
+
+            if (!string.IsNullOrEmpty(EstadoDetalle))
+            {
+                lblEstado.Text = Server.HtmlEncode(Traductor.T(EstadoDetalle));
+            }
+        }
+
         protected void Page_Init(object sender, EventArgs e)
         {
             // Las columnas se arman en el Init para que la grilla pueda reconstruirse
@@ -30,7 +63,7 @@ namespace Strategic
                 List<Evento> eventos = bllEvento.TraerListaEventos();
 
                 CargarModulos(eventos);
-                CargarGrilla(eventos, "No existen eventos registrados en el sistema");
+                CargarGrilla(eventos, "eventos.sinEventos");
             }
         }
 
@@ -46,7 +79,7 @@ namespace Strategic
                     filtroFechas.FechaHasta);
 
                 OcultarDetalle();
-                CargarGrilla(eventos, "No se encontraron eventos para los filtros aplicados");
+                CargarGrilla(eventos, "eventos.sinResultados");
             }
             catch (Exception ex)
             {
@@ -65,7 +98,7 @@ namespace Strategic
 
             OcultarDetalle();
             CargarModulos(eventos);
-            CargarGrilla(eventos, "No existen eventos registrados en el sistema");
+            CargarGrilla(eventos, "eventos.sinEventos");
         }
 
         protected void grillaEventos_AccionSeleccionada(object sender, AccionGrillaEventArgs e)
@@ -80,7 +113,7 @@ namespace Strategic
             if (string.IsNullOrWhiteSpace(nombreUsuario))
             {
                 OcultarDetalle();
-                lblError.Text = "El evento seleccionado no tiene un usuario asociado";
+                lblError.Text = Traductor.T("eventos.sinUsuarioAsociado");
                 return;
             }
 
@@ -91,7 +124,7 @@ namespace Strategic
                 if (usuario == null)
                 {
                     OcultarDetalle();
-                    lblError.Text = "No se encontró el usuario que ejecutó el evento";
+                    lblError.Text = Traductor.T("eventos.usuarioNoEncontrado");
                     return;
                 }
 
@@ -114,29 +147,35 @@ namespace Strategic
             grillaEventos.FilasPorPagina = 10;
             grillaEventos.MostrarSelectorFilas = true;
 
-            grillaEventos.AgregarColumna("CodEvento", "Código", "celda-codigo");
-            grillaEventos.AgregarColumna("Fecha", "Fecha", "celda-fecha");
-            grillaEventos.AgregarColumna("Hora", "Hora", "celda-fecha");
-            grillaEventos.AgregarColumna("NombreUsuario", "Usuario", "celda-usuario");
-            grillaEventos.AgregarColumna("Modulo", "Módulo");
-            grillaEventos.AgregarColumna("Descripcion", "Evento");
-            grillaEventos.AgregarColumna("Criticidad", "Criticidad");
-            grillaEventos.AgregarColumnaAccion("Detalle", "VerUsuario", "Ver usuario");
+            grillaEventos.AgregarColumna("CodEvento", "eventos.codigo", "celda-codigo");
+            grillaEventos.AgregarColumna("Fecha", "comun.fecha", "celda-fecha");
+            grillaEventos.AgregarColumna("Hora", "eventos.hora", "celda-fecha");
+            grillaEventos.AgregarColumna("NombreUsuario", "usuario.usuario", "celda-usuario");
+            grillaEventos.AgregarColumna("Modulo", "eventos.modulo");
+            grillaEventos.AgregarColumna("Descripcion", "eventos.evento");
+            grillaEventos.AgregarColumna("Criticidad", "eventos.criticidad");
+            grillaEventos.AgregarColumnaAccion("comun.detalle", "VerUsuario", "eventos.verUsuario");
         }
 
         private void CargarGrilla(List<Evento> eventos, string mensajeVacio)
         {
             grillaEventos.Cargar(eventos, mensajeVacio);
+            MostrarCantidad();
+        }
 
-            lblCantidad.Text = grillaEventos.CantidadRegistros == 1
-                ? "1 evento"
-                : string.Format("{0} eventos", grillaEventos.CantidadRegistros);
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaEventos.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("eventos.cantidadUno")
+                : Traductor.T("eventos.cantidad", cantidad);
         }
 
         private void CargarModulos(List<Evento> eventos)
         {
             ddlModulo.Items.Clear();
-            ddlModulo.Items.Add(new ListItem("Todos", string.Empty));
+            ddlModulo.Items.Add(new ListItem(Traductor.T("comun.todos"), string.Empty));
 
             List<string> modulos = eventos
                 .Select(evento => evento.Modulo)
@@ -157,7 +196,8 @@ namespace Strategic
             lblNombreApellido.Text = Server.HtmlEncode(usuario.Nombre + " " + usuario.Apellido);
             lblEmail.Text = Server.HtmlEncode(usuario.Email);
             lblRol.Text = Server.HtmlEncode(usuario.Rol != null ? usuario.Rol.Nombre : string.Empty);
-            lblEstado.Text = Server.HtmlEncode(ObtenerEstado(usuario));
+            lblEstado.Text = Server.HtmlEncode(Traductor.T(usuario.EstadoTexto));
+            EstadoDetalle = usuario.EstadoTexto;
 
             pnlDetalleUsuario.Visible = true;
         }
@@ -165,16 +205,7 @@ namespace Strategic
         private void OcultarDetalle()
         {
             pnlDetalleUsuario.Visible = false;
-        }
-
-        private string ObtenerEstado(BEUsuario usuario)
-        {
-            if (!usuario.Activo)
-            {
-                return "Inactivo";
-            }
-
-            return usuario.Bloqueado ? "Bloqueado" : "Activo";
+            EstadoDetalle = null;
         }
     }
 }

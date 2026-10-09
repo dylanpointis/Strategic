@@ -1,9 +1,9 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
 using System.IO;
-using System.Web.UI;
 
 namespace Strategic.Seguridad
 {
@@ -20,7 +20,7 @@ namespace Strategic.Seguridad
     /// Sin sesión se redirige al login; con sesión pero sin permiso se
     /// registra el intento en la bitácora y se muestra Acceso denegado.
     
-    public abstract class PaginaSegura : Page
+    public abstract class PaginaSegura : PaginaBase
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
 

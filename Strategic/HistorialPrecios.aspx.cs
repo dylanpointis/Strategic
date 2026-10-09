@@ -13,9 +13,9 @@ namespace Strategic
     // CU-004-014 - Ver Historial de Precios
     public partial class HistorialPrecios : PaginaSegura
     {
-        private const string MensajeSinProducto = "Seleccione un producto para ver su historial de precios";
-        private const string MensajeSinHistorial = "El producto no posee historial de precios";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinProducto = "historialPrecios.sinProducto";
+        private const string MensajeSinHistorial = "historialPrecios.sinHistorial";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLProducto bllProducto = new BLLProducto();
 
@@ -31,6 +31,25 @@ namespace Strategic
                 return string.IsNullOrEmpty(json) ? "null" : json;
             }
             private set { ViewState["DatosGraficoJson"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("historialPrecios.titulo");
+            lblProducto.Text = Traductor.T("monitoreo.producto");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+
+            // La grilla guarda la clave del mensaje vacio y la cantidad en su ViewState
+            lblSinGrafico.Text = Traductor.T(grillaPrecios.MensajeVacio);
+            MostrarCantidad();
+
+            // La primera opcion del combo se agrega desde codigo: en el Init
+            // de un postback todavia no se recupero del ViewState
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("historial.seleccioneProducto");
+            }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -73,8 +92,8 @@ namespace Strategic
             grillaPrecios.FilasPorPagina = 10;
             grillaPrecios.MostrarSelectorFilas = true;
 
-            grillaPrecios.AgregarColumna("Fecha", "Fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaPrecios.AgregarColumna("Precio", "Precio", "celda-numero", "${0:N2}");
+            grillaPrecios.AgregarColumna("Fecha", "comun.fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaPrecios.AgregarColumna("Precio", "productos.precio", "celda-numero", "${0:N2}");
         }
 
         private void ConsultarHistorial()
@@ -108,10 +127,7 @@ namespace Strategic
         private void MostrarHistorial(List<BEHistorialPrecio> historial, string mensajeVacio)
         {
             grillaPrecios.Cargar(historial, mensajeVacio);
-
-            lblCantidad.Text = historial.Count == 1
-                ? "1 registro de precio"
-                : string.Format("{0} registros de precio", historial.Count);
+            MostrarCantidad();
 
             lblProductoElegido.Text = ddlProducto.SelectedItem != null
                 ? Server.HtmlEncode(ddlProducto.SelectedItem.Text)
@@ -137,7 +153,16 @@ namespace Strategic
 
             pnlGrafico.Visible = hayDatos;
             pnlSinGrafico.Visible = !hayDatos;
-            lblSinGrafico.Text = mensajeVacio;
+            lblSinGrafico.Text = Traductor.T(mensajeVacio);
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaPrecios.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("historialPrecios.cantidadUno")
+                : Traductor.T("historialPrecios.cantidad", cantidad);
         }
 
         private void LimpiarHistorial(string mensaje)
@@ -151,7 +176,7 @@ namespace Strategic
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Seleccione un producto", "0"));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("historial.seleccioneProducto"), "0"));
 
             foreach (BEProducto producto in productos)
             {

@@ -1,5 +1,6 @@
 ﻿using BE;
 using BLL;
+using Services;
 using Strategic.Componentes;
 using Strategic.Seguridad;
 using System;
@@ -36,6 +37,39 @@ namespace Strategic
             private set { ViewState["PrefijoGrafico"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("predicciones.titulo");
+            lblTipo.Text = Traductor.T("predicciones.tipo");
+            lblProducto.Text = Traductor.T("monitoreo.producto");
+            lblHorizonte.Text = Traductor.T("predicciones.horizonte");
+            btnGenerar.Text = Traductor.T("predicciones.generar");
+            btnLimpiar.Text = Traductor.T("comun.limpiar");
+
+            foreach (ListItem dias in ddlHorizonte.Items)
+            {
+                dias.Text = Traductor.T("predicciones.dias", dias.Value);
+            }
+
+            // Lo que se arma desde codigo solo existe una vez recuperado el
+            // ViewState, por eso se pregunta antes de traducirlo
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("historial.seleccioneProducto");
+
+                foreach (KeyValuePair<string, string> tipo in bllPrediccion.TraerTipos())
+                {
+                    ddlTipo.Items.FindByValue(tipo.Key).Text = tipo.Value;
+                }
+            }
+
+            // El resultado se vuelve a generar para que sus textos salgan en el idioma nuevo
+            if (pnlResultado.Visible)
+            {
+                GenerarPrediccion();
+            }
+        }
+
         protected void Page_Init(object sender, EventArgs e)
         {
             // Las columnas se arman en el Init para que la grilla pueda
@@ -52,6 +86,11 @@ namespace Strategic
         }
 
         protected void btnGenerar_Click(object sender, EventArgs e)
+        {
+            GenerarPrediccion();
+        }
+
+        private void GenerarPrediccion()
         {
             int idProducto;
             int horizonte;
@@ -90,8 +129,8 @@ namespace Strategic
             grillaProyeccion.FilasPorPagina = 10;
             grillaProyeccion.MostrarSelectorFilas = true;
 
-            grillaProyeccion.AgregarColumna("Fecha", "Fecha", "celda-fecha", "{0:dd/MM/yyyy}");
-            grillaProyeccion.AgregarColumna("Valor", "Valor proyectado", "celda-numero", "{0:N2}");
+            grillaProyeccion.AgregarColumna("Fecha", "comun.fecha", "celda-fecha", "{0:dd/MM/yyyy}");
+            grillaProyeccion.AgregarColumna("Valor", "predicciones.valorProyectado", "celda-numero", "{0:N2}");
         }
 
         private void MostrarPrediccion(BEPrediccion prediccion)
@@ -101,18 +140,18 @@ namespace Strategic
             lblResumen.Text = Server.HtmlEncode(string.Format("{0} - {1}", prediccion.NombreTipo, prediccion.NombreProducto));
 
             lblValorActual.Text = Server.HtmlEncode(Formatear(prefijo, prediccion.ValorActual));
-            lblFechaBase.Text = Server.HtmlEncode("al " + prediccion.FechaBase.ToString("dd/MM/yyyy"));
+            lblFechaBase.Text = Server.HtmlEncode(Traductor.T("predicciones.al", prediccion.FechaBase.ToString("dd/MM/yyyy")));
 
             lblValorPredicho.Text = Server.HtmlEncode(Formatear(prefijo, prediccion.ValorPredicho));
-            lblFechaFin.Text = Server.HtmlEncode(string.Format("al {0} ({1} días)", prediccion.FechaFin.ToString("dd/MM/yyyy"), prediccion.HorizonteDias));
+            lblFechaFin.Text = Server.HtmlEncode(Traductor.T("predicciones.alConDias", prediccion.FechaFin.ToString("dd/MM/yyyy"), prediccion.HorizonteDias));
 
             lblVariacion.Text = Server.HtmlEncode(string.Format("{0:+#,##0.0;-#,##0.0;0.0}%", prediccion.VariacionPorcentaje));
             lblTendencia.Text = Server.HtmlEncode(prediccion.Tendencia);
 
             lblConfianza.Text = Server.HtmlEncode(prediccion.Confianza);
-            lblR2.Text = Server.HtmlEncode(string.Format("R² = {0:0.00} sobre {1} registros", prediccion.R2, prediccion.CantidadPuntos));
+            lblR2.Text = Server.HtmlEncode(Traductor.T("predicciones.r2", prediccion.R2, prediccion.CantidadPuntos));
 
-            lblDetalleRecta.Text = Server.HtmlEncode(string.Format("Pendiente {0}{1:+#,##0.00;-#,##0.00;0.00} {2}",
+            lblDetalleRecta.Text = Server.HtmlEncode(Traductor.T("predicciones.pendiente",
                 prefijo, prediccion.Pendiente, prediccion.Unidad));
 
             pnlQuiebre.Visible = prediccion.FechaQuiebre.HasValue;
@@ -121,14 +160,14 @@ namespace Strategic
             {
                 int dias = (int)(prediccion.FechaQuiebre.Value - DateTime.Today).TotalDays;
 
-                lblQuiebre.Text = Server.HtmlEncode(string.Format(
-                    "Al ritmo actual el stock se agotaría el {0} ({1}).",
+                lblQuiebre.Text = Server.HtmlEncode(Traductor.T(
+                    "predicciones.quiebre",
                     prediccion.FechaQuiebre.Value.ToString("dd/MM/yyyy"),
-                    dias <= 0 ? "ya deberia estar en cero" : string.Format("en {0} días", dias)));
+                    dias <= 0 ? Traductor.T("predicciones.yaEnCero") : Traductor.T("predicciones.enDias", dias)));
             }
 
-            grillaProyeccion.Cargar(prediccion.Proyeccion, "Sin puntos proyectados");
-            lblCantidad.Text = Server.HtmlEncode(string.Format("{0} puntos", prediccion.Proyeccion.Count));
+            grillaProyeccion.Cargar(prediccion.Proyeccion, "predicciones.sinPuntos");
+            lblCantidad.Text = Server.HtmlEncode(Traductor.T("predicciones.puntos", prediccion.Proyeccion.Count));
 
             ArmarGrafico(prediccion);
 
@@ -165,8 +204,8 @@ namespace Strategic
 
             List<SerieGrafico> series = new List<SerieGrafico>();
 
-            series.Add(new SerieGrafico("Histórico", historico, false));
-            series.Add(new SerieGrafico("Proyección", proyeccion, true));
+            series.Add(new SerieGrafico(Traductor.T("predicciones.historico"), historico, false));
+            series.Add(new SerieGrafico(Traductor.T("predicciones.proyeccion"), proyeccion, true));
 
             DatosGraficoJson = DatosGrafico.Serializar(etiquetas, series);
             PrefijoGrafico = prediccion.Prefijo;
@@ -184,7 +223,7 @@ namespace Strategic
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Seleccione un producto", "0"));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("historial.seleccioneProducto"), "0"));
 
             foreach (BEProducto producto in productos)
             {

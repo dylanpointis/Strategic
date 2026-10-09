@@ -1,5 +1,6 @@
 ﻿using BE;
 using DAL;
+using Services;
 using System;
 using System.Collections.Generic;
 
@@ -54,7 +55,7 @@ namespace BLL
             List<BEVentaPorCategoria> agrupadas = new List<BEVentaPorCategoria>();
             BEVentaPorCategoria otras = new BEVentaPorCategoria();
 
-            otras.Categoria = "Otras";
+            otras.Categoria = Traductor.T("dashboard.otras");
 
             for (int i = 0; i < categorias.Count; i++)
             {
@@ -97,7 +98,7 @@ namespace BLL
         {
             if (fechaInicio.HasValue && fechaFin.HasValue && fechaFin.Value < fechaInicio.Value)
             {
-                throw new Exception("La fecha hasta no puede ser anterior a la fecha desde");
+                throw new Exception(Traductor.T("filtroFechas.errorRango"));
             }
         }
 

@@ -88,12 +88,12 @@ namespace BLL
         {
             if (string.IsNullOrWhiteSpace(ruta) || !File.Exists(ruta))
             {
-                throw new Exception("No se encontró el archivo de respaldo");
+                throw new Exception(Traductor.T("backup.archivoNoEncontrado"));
             }
 
             if (!string.Equals(Path.GetExtension(ruta), Extension, StringComparison.OrdinalIgnoreCase))
             {
-                throw new Exception("El archivo de respaldo debe tener extensión .bak");
+                throw new Exception(Traductor.T("restore.extensionInvalida"));
             }
 
             dalRespaldo.RealizarRestore(ruta);
@@ -121,7 +121,7 @@ namespace BLL
         {
             if (string.IsNullOrWhiteSpace(carpeta))
             {
-                throw new Exception("No está configurada la carpeta de respaldos");
+                throw new Exception(Traductor.T("error.carpetaRespaldosSinConfigurar"));
             }
         }
 

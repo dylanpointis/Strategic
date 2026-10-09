@@ -1,24 +1,24 @@
-<%@ Page Title="Gestionar publicación" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GestionarPublicacionCompetencia.aspx.cs" Inherits="Strategic.GestionarPublicacionCompetencia" %>
+<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GestionarPublicacionCompetencia.aspx.cs" Inherits="Strategic.GestionarPublicacionCompetencia" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <main class="page-section">
 
         <div class="page-heading">
-            <h1>Gestionar publicación</h1>
-            <p>Confirmación de pausa, reactivación o baja del monitoreo de una publicación.</p>
+            <h1><%: Traductor.T("gestionarPublicacion.titulo") %></h1>
+            <p><%: Traductor.T("gestionarPublicacion.subtitulo") %></p>
         </div>
 
         <asp:Panel ID="pnlConfirmacion" runat="server" CssClass="strategic-card">
             <div class="strategic-card-header">
-                <h2>Confirmar acción</h2>
+                <h2><%: Traductor.T("comun.confirmarAccion") %></h2>
             </div>
 
             <div class="strategic-card-body">
                 <div class="confirmacion">
                     <p><asp:Label ID="lblConfirmacion" runat="server"></asp:Label></p>
-                    <asp:Button ID="btnConfirmar" runat="server" Text="Confirmar" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnConfirmar_Click" />
-                    <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
+                    <asp:Button ID="btnConfirmar" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnConfirmar_Click" />
+                    <asp:Button ID="btnCancelar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
                 </div>
 
                 <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="formulario-acciones">
-                    <asp:Button ID="btnVolver" runat="server" Text="Volver al listado" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnCancelar_Click" />
+                    <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnCancelar_Click" />
                 </div>
             </div>
         </asp:Panel>

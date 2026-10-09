@@ -57,14 +57,15 @@ namespace BE
         
         public int UsuariosActivos { get; set; }
 
+        // Claves de traducción del estado y del botón que lo cambia
         public string EstadoTexto
         {
-            get { return Activo ? "Activo" : "Inactivo"; }
+            get { return Activo ? "comun.estado.activo" : "comun.estado.inactivo"; }
         }
 
         public string AccionEstado
         {
-            get { return Activo ? "Dar de baja" : "Reactivar"; }
+            get { return Activo ? "comun.accion.darDeBaja" : "comun.accion.reactivar"; }
         }
 
         

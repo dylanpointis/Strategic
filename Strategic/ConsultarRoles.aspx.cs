@@ -14,8 +14,8 @@ namespace Strategic
     // La baja y la reactivacion del CU-005-023 se disparan desde el detalle
     public partial class ConsultarRoles : PaginaSegura
     {
-        private const string MensajeSinRoles = "No existen roles registrados";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinRoles = "consultarRoles.sinRoles";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLRol bllRol = new BLLRol();
 
@@ -30,6 +30,29 @@ namespace Strategic
             // Las columnas se arman en el Init para que la grilla pueda
             // reconstruirse en cada postback a partir de su ViewState
             ConfigurarGrilla();
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("consultarRoles.titulo");
+            lblNombre.Text = Traductor.T("comun.nombre");
+            txtNombre.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblEstado.Text = Traductor.T("comun.estado");
+            ddlEstado.Items[0].Text = Traductor.T("comun.activos");
+            ddlEstado.Items[1].Text = Traductor.T("comun.inactivos");
+            ddlEstado.Items[2].Text = Traductor.T("comun.todos");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnNuevo.Text = Traductor.T("consultarRoles.nuevo");
+            btnModificar.Text = Traductor.T("comun.modificar");
+            btnCerrarDetalle.Text = Traductor.T("comun.cerrar");
+            MostrarCantidad();
+
+            // El detalle abierto se conoce recien al recuperar el ViewState
+            if (RolSeleccionado > 0)
+            {
+                MostrarDetalle(RolSeleccionado);
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -103,11 +126,11 @@ namespace Strategic
             grillaRoles.FilasPorPagina = 10;
             grillaRoles.MostrarSelectorFilas = true;
 
-            grillaRoles.AgregarColumna("Nombre", "Rol");
-            grillaRoles.AgregarColumna("CantidadComponentesAsignados", "Componentes", "celda-numero");
-            grillaRoles.AgregarColumna("UsuariosActivos", "Usuarios activos", "celda-numero");
-            grillaRoles.AgregarColumna("EstadoTexto", "Estado");
-            grillaRoles.AgregarColumnaAccion("Detalle", "VerDetalle", "Ver permisos");
+            grillaRoles.AgregarColumna("Nombre", "usuario.rol");
+            grillaRoles.AgregarColumna("CantidadComponentesAsignados", "consultarRoles.componentes", "celda-numero");
+            grillaRoles.AgregarColumna("UsuariosActivos", "consultarRoles.usuariosActivos", "celda-numero");
+            grillaRoles.AgregarColumnaTraducida("EstadoTexto", "comun.estado");
+            grillaRoles.AgregarColumnaAccion("comun.detalle", "VerDetalle", "consultarRoles.verPermisos");
 
             btnNuevo.Visible = TienePermiso("AltaRol");
         }
@@ -119,14 +142,11 @@ namespace Strategic
                 List<BERol> roles = bllRol.FiltrarRoles(txtNombre.Text, ObtenerEstadoElegido());
 
                 grillaRoles.Cargar(roles, vieneDeFiltros ? MensajeSinResultados : MensajeSinRoles);
-
-                lblCantidad.Text = roles.Count == 1
-                    ? "1 rol"
-                    : string.Format("{0} roles", roles.Count);
+                MostrarCantidad();
 
                 if (vieneDeFiltros && roles.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -143,7 +163,7 @@ namespace Strategic
 
                 if (rol == null)
                 {
-                    lblError.Text = "No se encontró el rol seleccionado";
+                    lblError.Text = Traductor.T("rol.noEncontrado");
                     return;
                 }
 
@@ -156,7 +176,7 @@ namespace Strategic
                 // sin importar si llegan sueltos o dentro de una familia
                 lblDetallePantallas.Text = rol.ObtenerPermisosSimples().Count.ToString();
                 lblDetalleUsuarios.Text = rol.UsuariosActivos.ToString();
-                lblDetalleEstado.Text = Server.HtmlEncode(rol.EstadoTexto);
+                lblDetalleEstado.Text = Server.HtmlEncode(Traductor.T(rol.EstadoTexto));
 
                 // El arbol se arma como listas anidadas: un div runat=server
                 // deja insertar ese html sin envolverlo en un span
@@ -166,13 +186,22 @@ namespace Strategic
                 // detalle pero no las acciones que no puede ejecutar
                 btnModificar.Visible = TienePermiso("ModificarRol");
                 btnCambiarEstado.Visible = TienePermiso("BajaRol");
-                btnCambiarEstado.Text = rol.AccionEstado;
+                btnCambiarEstado.Text = Traductor.T(rol.AccionEstado);
                 pnlDetalle.Visible = true;
             }
             catch (Exception ex)
             {
                 lblError.Text = Server.HtmlEncode(ex.Message);
             }
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaRoles.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("consultarRoles.cantidadUno")
+                : Traductor.T("consultarRoles.cantidad", cantidad);
         }
 
         private void OcultarDetalle()

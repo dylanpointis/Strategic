@@ -19,6 +19,29 @@ namespace Strategic
             set { ViewState["RolEditado"] = value; }
         }
 
+        // Clave de traduccion del estado del rol editado
+        private string EstadoEditado
+        {
+            get { return Convert.ToString(ViewState["EstadoEditado"]); }
+            set { ViewState["EstadoEditado"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("modificarRol.titulo");
+            lblNombre.Text = Traductor.T("rol.nombre");
+            valNombre.ErrorMessage = Traductor.T("rol.nombreRequerido");
+            btnGuardar.Text = Traductor.T("comun.guardarCambios");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // El estado se conoce recien al recuperar el ViewState
+            if (!string.IsNullOrEmpty(EstadoEditado))
+            {
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(EstadoEditado));
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -40,7 +63,7 @@ namespace Strategic
 
                 bllRol.ModificarRol(RolEditado, txtNombre.Text, selectorPermisos.ObtenerSeleccionados(), enSesion.NombreUsuario);
 
-                Session["MensajeRoles"] = string.Format("Se actualizó el rol {0}", txtNombre.Text.Trim());
+                Session["MensajeRoles"] = Traductor.T("modificarRol.exito", txtNombre.Text.Trim());
                 Response.Redirect("~/ConsultarRoles.aspx");
             }
             catch (Exception ex)
@@ -60,7 +83,7 @@ namespace Strategic
 
             if (!int.TryParse(valor, out codRol))
             {
-                MostrarSinRegistro("No se indicó qué rol modificar");
+                MostrarSinRegistro(Traductor.T("modificarRol.sinRol"));
                 return;
             }
 
@@ -70,14 +93,15 @@ namespace Strategic
 
                 if (rol == null)
                 {
-                    MostrarSinRegistro("No se encontró el rol indicado");
+                    MostrarSinRegistro(Traductor.T("rol.noEncontrado"));
                     return;
                 }
 
                 RolEditado = rol.CodRol;
+                EstadoEditado = rol.EstadoTexto;
 
                 txtNombre.Text = rol.Nombre;
-                lblEstadoActual.Text = Server.HtmlEncode(rol.EstadoTexto);
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(rol.EstadoTexto));
 
                 // El selector arranca con los componentes que el rol ya tiene
                 selectorPermisos.Cargar(

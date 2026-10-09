@@ -1,5 +1,6 @@
 ﻿using BE;
 using DAL;
+using Services;
 using Services.Prediccion;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,9 @@ namespace BLL
         {
             List<KeyValuePair<string, string>> tipos = new List<KeyValuePair<string, string>>();
 
-            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoPrecio, "Precio del producto"));
-            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoStock, "Stock disponible"));
-            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoDemanda, "Demanda (unidades vendidas por semana)"));
+            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoPrecio, Traductor.T("predicciones.tipoPrecio")));
+            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoStock, Traductor.T("productos.stockDisponible")));
+            tipos.Add(new KeyValuePair<string, string>(BEPrediccion.TipoDemanda, Traductor.T("predicciones.tipoDemanda")));
 
             return tipos;
         }
@@ -41,19 +42,19 @@ namespace BLL
         {
             if (idProducto <= 0)
             {
-                throw new Exception("Debe seleccionar un producto");
+                throw new Exception(Traductor.T("error.seleccioneProducto"));
             }
 
             if (horizonteDias < 1 || horizonteDias > 365)
             {
-                throw new Exception("El horizonte tiene que estar entre 1 y 365 dias");
+                throw new Exception(Traductor.T("error.horizonteInvalido"));
             }
 
             BEProducto producto = dalProducto.TraerProductoPorId(idProducto);
 
             if (producto == null)
             {
-                throw new Exception("No se encontro el producto seleccionado");
+                throw new Exception(Traductor.T("productos.noEncontrado"));
             }
 
             switch (tipo)
@@ -65,7 +66,7 @@ namespace BLL
                 case BEPrediccion.TipoDemanda:
                     return PredecirDemanda(producto, horizonteDias);
                 default:
-                    throw new Exception("Debe seleccionar un tipo de prediccion");
+                    throw new Exception(Traductor.T("error.seleccioneTipoPrediccion"));
             }
         }
 
@@ -83,9 +84,9 @@ namespace BLL
             BEPrediccion prediccion = Proyectar(historial, horizonteDias, 1);
 
             prediccion.Tipo = BEPrediccion.TipoPrecio;
-            prediccion.NombreTipo = "Precio del producto";
+            prediccion.NombreTipo = Traductor.T("predicciones.tipoPrecio");
             prediccion.Prefijo = "$";
-            prediccion.Unidad = "por dia";
+            prediccion.Unidad = Traductor.T("predicciones.porDia");
 
             return Completar(prediccion, producto, horizonteDias);
         }
@@ -102,9 +103,9 @@ namespace BLL
             BEPrediccion prediccion = Proyectar(historial, horizonteDias, 1);
 
             prediccion.Tipo = BEPrediccion.TipoStock;
-            prediccion.NombreTipo = "Stock disponible";
+            prediccion.NombreTipo = Traductor.T("productos.stockDisponible");
             prediccion.Prefijo = string.Empty;
-            prediccion.Unidad = "unidades por dia";
+            prediccion.Unidad = Traductor.T("predicciones.unidadesPorDia");
 
             return Completar(prediccion, producto, horizonteDias);
         }
@@ -118,9 +119,9 @@ namespace BLL
             BEPrediccion prediccion = Proyectar(historial, horizonteDias, 7);
 
             prediccion.Tipo = BEPrediccion.TipoDemanda;
-            prediccion.NombreTipo = "Demanda semanal";
+            prediccion.NombreTipo = Traductor.T("predicciones.demandaSemanal");
             prediccion.Prefijo = string.Empty;
-            prediccion.Unidad = "unidades por semana";
+            prediccion.Unidad = Traductor.T("predicciones.unidadesPorSemana");
 
             // La pendiente se informa por semana, que es el paso de la serie
             prediccion.Pendiente = prediccion.Pendiente * 7;
@@ -142,9 +143,7 @@ namespace BLL
             // Alternativa 4.1 del CU [#ERR011]
             if (historial.Count < RegresionLineal.MinimoPuntos)
             {
-                throw new Exception(string.Format(
-                    "No hay datos suficientes para generar predicciones: hacen falta al menos {0} registros y hay {1}",
-                    RegresionLineal.MinimoPuntos, historial.Count));
+                throw new Exception(Traductor.T("error.datosInsuficientes", RegresionLineal.MinimoPuntos, historial.Count));
             }
 
             DateTime origen = historial[0].Fecha.Date;
@@ -166,12 +165,12 @@ namespace BLL
             catch (ArgumentException ex)
             {
                 // Datos que no alcanzan para una recta (todos en la misma fecha)
-                throw new Exception("No hay datos suficientes para generar predicciones: " + ex.Message);
+                throw new Exception(Traductor.T("error.datosInsuficientesDetalle", ex.Message));
             }
             catch (Exception ex)
             {
                 // Alternativa 4.2 del CU [#ERR024]
-                throw new Exception("Error al ejecutar el algoritmo de prediccion: " + ex.Message);
+                throw new Exception(Traductor.T("error.algoritmoPrediccion", ex.Message));
             }
 
             BEPrediccion prediccion = new BEPrediccion();
@@ -295,10 +294,10 @@ namespace BLL
         {
             if (variacion > 2)
             {
-                return "En alza";
+                return Traductor.T("predicciones.enAlza");
             }
 
-            return variacion < -2 ? "En baja" : "Estable";
+            return Traductor.T(variacion < -2 ? "predicciones.enBaja" : "predicciones.estable");
         }
 
         // Umbrales usuales para leer el R2 de una regresion simple
@@ -306,10 +305,10 @@ namespace BLL
         {
             if (r2 >= 0.8)
             {
-                return "Alta";
+                return Traductor.T("predicciones.confianzaAlta");
             }
 
-            return r2 >= 0.5 ? "Media" : "Baja";
+            return Traductor.T(r2 >= 0.5 ? "predicciones.confianzaMedia" : "predicciones.confianzaBaja");
         }
 
         private BEPuntoPrediccion Punto(DateTime fecha, decimal valor)

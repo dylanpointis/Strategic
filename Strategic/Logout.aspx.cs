@@ -1,14 +1,21 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
-using System.Web.UI;
 
 namespace Strategic
 {
-    public partial class Logout : Page
+    public partial class Logout : PaginaBase
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("logout.titulo");
+            btnConfirmarLogout.Text = Traductor.T("logout.confirmar");
+            btnCancelarLogout.Text = Traductor.T("comun.cancelar");
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {

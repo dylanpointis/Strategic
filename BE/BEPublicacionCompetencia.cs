@@ -19,6 +19,31 @@ namespace BE
         public string Url { get; set; }
         public string Estado { get; set; }
 
+
+        /// Clave de traducción del estado, para mostrarlo en pantalla.
+
+        public string EstadoTexto
+        {
+            get
+            {
+                switch (Estado)
+                {
+                    case "Activa":
+                        return "publicacion.estado.activa";
+                    case "Pausada":
+                        return "publicacion.estado.pausada";
+                    case "Finalizada":
+                        return "publicacion.estado.finalizada";
+                    case "No encontrada":
+                        return "publicacion.estado.noEncontrada";
+                    case "Error":
+                        return "publicacion.estado.error";
+                    default:
+                        return Estado;
+                }
+            }
+        }
+
         
         /// Último precio relevado de la publicación. Queda en null cuando
         /// todavía no se registró ninguna consulta.
@@ -28,12 +53,12 @@ namespace BE
         public DateTime? FechaUltimaVerificacion { get; set; }
 
         
-        /// Texto del botón que pausa o reactiva el monitoreo, según el estado
-        /// actual de la fila.
+        /// Clave de traducción del botón que pausa o reactiva el monitoreo,
+        /// según el estado actual de la fila.
         
         public string AccionPausarReactivar
         {
-            get { return Estado == "Activa" ? "Pausar" : "Reactivar"; }
+            get { return Estado == "Activa" ? "comun.accion.pausar" : "comun.accion.reactivar"; }
         }
     }
 }

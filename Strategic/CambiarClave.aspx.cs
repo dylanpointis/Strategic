@@ -1,16 +1,29 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
-using System.Web.UI;
 
 namespace Strategic
 {
     // CU-001-003 - Cambiar Contrasena. No lleva permiso: es de todos los
     // perfiles, solo pide sesion iniciada
-    public partial class CambiarClave : Page
+    public partial class CambiarClave : PaginaBase
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("cambiarClave.titulo");
+            lblClaveActual.Text = Traductor.T("cambiarClave.claveActual");
+            rfvClaveActual.ErrorMessage = Traductor.T("cambiarClave.claveActualRequerida");
+            lblClaveNueva.Text = Traductor.T("cambiarClave.claveNueva");
+            rfvClaveNueva.ErrorMessage = Traductor.T("cambiarClave.claveNuevaRequerida");
+            lblConfirmarClave.Text = Traductor.T("cambiarClave.confirmarClave");
+            rfvConfirmarClave.ErrorMessage = Traductor.T("cambiarClave.confirmarClaveRequerida");
+            btnGuardar.Text = Traductor.T("comun.guardar");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -39,7 +52,7 @@ namespace Strategic
                 SessionManager.UsuarioActual.Clave = usuario.Clave;
                 SessionManager.UsuarioActual.Salt = usuario.Salt;
 
-                lblExito.Text = "La clave se cambió correctamente.";
+                lblExito.Text = Traductor.T("cambiarClave.exito");
             }
             catch (Exception ex)
             {

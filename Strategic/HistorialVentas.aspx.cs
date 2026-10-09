@@ -14,8 +14,8 @@ namespace Strategic
     // CU-004-016 - Ver Historial de Ventas
     public partial class HistorialVentas : PaginaSegura
     {
-        private const string MensajeSinVentas = "No existen ventas registradas en el sistema";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinVentas = "historialVentas.sinVentas";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLVenta bllVenta = new BLLVenta();
         private readonly BLLProducto bllProducto = new BLLProducto();
@@ -32,6 +32,29 @@ namespace Strategic
                 return string.IsNullOrEmpty(json) ? "null" : json;
             }
             private set { ViewState["DatosGraficoJson"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("historialVentas.titulo");
+            lblProducto.Text = Traductor.T("monitoreo.producto");
+            lblCategoria.Text = Traductor.T("productos.categoria");
+            lblEstado.Text = Traductor.T("comun.estado");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+
+            // La grilla guarda la clave del mensaje vacio y la cantidad en su ViewState
+            lblSinGrafico.Text = Traductor.T(grillaVentas.MensajeVacio);
+            MostrarCantidad();
+
+            // Las primeras opciones de los combos se agregan desde codigo: en
+            // el Init de un postback todavia no se recuperaron del ViewState
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("comun.todos");
+                ddlCategoria.Items[0].Text = Traductor.T("comun.todos");
+                ddlEstado.Items[0].Text = Traductor.T("comun.todos");
+            }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -90,24 +113,30 @@ namespace Strategic
             grillaVentas.FilasPorPagina = 10;
             grillaVentas.MostrarSelectorFilas = true;
 
-            grillaVentas.AgregarColumna("NroVenta", "N° de venta", "celda-codigo");
-            grillaVentas.AgregarColumna("Fecha", "Fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaVentas.AgregarColumna("CantidadItems", "Ítems", "celda-numero");
-            grillaVentas.AgregarColumna("UnidadesVendidas", "Unidades", "celda-numero");
-            grillaVentas.AgregarColumna("MontoTotal", "Monto total", "celda-numero", "${0:N2}");
-            grillaVentas.AgregarColumna("Estado", "Estado");
+            grillaVentas.AgregarColumna("NroVenta", "historialVentas.nroVenta", "celda-codigo");
+            grillaVentas.AgregarColumna("Fecha", "comun.fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaVentas.AgregarColumna("CantidadItems", "historialVentas.items", "celda-numero");
+            grillaVentas.AgregarColumna("UnidadesVendidas", "historialVentas.unidades", "celda-numero");
+            grillaVentas.AgregarColumna("MontoTotal", "historialVentas.montoTotal", "celda-numero", "${0:N2}");
+            grillaVentas.AgregarColumna("Estado", "comun.estado");
         }
 
         private void MostrarVentas(List<BEVenta> ventas, string mensajeVacio)
         {
             grillaVentas.Cargar(ventas, mensajeVacio);
-
-            lblCantidad.Text = ventas.Count == 1
-                ? "1 venta"
-                : string.Format("{0} ventas", ventas.Count);
+            MostrarCantidad();
 
             MostrarResumen(ventas);
             ArmarGrafico(ventas, mensajeVacio);
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaVentas.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("historialVentas.cantidadUno")
+                : Traductor.T("historialVentas.cantidad", cantidad);
         }
 
         private void MostrarResumen(List<BEVenta> ventas)
@@ -144,7 +173,7 @@ namespace Strategic
 
             pnlGrafico.Visible = hayDatos;
             pnlSinGrafico.Visible = !hayDatos;
-            lblSinGrafico.Text = mensajeVacio;
+            lblSinGrafico.Text = Traductor.T(mensajeVacio);
         }
 
         private void CargarCombos(List<BEVenta> ventas)
@@ -152,7 +181,7 @@ namespace Strategic
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Todos", "0"));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("comun.todos"), "0"));
 
             foreach (BEProducto producto in productos)
             {
@@ -168,7 +197,7 @@ namespace Strategic
         private void CargarOpciones(DropDownList lista, IEnumerable<string> valores)
         {
             lista.Items.Clear();
-            lista.Items.Add(new ListItem("Todos", string.Empty));
+            lista.Items.Add(new ListItem(Traductor.T("comun.todos"), string.Empty));
 
             List<string> opciones = valores
                 .Where(valor => !string.IsNullOrWhiteSpace(valor))

@@ -23,6 +23,32 @@ namespace Strategic
             set { ViewState["CompetidorEditado"] = value; }
         }
 
+        // Clave de traduccion del estado del competidor editado
+        private string EstadoEditado
+        {
+            get { return Convert.ToString(ViewState["EstadoEditado"]); }
+            set { ViewState["EstadoEditado"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("modificarCompetidor.titulo");
+            lblNombre.Text = Traductor.T("comun.nombre");
+            valNombre.ErrorMessage = Traductor.T("competidor.nombreRequerido");
+            lblMarketplace.Text = Traductor.T("competidor.marketplace");
+            valMarketplace.ErrorMessage = Traductor.T("competidor.marketplaceRequerido");
+            lblDescripcion.Text = Traductor.T("familia.descripcion");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnGuardar.Text = Traductor.T("comun.guardarCambios");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // El estado se conoce recien al recuperar el ViewState
+            if (!string.IsNullOrEmpty(EstadoEditado))
+            {
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(EstadoEditado));
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -52,7 +78,7 @@ namespace Strategic
                 bllCompetencia.ModificarCompetidor(competidor, enSesion.NombreUsuario);
 
                 // El listado es el que confirma el resultado de la operacion
-                Session["MensajeCompetidores"] = string.Format("Se actualizaron los datos del competidor {0}", competidor.Nombre);
+                Session["MensajeCompetidores"] = Traductor.T("modificarCompetidor.exito", competidor.Nombre);
                 Response.Redirect("~/ConsultarCompetidores.aspx");
             }
             catch (Exception ex)
@@ -72,7 +98,7 @@ namespace Strategic
 
             if (!int.TryParse(idTexto, out idCompetencia) || idCompetencia <= 0)
             {
-                MostrarSinCompetidor("No se indicó qué competidor modificar");
+                MostrarSinCompetidor(Traductor.T("modificarCompetidor.sinCompetidor"));
                 return;
             }
 
@@ -82,13 +108,14 @@ namespace Strategic
 
                 if (competidor == null)
                 {
-                    MostrarSinCompetidor("No se encontró el competidor indicado");
+                    MostrarSinCompetidor(Traductor.T("competidor.noEncontrado"));
                     return;
                 }
 
                 CompetidorEditado = competidor.IdCompetencia;
+                EstadoEditado = competidor.EstadoTexto;
 
-                lblEstadoActual.Text = Server.HtmlEncode(competidor.Estado);
+                lblEstadoActual.Text = Server.HtmlEncode(Traductor.T(competidor.EstadoTexto));
                 txtNombre.Text = competidor.Nombre;
                 SeleccionarMarketplace(competidor.Marketplace);
                 txtDescripcion.Text = competidor.Descripcion;

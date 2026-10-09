@@ -82,5 +82,15 @@ namespace Strategic
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ScriptsFinales;
+
+        
+        /// Control lnkEspanol.
+        
+        protected global::System.Web.UI.WebControls.LinkButton lnkEspanol;
+
+        
+        /// Control lnkIngles.
+        
+        protected global::System.Web.UI.WebControls.LinkButton lnkIngles;
     }
 }

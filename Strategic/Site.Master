@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html lang="es">
+<html lang="<%: Traductor.IdiomaActual %>">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
@@ -42,89 +42,97 @@
                 <a class="navbar-brand strategic-logo" href="~/">
                     <img src="/Content/images/Strategic_LOGO_PNG.png" alt="Strategic" class="strategic-logo-img" />
                 </a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar" title="Alternar navegación" aria-controls="mainNavbar"
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar" title="<%: Traductor.T("master.alternarNavegacion") %>" aria-controls="mainNavbar"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div id="mainNavbar" class="collapse navbar-collapse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li id="navInicio" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/">Inicio</a></li>
+                        <li id="navInicio" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/"><%: Traductor.T("master.menu.inicio") %></a></li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navAnalisis" role="button" data-bs-toggle="dropdown" aria-expanded="false">Análisis</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navAnalisis" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.analisis") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navAnalisis">
-                                <li runat="server" data-permission="Dashboard"><a class="dropdown-item" href="Dashboard.aspx">Dashboard</a></li>
-                                <li runat="server" data-permission="Recomendaciones"><a class="dropdown-item" href="Recomendaciones.aspx">Recomendaciones</a></li>
-                                <li runat="server" data-permission="Predicciones"><a class="dropdown-item" href="Predicciones.aspx">Predicciones</a></li>
-                                <li runat="server" data-permission="CompararPrecios"><a class="dropdown-item" href="CompararPrecios.aspx">Comparar precios</a></li>
-                                <li runat="server" data-permission="Reportes"><a class="dropdown-item" href="Reportes.aspx">Reportes</a></li>
+                                <li runat="server" data-permission="Dashboard"><a class="dropdown-item" href="Dashboard.aspx"><%: Traductor.T("master.menu.dashboard") %></a></li>
+                                <li runat="server" data-permission="Recomendaciones"><a class="dropdown-item" href="Recomendaciones.aspx"><%: Traductor.T("master.menu.recomendaciones") %></a></li>
+                                <li runat="server" data-permission="Predicciones"><a class="dropdown-item" href="Predicciones.aspx"><%: Traductor.T("master.menu.predicciones") %></a></li>
+                                <li runat="server" data-permission="CompararPrecios"><a class="dropdown-item" href="CompararPrecios.aspx"><%: Traductor.T("master.menu.compararPrecios") %></a></li>
+                                <li runat="server" data-permission="Reportes"><a class="dropdown-item" href="Reportes.aspx"><%: Traductor.T("master.menu.reportes") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navAutomatizaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Automatizaciones</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navAutomatizaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.automatizaciones") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navAutomatizaciones">
-                                <li runat="server" data-permission="ConsultarAutomatizaciones"><a class="dropdown-item" href="ConsultarAutomatizaciones.aspx">Consultar automatizaciones</a></li>
-                                <li runat="server" data-permission="HistorialAutomatizaciones"><a class="dropdown-item" href="HistorialAutomatizaciones.aspx">Historial</a></li>
+                                <li runat="server" data-permission="ConsultarAutomatizaciones"><a class="dropdown-item" href="ConsultarAutomatizaciones.aspx"><%: Traductor.T("master.menu.consultarAutomatizaciones") %></a></li>
+                                <li runat="server" data-permission="HistorialAutomatizaciones"><a class="dropdown-item" href="HistorialAutomatizaciones.aspx"><%: Traductor.T("master.menu.historialAutomatizaciones") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navCatalogo" role="button" data-bs-toggle="dropdown" aria-expanded="false">Catálogo</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navCatalogo" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.catalogo") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navCatalogo">
-                                <li runat="server" data-permission="ProductosSincronizados"><a class="dropdown-item" href="ProductosSincronizados.aspx">Productos sincronizados</a></li>
-                                <li runat="server" data-permission="HistorialPrecios"><a class="dropdown-item" href="HistorialPrecios.aspx">Historial de precios</a></li>
-                                <li runat="server" data-permission="HistorialStock"><a class="dropdown-item" href="HistorialStock.aspx">Historial de stock</a></li>
-                                <li runat="server" data-permission="HistorialVentas"><a class="dropdown-item" href="HistorialVentas.aspx">Historial de ventas</a></li>
+                                <li runat="server" data-permission="ProductosSincronizados"><a class="dropdown-item" href="ProductosSincronizados.aspx"><%: Traductor.T("master.menu.productosSincronizados") %></a></li>
+                                <li runat="server" data-permission="HistorialPrecios"><a class="dropdown-item" href="HistorialPrecios.aspx"><%: Traductor.T("master.menu.historialPrecios") %></a></li>
+                                <li runat="server" data-permission="HistorialStock"><a class="dropdown-item" href="HistorialStock.aspx"><%: Traductor.T("master.menu.historialStock") %></a></li>
+                                <li runat="server" data-permission="HistorialVentas"><a class="dropdown-item" href="HistorialVentas.aspx"><%: Traductor.T("master.menu.historialVentas") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navUsuariosPermisos" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuarios y permisos</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navUsuariosPermisos" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.usuariosPermisos") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navUsuariosPermisos">
-                                <li runat="server" data-permission="ConsultarUsuarios"><a class="dropdown-item" href="ConsultarUsuarios.aspx">Consultar usuarios</a></li>
-                                <li runat="server" data-permission="ConsultarRoles"><a class="dropdown-item" href="ConsultarRoles.aspx">Consultar roles</a></li>
-                                <li runat="server" data-permission="ConsultarFamilias"><a class="dropdown-item" href="ConsultarFamilias.aspx">Consultar familias</a></li>
+                                <li runat="server" data-permission="ConsultarUsuarios"><a class="dropdown-item" href="ConsultarUsuarios.aspx"><%: Traductor.T("master.menu.consultarUsuarios") %></a></li>
+                                <li runat="server" data-permission="ConsultarRoles"><a class="dropdown-item" href="ConsultarRoles.aspx"><%: Traductor.T("master.menu.consultarRoles") %></a></li>
+                                <li runat="server" data-permission="ConsultarFamilias"><a class="dropdown-item" href="ConsultarFamilias.aspx"><%: Traductor.T("master.menu.consultarFamilias") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navIntegraciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">Integraciones</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navIntegraciones" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.integraciones") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navIntegraciones">
-                                <li runat="server" data-permission="ImportarDatos"><a class="dropdown-item" href="ImportarDatos.aspx">Importar datos</a></li>
-                                <li runat="server" data-permission="HistorialSincronizaciones"><a class="dropdown-item" href="HistorialSincronizaciones.aspx">Historial de sincronizaciones</a></li>
+                                <li runat="server" data-permission="ImportarDatos"><a class="dropdown-item" href="ImportarDatos.aspx"><%: Traductor.T("master.menu.importarDatos") %></a></li>
+                                <li runat="server" data-permission="HistorialSincronizaciones"><a class="dropdown-item" href="HistorialSincronizaciones.aspx"><%: Traductor.T("master.menu.historialSincronizaciones") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navCompetencia" role="button" data-bs-toggle="dropdown" aria-expanded="false">Competencia</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navCompetencia" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.competencia") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navCompetencia">
-                                <li runat="server" data-permission="ConsultarCompetidores"><a class="dropdown-item" href="ConsultarCompetidores.aspx">Consultar competidores</a></li>
-                                <li runat="server" data-permission="MapearProductosCompetencia"><a class="dropdown-item" href="MapearProductosCompetencia.aspx">Mapear productos</a></li>
-                                <li runat="server" data-permission="MonitoreoPublicacionesCompetidoras"><a class="dropdown-item" href="MonitoreoPublicacionesCompetidoras.aspx">Monitoreo</a></li>
+                                <li runat="server" data-permission="ConsultarCompetidores"><a class="dropdown-item" href="ConsultarCompetidores.aspx"><%: Traductor.T("master.menu.consultarCompetidores") %></a></li>
+                                <li runat="server" data-permission="MapearProductosCompetencia"><a class="dropdown-item" href="MapearProductosCompetencia.aspx"><%: Traductor.T("master.menu.mapearProductos") %></a></li>
+                                <li runat="server" data-permission="MonitoreoPublicacionesCompetidoras"><a class="dropdown-item" href="MonitoreoPublicacionesCompetidoras.aspx"><%: Traductor.T("master.menu.monitoreo") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navAuditoria" role="button" data-bs-toggle="dropdown" aria-expanded="false">Auditoría</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navAuditoria" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.auditoria") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navAuditoria">
-                                <li runat="server" data-permission="ConsultarEventosSistema"><a class="dropdown-item" href="ConsultarEventosSistema.aspx">Eventos del sistema</a></li>
-                                <li runat="server" data-permission="RealizarBackup"><a class="dropdown-item" href="RealizarBackup.aspx">Backup</a></li>
-                                <li runat="server" data-permission="RealizarRestore"><a class="dropdown-item" href="RealizarRestore.aspx">Restore</a></li>
-                                <li runat="server" data-permission="RepararDigitoVerificador"><a class="dropdown-item" href="RepararDigitoVerificador.aspx">Dígito verificador</a></li>
+                                <li runat="server" data-permission="ConsultarEventosSistema"><a class="dropdown-item" href="ConsultarEventosSistema.aspx"><%: Traductor.T("master.menu.eventosSistema") %></a></li>
+                                <li runat="server" data-permission="RealizarBackup"><a class="dropdown-item" href="RealizarBackup.aspx"><%: Traductor.T("master.menu.backup") %></a></li>
+                                <li runat="server" data-permission="RealizarRestore"><a class="dropdown-item" href="RealizarRestore.aspx"><%: Traductor.T("master.menu.restore") %></a></li>
+                                <li runat="server" data-permission="RepararDigitoVerificador"><a class="dropdown-item" href="RepararDigitoVerificador.aspx"><%: Traductor.T("master.menu.digitoVerificador") %></a></li>
                             </ul>
                         </li>
-                        <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx">Suscripción</a></li>
+                        <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx"><%: Traductor.T("master.menu.suscripcion") %></a></li>
                     </ul>
                     <ul class="navbar-nav auth-nav">
-                        <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login">Ingresar</a></li>
+<li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login"><%: Traductor.T("master.ingresar") %></a></li>
                         <li id="navBienvenida" runat="server" class="nav-item nav-bienvenida">
                             <asp:Label ID="lblBienvenida" runat="server" CssClass="nav-link"></asp:Label>
                         </li>
                         <li id="navProfile" runat="server" class="nav-item dropdown profile-menu">
-                            <a class="nav-link profile-toggle" href="#" id="navPerfil" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Perfil">
+                            <a class="nav-link profile-toggle" href="#" id="navPerfil" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="<%: Traductor.T("master.perfil") %>">
                                 <svg class="profile-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                                     <circle cx="12" cy="8" r="4"></circle>
                                     <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
                                 </svg>
-                                <span class="visually-hidden">Perfil</span>
+                                <span class="visually-hidden"><%: Traductor.T("master.perfil") %></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navPerfil">
-                                <li id="navCambiarClave" runat="server"><a class="dropdown-item" runat="server" href="~/CambiarClave">Cambiar clave</a></li>
-                                <li id="navLogout" runat="server"><a class="dropdown-item logout-item" runat="server" href="~/Logout">Salir</a></li>
+                                <li class="selector-idioma">
+                                    <span><%: Traductor.T("master.idioma") %></span>
+                                    <span class="selector-idioma-opciones">
+                                        <asp:LinkButton ID="lnkEspanol" runat="server" CausesValidation="false" OnClick="lnkEspanol_Click">ES</asp:LinkButton>
+                                        <span>|</span>
+                                        <asp:LinkButton ID="lnkIngles" runat="server" CausesValidation="false" OnClick="lnkIngles_Click">EN</asp:LinkButton>
+                                    </span>
+                                </li>
+                                <li id="navCambiarClave" runat="server"><a class="dropdown-item" runat="server" href="~/CambiarClave"><%: Traductor.T("master.cambiarClave") %></a></li>
+                                <li id="navLogout" runat="server"><a class="dropdown-item logout-item" runat="server" href="~/Logout"><%: Traductor.T("master.salir") %></a></li>
                             </ul>
                         </li>
                     </ul>

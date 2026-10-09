@@ -1,4 +1,5 @@
 ﻿using BLL;
+using Services;
 using Strategic.Seguridad;
 using System;
 using System.Configuration;
@@ -25,11 +26,28 @@ namespace Strategic
             set { ViewState["RutaAConfirmar"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("restore.titulo");
+            lblArchivo.Text = Traductor.T("restore.archivo");
+            btnRestaurar.Text = Traductor.T("restore.restaurar");
+            btnConfirmar.Text = Traductor.T("restore.confirmar");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+
+            // El archivo a confirmar se conoce recien al recuperar el ViewState
+            string ruta = RutaAConfirmar;
+
+            if (!string.IsNullOrEmpty(ruta) && File.Exists(ruta))
+            {
+                MostrarConfirmacion(Path.GetFileName(ruta), new FileInfo(ruta).Length);
+            }
+        }
+
         protected void btnRestaurar_Click(object sender, EventArgs e)
         {
             if (!fuArchivo.HasFile)
             {
-                lblError.Text = "Seleccioná un archivo de respaldo para restaurar";
+                lblError.Text = Traductor.T("restore.archivoRequerido");
                 return;
             }
 
@@ -37,7 +55,7 @@ namespace Strategic
 
             if (!string.Equals(Path.GetExtension(nombreArchivo), ".bak", StringComparison.OrdinalIgnoreCase))
             {
-                lblError.Text = "El archivo de respaldo debe tener extensión .bak";
+                lblError.Text = Traductor.T("restore.extensionInvalida");
                 return;
             }
 
@@ -58,7 +76,7 @@ namespace Strategic
             }
             catch (Exception ex)
             {
-                lblError.Text = Server.HtmlEncode("Error al subir el archivo: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("restore.errorSubida", ex.Message));
             }
         }
 
@@ -77,12 +95,11 @@ namespace Strategic
             {
                 bllRespaldo.RealizarRestore(ruta, UsuarioEnSesion.NombreUsuario);
 
-                lblExito.Text = Server.HtmlEncode(string.Format(
-                    "Base de datos restaurada correctamente desde {0}", Path.GetFileName(ruta)));
+                lblExito.Text = Server.HtmlEncode(Traductor.T("restore.exito", Path.GetFileName(ruta)));
             }
             catch (Exception ex)
             {
-                lblError.Text = Server.HtmlEncode("Error al restaurar la base de datos: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("restore.error", ex.Message));
             }
         }
 
@@ -101,8 +118,8 @@ namespace Strategic
 
         private void MostrarConfirmacion(string nombreArchivo, long tamanioBytes)
         {
-            lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                "¿Deseás restaurar la base de datos desde {0} ({1:N1} MB)? Se van a reemplazar todos los datos actuales y esta acción no se puede deshacer.",
+            lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(
+                "restore.confirmacion",
                 nombreArchivo,
                 tamanioBytes / (1024.0 * 1024.0)));
 

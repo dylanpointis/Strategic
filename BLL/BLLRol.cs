@@ -66,7 +66,7 @@ namespace BLL
             // Alternativa 4.2 del CU [#ERR038]
             if (dalRol.ContarRolesConNombre(nombre.Trim(), null) > 0)
             {
-                throw new Exception("Ya existe un rol con ese nombre");
+                throw new Exception(Traductor.T("error.rolDuplicado"));
             }
 
             ValidarComponentes(componentes);
@@ -93,13 +93,13 @@ namespace BLL
 
             if (actual == null)
             {
-                throw new Exception("No se encontro el rol seleccionado");
+                throw new Exception(Traductor.T("error.rolNoEncontrado"));
             }
 
             // Alternativa 4.2 del CU [#ERR038]
             if (dalRol.ContarRolesConNombre(nombre.Trim(), codRol) > 0)
             {
-                throw new Exception("Ya existe un rol con ese nombre");
+                throw new Exception(Traductor.T("error.rolDuplicado"));
             }
 
             ValidarComponentes(componentes);
@@ -123,20 +123,20 @@ namespace BLL
 
             if (rol == null)
             {
-                throw new Exception("No se encontro el rol seleccionado");
+                throw new Exception(Traductor.T("error.rolNoEncontrado"));
             }
 
             if (rol.Activo == activo)
             {
                 throw new Exception(activo
-                    ? "El rol ya se encuentra activo"
-                    : "El rol ya se encuentra dado de baja");
+                    ? Traductor.T("error.rolYaActivo")
+                    : Traductor.T("error.rolYaDadoDeBaja"));
             }
 
             // Alternativa 2.1 del CU [#ERR039]
             if (!activo && dalRol.ContarUsuariosActivosPorRol(codRol) > 0)
             {
-                throw new Exception("No se puede dar de baja el rol porque hay usuarios activos que lo tienen asignado");
+                throw new Exception(Traductor.T("error.rolConUsuarios"));
             }
 
             dalRol.ModificarEstadoRol(codRol, activo);
@@ -157,17 +157,17 @@ namespace BLL
             // Campos obligatorios incompletos [#ERR001]
             if (string.IsNullOrWhiteSpace(nombre))
             {
-                throw new Exception("Debe completar el nombre del rol");
+                throw new Exception(Traductor.T("error.nombreRolRequerido"));
             }
 
             if (nombre.Trim().Length > 50)
             {
-                throw new Exception("El nombre del rol supera los 50 caracteres");
+                throw new Exception(Traductor.T("error.nombreRolLargo"));
             }
 
             if (componentes == null || componentes.Count == 0)
             {
-                throw new Exception("El rol tiene que tener al menos un permiso o familia asignada");
+                throw new Exception(Traductor.T("error.rolVacio"));
             }
         }
 
@@ -182,14 +182,12 @@ namespace BLL
 
                 if (componente == null)
                 {
-                    throw new Exception("Alguno de los componentes seleccionados ya no existe");
+                    throw new Exception(Traductor.T("error.componenteInexistente"));
                 }
 
                 if (!componente.Activo)
                 {
-                    throw new Exception(string.Format(
-                        "No se puede asignar \"{0}\" porque esta dado de baja",
-                        componente.Nombre));
+                    throw new Exception(Traductor.T("error.componenteDadoDeBaja", componente.Nombre));
                 }
             }
         }
@@ -198,7 +196,7 @@ namespace BLL
         {
             if (codRol <= 0)
             {
-                throw new Exception("Debe seleccionar un rol");
+                throw new Exception(Traductor.T("error.seleccioneRol"));
             }
         }
 

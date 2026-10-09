@@ -1,15 +1,25 @@
 ﻿using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
-using System.Web.UI;
 
 namespace Strategic
 {
-    public partial class Login : Page
+    public partial class Login : PaginaBase
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("login.titulo");
+            lblNombreUsuario.Text = Traductor.T("login.usuario");
+            rfvNombreUsuario.ErrorMessage = Traductor.T("login.usuarioRequerido");
+            lblClave.Text = Traductor.T("login.clave");
+            rfvClave.ErrorMessage = Traductor.T("login.claveRequerida");
+            btnLogin.Text = Traductor.T("login.ingresar");
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -46,7 +56,7 @@ namespace Strategic
                 }
                 else
                 {
-                    lblError.Text = "El sistema no está disponible por inconsistencias en los datos. Comunicate con el WebMaster.";
+                    lblError.Text = Traductor.T("login.sistemaInconsistente");
                 }
             }
             catch (Exception ex)

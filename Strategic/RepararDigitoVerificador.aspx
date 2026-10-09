@@ -1,4 +1,4 @@
-<%@ Page Title="Reparar dígito verificador" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="RepararDigitoVerificador.aspx.cs" Inherits="Strategic.RepararDigitoVerificador" %>
+<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="RepararDigitoVerificador.aspx.cs" Inherits="Strategic.RepararDigitoVerificador" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -91,23 +91,23 @@
             </div>
 
             <div class="login-heading">
-                <h1>Reparar dígito verificador</h1>
+                <h1><%: Traductor.T("repararDV.titulo") %></h1>
                 <p><asp:Label ID="lblEstado" runat="server"></asp:Label></p>
             </div>
 
             <asp:Panel ID="pnlAcciones" runat="server" CssClass="auth-actions">
-                <asp:Button ID="btnRecalcular" runat="server" Text="Recalcular dígito verificador" CssClass="btn btn-danger" CausesValidation="false" OnClick="btnRecalcular_Click" />
-                <asp:Button ID="btnRestaurar" runat="server" Text="Restaurar desde un backup" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnRestaurar_Click" />
-                <asp:Button ID="btnVerificar" runat="server" Text="Volver a verificar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnVerificar_Click" />
+                <asp:Button ID="btnRecalcular" runat="server" CssClass="btn btn-danger" CausesValidation="false" OnClick="btnRecalcular_Click" />
+                <asp:Button ID="btnRestaurar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnRestaurar_Click" />
+                <asp:Button ID="btnVerificar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnVerificar_Click" />
             </asp:Panel>
 
             <asp:Panel ID="pnlConfirmacion" runat="server" CssClass="auth-actions" Visible="false">
-                <asp:Button ID="btnConfirmar" runat="server" Text="Sí, recalcular" CssClass="btn btn-danger" CausesValidation="false" OnClick="btnConfirmar_Click" />
-                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
+                <asp:Button ID="btnConfirmar" runat="server" CssClass="btn btn-danger" CausesValidation="false" OnClick="btnConfirmar_Click" />
+                <asp:Button ID="btnCancelar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCancelar_Click" />
             </asp:Panel>
 
             <asp:Panel ID="pnlInicio" runat="server" CssClass="auth-actions" Visible="false">
-                <asp:Button ID="btnInicio" runat="server" Text="Ir al inicio" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnInicio_Click" />
+                <asp:Button ID="btnInicio" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnInicio_Click" />
             </asp:Panel>
 
             <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>
@@ -116,7 +116,7 @@
 
         <asp:Panel ID="pnlTabla" runat="server" CssClass="strategic-card reparar-tabla">
             <div class="strategic-card-header">
-                <h2>Inconsistencias detectadas</h2>
+                <h2><%: Traductor.T("repararDV.inconsistenciasDetectadas") %></h2>
                 <div class="strategic-card-acciones">
                     <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
                 </div>

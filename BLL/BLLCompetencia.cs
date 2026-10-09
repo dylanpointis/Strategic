@@ -44,7 +44,7 @@ namespace BLL
 
             if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, null) > 0)
             {
-                throw new Exception("Ya existe un competidor con ese nombre");
+                throw new Exception(Traductor.T("error.competidorDuplicado"));
             }
 
             int idCompetencia = dalCompetencia.AltaCompetidor(competidor);
@@ -68,12 +68,12 @@ namespace BLL
 
             if (actual == null)
             {
-                throw new Exception("No se encontro el competidor seleccionado");
+                throw new Exception(Traductor.T("error.competidorNoEncontrado"));
             }
 
             if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, competidor.IdCompetencia) > 0)
             {
-                throw new Exception("Ya existe un competidor con ese nombre");
+                throw new Exception(Traductor.T("error.competidorDuplicado"));
             }
 
             dalCompetencia.ModificarCompetidor(competidor);
@@ -105,14 +105,14 @@ namespace BLL
 
             if (competidor == null)
             {
-                throw new Exception("No se encontro el competidor seleccionado");
+                throw new Exception(Traductor.T("error.competidorNoEncontrado"));
             }
 
             if (competidor.Activo == activo)
             {
                 throw new Exception(activo
-                    ? "El competidor ya se encuentra activo"
-                    : "El competidor ya se encuentra dado de baja");
+                    ? Traductor.T("error.competidorYaActivo")
+                    : Traductor.T("error.competidorYaDadoDeBaja"));
             }
 
             dalCompetencia.ModificarEstado(idCompetencia, activo);
@@ -132,15 +132,15 @@ namespace BLL
         {
             if (competidor == null)
             {
-                throw new Exception("No se recibieron los datos del competidor");
+                throw new Exception(Traductor.T("error.sinDatosCompetidor"));
             }
 
-            ExigirTexto(competidor.Nombre, "el nombre", 255);
-            ExigirTexto(competidor.Marketplace, "el marketplace", 50);
+            ExigirTexto(competidor.Nombre, "campo.elNombre", 255);
+            ExigirTexto(competidor.Marketplace, "campo.elMarketplace", 50);
 
             if (!string.IsNullOrEmpty(competidor.Descripcion) && competidor.Descripcion.Trim().Length > 500)
             {
-                throw new Exception("La descripcion supera los 500 caracteres");
+                throw new Exception(Traductor.T("error.descripcionLarga"));
             }
         }
 
@@ -148,20 +148,21 @@ namespace BLL
         {
             if (idCompetencia <= 0)
             {
-                throw new Exception("Debe seleccionar un competidor");
+                throw new Exception(Traductor.T("error.seleccioneCompetidor"));
             }
         }
 
+        // "campo" es la clave de traduccion del nombre del campo, por ejemplo "campo.elNombre"
         private void ExigirTexto(string valor, string campo, int largoMaximo)
         {
             if (string.IsNullOrWhiteSpace(valor))
             {
-                throw new Exception(string.Format("Debe completar {0}", campo));
+                throw new Exception(Traductor.T("error.debeCompletar", Traductor.T(campo)));
             }
 
             if (valor.Trim().Length > largoMaximo)
             {
-                throw new Exception(string.Format("El valor de {0} supera los {1} caracteres", campo, largoMaximo));
+                throw new Exception(Traductor.T("error.valorLargo", Traductor.T(campo), largoMaximo));
             }
         }
 
@@ -182,7 +183,7 @@ namespace BLL
         {
             if (idProducto <= 0)
             {
-                throw new Exception("Debe seleccionar un producto");
+                throw new Exception(Traductor.T("error.seleccioneProducto"));
             }
 
             ValidarCodigo(idCompetencia);
@@ -192,12 +193,12 @@ namespace BLL
 
             if (competidor == null)
             {
-                throw new Exception("No se encontro el competidor seleccionado");
+                throw new Exception(Traductor.T("error.competidorNoEncontrado"));
             }
 
             if (dalCompetencia.ContarMapeosProductoCompetidor(idProducto, idCompetencia) > 0)
             {
-                throw new Exception("Ya existe un mapeo para ese producto con ese competidor");
+                throw new Exception(Traductor.T("error.mapeoDuplicado"));
             }
 
             int idProductoCompetencia = dalCompetencia.MapearProducto(idProducto, idCompetencia, url.Trim());
@@ -212,7 +213,7 @@ namespace BLL
         {
             if (string.IsNullOrWhiteSpace(url))
             {
-                throw new Exception("Debe ingresar la URL de la publicacion");
+                throw new Exception(Traductor.T("error.urlRequerida"));
             }
 
             Uri direccion;
@@ -220,12 +221,12 @@ namespace BLL
             if (!Uri.TryCreate(url.Trim(), UriKind.Absolute, out direccion)
                 || (direccion.Scheme != Uri.UriSchemeHttp && direccion.Scheme != Uri.UriSchemeHttps))
             {
-                throw new Exception("La URL ingresada no tiene un formato valido");
+                throw new Exception(Traductor.T("error.urlInvalida"));
             }
 
             if (url.Trim().Length > 500)
             {
-                throw new Exception("La URL supera los 500 caracteres");
+                throw new Exception(Traductor.T("error.urlLarga"));
             }
         }
 
@@ -240,12 +241,12 @@ namespace BLL
         {
             if (idProducto.HasValue && idProducto.Value <= 0)
             {
-                throw new Exception("Debe seleccionar un producto valido");
+                throw new Exception(Traductor.T("error.productoInvalido"));
             }
 
             if (idCompetencia.HasValue && idCompetencia.Value <= 0)
             {
-                throw new Exception("Debe seleccionar un competidor valido");
+                throw new Exception(Traductor.T("error.competidorInvalido"));
             }
 
             return dalCompetencia.FiltrarComparacionPrecios(idProducto, Normalizar(categoria), idCompetencia);
@@ -319,7 +320,7 @@ namespace BLL
         {
             if (idProductoCompetencia <= 0)
             {
-                throw new Exception("Debe seleccionar una publicacion de la competencia");
+                throw new Exception(Traductor.T("error.seleccionePublicacion"));
             }
         }
 
@@ -339,12 +340,12 @@ namespace BLL
         {
             if (idProducto.HasValue && idProducto.Value <= 0)
             {
-                throw new Exception("Debe seleccionar un producto valido");
+                throw new Exception(Traductor.T("error.productoInvalido"));
             }
 
             if (idCompetencia.HasValue && idCompetencia.Value <= 0)
             {
-                throw new Exception("Debe seleccionar un competidor valido");
+                throw new Exception(Traductor.T("error.competidorInvalido"));
             }
 
             return dalCompetencia.FiltrarPublicacionesMonitoreo(idProducto, idCompetencia, Normalizar(estado));
@@ -371,7 +372,7 @@ namespace BLL
 
             if (publicacion == null)
             {
-                throw new Exception("No se encontro la publicacion seleccionada");
+                throw new Exception(Traductor.T("error.publicacionNoEncontrada"));
             }
 
             string nuevoEstado = CalcularNuevoEstado(publicacion.Estado, accion);
@@ -392,7 +393,7 @@ namespace BLL
                 case "Pausar":
                     if (estadoActual != "Activa")
                     {
-                        throw new Exception("Solo se puede pausar una publicacion activa");
+                        throw new Exception(Traductor.T("error.soloPausarActiva"));
                     }
 
                     return "Pausada";
@@ -400,12 +401,12 @@ namespace BLL
                 case "Reactivar":
                     if (estadoActual == "Activa")
                     {
-                        throw new Exception("La publicacion ya esta activa");
+                        throw new Exception(Traductor.T("error.publicacionYaActiva"));
                     }
 
                     if (estadoActual == "Finalizada")
                     {
-                        throw new Exception("No se puede reactivar una publicacion desactivada");
+                        throw new Exception(Traductor.T("error.noReactivarDesactivada"));
                     }
 
                     return "Activa";
@@ -413,13 +414,13 @@ namespace BLL
                 case "Desactivar":
                     if (estadoActual == "Finalizada")
                     {
-                        throw new Exception("La publicacion ya esta desactivada");
+                        throw new Exception(Traductor.T("error.publicacionYaDesactivada"));
                     }
 
                     return "Finalizada";
 
                 default:
-                    throw new Exception("Accion no reconocida");
+                    throw new Exception(Traductor.T("error.accionNoReconocida"));
             }
         }
 

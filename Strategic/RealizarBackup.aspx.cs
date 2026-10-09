@@ -1,5 +1,6 @@
 ﻿using BE;
 using BLL;
+using Services;
 using Strategic.Componentes;
 using Strategic.Seguridad;
 using System;
@@ -15,7 +16,7 @@ namespace Strategic
         private readonly BLLRespaldo bllRespaldo = new BLLRespaldo();
 
         // Carpeta del servidor donde se guardan los .bak, configurada en el Web.config
-        private string CarpetaRespaldos
+        protected string CarpetaRespaldos
         {
             get { return ConfigurationManager.AppSettings["CarpetaRespaldos"]; }
         }
@@ -27,12 +28,19 @@ namespace Strategic
             ConfigurarGrilla();
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("backup.titulo");
+            btnGenerar.Text = Traductor.T("backup.generar");
+            btnConfirmar.Text = Traductor.T("comun.confirmar");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            MostrarCantidad();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                lblCarpeta.Text = Server.HtmlEncode(CarpetaRespaldos);
-                lblMaximo.Text = BLLRespaldo.MaximoRespaldos.ToString();
                 CargarGrilla();
             }
         }
@@ -56,15 +64,15 @@ namespace Strategic
             {
                 BERespaldo respaldo = bllRespaldo.RealizarBackup(CarpetaRespaldos, UsuarioEnSesion.NombreUsuario);
 
-                lblExito.Text = Server.HtmlEncode(string.Format(
-                    "Backup generado correctamente el {0:dd/MM/yyyy} a las {0:HH:mm} ({1}). Archivo: {2}",
+                lblExito.Text = Server.HtmlEncode(Traductor.T(
+                    "backup.exito",
                     respaldo.Fecha,
                     respaldo.TamanioTexto,
                     respaldo.NombreArchivo));
             }
             catch (Exception ex)
             {
-                lblError.Text = Server.HtmlEncode("Error al realizar el respaldo: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("backup.error", ex.Message));
             }
 
             CargarGrilla();
@@ -83,7 +91,7 @@ namespace Strategic
 
                 if (respaldo == null)
                 {
-                    lblError.Text = "No se encontró el archivo de respaldo";
+                    lblError.Text = Traductor.T("backup.archivoNoEncontrado");
                     return;
                 }
 
@@ -91,7 +99,7 @@ namespace Strategic
             }
             catch (Exception ex)
             {
-                lblError.Text = Server.HtmlEncode("Error al descargar el respaldo: " + ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("backup.errorDescarga", ex.Message));
             }
         }
 
@@ -113,10 +121,10 @@ namespace Strategic
             grillaRespaldos.FilasPorPagina = 10;
             grillaRespaldos.MostrarSelectorFilas = false;
 
-            grillaRespaldos.AgregarColumna("NombreArchivo", "Archivo");
-            grillaRespaldos.AgregarColumna("Fecha", "Fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaRespaldos.AgregarColumna("TamanioTexto", "Tamaño", "celda-numero");
-            grillaRespaldos.AgregarColumnaAccion("Descarga", "Descargar", "Descargar");
+            grillaRespaldos.AgregarColumna("NombreArchivo", "backup.archivo");
+            grillaRespaldos.AgregarColumna("Fecha", "comun.fecha", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaRespaldos.AgregarColumna("TamanioTexto", "backup.tamanio", "celda-numero");
+            grillaRespaldos.AgregarColumnaAccion("backup.descarga", "Descargar", "backup.descargar");
         }
 
         private void CargarGrilla()
@@ -125,13 +133,22 @@ namespace Strategic
             {
                 List<BERespaldo> respaldos = bllRespaldo.TraerRespaldos(CarpetaRespaldos);
 
-                grillaRespaldos.Cargar(respaldos, "Todavía no se generaron respaldos");
-                lblCantidad.Text = respaldos.Count == 1 ? "1 respaldo" : respaldos.Count + " respaldos";
+                grillaRespaldos.Cargar(respaldos, "backup.sinRespaldos");
+                MostrarCantidad();
             }
             catch (Exception ex)
             {
                 lblError.Text = Server.HtmlEncode(ex.Message);
             }
+        }
+
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaRespaldos.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("backup.cantidadUno")
+                : Traductor.T("backup.cantidad", cantidad);
         }
 
         private void OcultarConfirmacion()

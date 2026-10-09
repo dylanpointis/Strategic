@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Services;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -11,11 +12,23 @@ namespace Strategic.Componentes
     /// La página contenedora define las columnas en su evento Page_Init, le pasa el
     /// origen de datos con Cargar() y se entera de las acciones sobre una fila
     /// mediante el evento AccionSeleccionada.
-    
-    public partial class GrillaGenerica : UserControl
+    ///
+    /// Los títulos, textos de botones y el mensaje vacío se reciben como claves
+    /// de traducción. Si el usuario cambia el idioma, la grilla se vuelve a
+    /// enlazar para que el encabezado y los botones salgan en el idioma nuevo.
+
+    public partial class GrillaGenerica : UserControl, IIdiomaObserver
     {
         // Cantidad de números de página que se muestran a la vez en el paginador
         private const int VentanaPaginas = 5;
+
+        // Claves de traducción de cada columna. Las columnas se arman en cada
+        // Init, así que alcanza con guardarlas en memoria durante el request
+        private readonly Dictionary<DataControlField, string> clavesTitulo = new Dictionary<DataControlField, string>();
+        private readonly Dictionary<ButtonField, string> clavesTextoBoton = new Dictionary<ButtonField, string>();
+
+        // Columnas cuyo valor es una clave de traducción (por ejemplo el estado)
+        private readonly List<int> columnasTraducidas = new List<int>();
 
         
         /// Se dispara cuando el usuario ejecuta una acción sobre una fila de la grilla.
@@ -47,14 +60,14 @@ namespace Strategic.Componentes
         }
 
         
-        /// Mensaje que se muestra cuando la consulta no devuelve registros.
-        
+        /// Clave del mensaje que se muestra cuando la consulta no devuelve registros.
+
         public string MensajeVacio
         {
             get
             {
                 string mensaje = Convert.ToString(ViewState["MensajeVacio"]);
-                return string.IsNullOrEmpty(mensaje) ? "No se encontraron registros" : mensaje;
+                return string.IsNullOrEmpty(mensaje) ? "grilla.sinRegistros" : mensaje;
             }
             set { ViewState["MensajeVacio"] = value; }
         }
@@ -116,20 +129,17 @@ namespace Strategic.Componentes
         
         public void AgregarColumna(string campo, string titulo, string claseCss)
         {
-            BoundField columna = new BoundField();
-            columna.DataField = campo;
-            columna.HeaderText = titulo;
-            columna.HtmlEncode = true;
+            AgregarColumna(campo, titulo, claseCss, null);
+        }
 
-            if (!string.IsNullOrEmpty(claseCss))
-            {
-                columna.ItemStyle.CssClass = claseCss;
 
-                // El encabezado lleva la misma clase para que acompanie la alineacion de la celda
-                columna.HeaderStyle.CssClass = claseCss;
-            }
+        /// Agrega una columna cuyo valor es una clave de traducción, como el
+        /// estado de un usuario, para que se muestre en el idioma actual.
 
-            gvDatos.Columns.Add(columna);
+        public void AgregarColumnaTraducida(string campo, string titulo)
+        {
+            columnasTraducidas.Add(gvDatos.Columns.Count);
+            AgregarColumna(campo, titulo);
         }
 
         
@@ -140,9 +150,9 @@ namespace Strategic.Componentes
         {
             BoundField columna = new BoundField();
             columna.DataField = campo;
-            columna.HeaderText = titulo;
             columna.HtmlEncode = true;
             columna.DataFormatString = formato;
+            AsignarTitulo(columna, titulo);
 
             if (!string.IsNullOrEmpty(claseCss))
             {
@@ -184,14 +194,22 @@ namespace Strategic.Componentes
         {
             ButtonField columna = new ButtonField();
             columna.ButtonType = ButtonType.Link;
-            columna.HeaderText = titulo;
             columna.CommandName = comando;
-            columna.Text = texto;
             columna.CausesValidation = false;
             columna.ControlStyle.CssClass = "btn-fila";
             columna.ItemStyle.CssClass = "celda-accion";
 
+            AsignarTitulo(columna, titulo);
+            clavesTextoBoton[columna] = texto;
+            columna.Text = Traductor.T(texto);
+
             return columna;
+        }
+
+        private void AsignarTitulo(DataControlField columna, string titulo)
+        {
+            clavesTitulo[columna] = titulo;
+            columna.HeaderText = Traductor.T(titulo);
         }
 
         
@@ -200,6 +218,9 @@ namespace Strategic.Componentes
         public void LimpiarColumnas()
         {
             gvDatos.Columns.Clear();
+            clavesTitulo.Clear();
+            clavesTextoBoton.Clear();
+            columnasTraducidas.Clear();
         }
 
         #endregion
@@ -217,7 +238,7 @@ namespace Strategic.Componentes
         }
 
         
-        /// Carga el origen de datos indicando el mensaje a mostrar si no hay registros.
+        /// Carga el origen de datos indicando la clave del mensaje a mostrar si no hay registros.
         
         public void Cargar(object origenDatos, string mensajeVacio)
         {
@@ -237,6 +258,36 @@ namespace Strategic.Componentes
         #endregion
 
         #region Eventos del componente
+
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Traductor.Suscribir(this);
+            TraducirTextosFijos();
+        }
+
+
+        /// Vuelve a traducir los títulos y textos de las columnas y reenlaza
+        /// para que el encabezado y las filas tomen el idioma nuevo.
+
+        public void ActualizarIdioma()
+        {
+            foreach (KeyValuePair<DataControlField, string> titulo in clavesTitulo)
+            {
+                titulo.Key.HeaderText = Traductor.T(titulo.Value);
+            }
+
+            foreach (KeyValuePair<ButtonField, string> texto in clavesTextoBoton)
+            {
+                texto.Key.Text = Traductor.T(texto.Value);
+            }
+
+            TraducirTextosFijos();
+
+            if (Session[ClaveDatos] != null)
+            {
+                Enlazar();
+            }
+        }
 
         protected void gvDatos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -273,13 +324,28 @@ namespace Strategic.Componentes
                 return;
             }
 
+            foreach (int indice in columnasTraducidas)
+            {
+                TableCell celda = e.Row.Cells[indice];
+                celda.Text = Server.HtmlEncode(Traductor.T(Server.HtmlDecode(celda.Text)));
+            }
+
             foreach (TableCell celda in e.Row.Cells)
             {
                 foreach (Control control in celda.Controls)
                 {
                     LinkButton boton = control as LinkButton;
 
-                    if (boton != null && boton.Text == "Dar de baja")
+                    if (boton == null)
+                    {
+                        continue;
+                    }
+
+                    // Cuando el texto sale de la fila (DataTextField) llega como clave
+                    bool esBaja = boton.Text == "comun.accion.darDeBaja";
+                    boton.Text = Traductor.T(boton.Text);
+
+                    if (esBaja)
                     {
                         // El ButtonField vuelve a aplicar su ControlStyle (con la
                         // clase "btn-fila" comun) sobre el control despues de este
@@ -345,6 +411,15 @@ namespace Strategic.Componentes
 
         #region Metodos privados
 
+        private void TraducirTextosFijos()
+        {
+            lblFilasPorPagina.Text = Traductor.T("grilla.filasPorPagina");
+            lnkPrimera.ToolTip = Traductor.T("grilla.primeraPagina");
+            lnkAnterior.ToolTip = Traductor.T("grilla.paginaAnterior");
+            lnkSiguiente.ToolTip = Traductor.T("grilla.paginaSiguiente");
+            lnkUltima.ToolTip = Traductor.T("grilla.ultimaPagina");
+        }
+
         // Clave con la que se guarda el origen de datos de esta grilla en la Session.
         // Incluye el UniqueID para permitir mas de una grilla en la misma pagina.
         private string ClaveDatos
@@ -374,7 +449,7 @@ namespace Strategic.Componentes
 
             gvDatos.Visible = hayDatos;
             pnlSinResultados.Visible = !hayDatos;
-            lblSinResultados.Text = Server.HtmlEncode(MensajeVacio);
+            lblSinResultados.Text = Server.HtmlEncode(Traductor.T(MensajeVacio));
 
             ActualizarPaginado(hayDatos);
         }
@@ -392,7 +467,7 @@ namespace Strategic.Componentes
             int desde = PaginaActual * FilasPorPagina + 1;
             int hasta = Math.Min((PaginaActual + 1) * FilasPorPagina, CantidadRegistros);
 
-            lblRango.Text = string.Format("Mostrando {0} - {1} de {2} registros", desde, hasta, CantidadRegistros);
+            lblRango.Text = Traductor.T("grilla.rango", desde, hasta, CantidadRegistros);
 
             lnkPrimera.Enabled = PaginaActual > 0;
             lnkAnterior.Enabled = PaginaActual > 0;

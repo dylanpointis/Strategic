@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Services;
+using System;
 using System.Globalization;
 using System.Web.UI;
 
@@ -10,7 +11,10 @@ namespace Strategic.Componentes
     /// Expone las fechas seleccionadas como propiedades públicas y notifica a la
     /// página contenedora mediante el evento FiltroAplicado cuando el usuario confirma
     /// el filtrado.
-    
+    ///
+    /// Las etiquetas se reciben como claves de traducción y se traducen en el
+    /// PreRender, que corre después de un posible cambio de idioma.
+
     public partial class FiltroFechas : UserControl
     {
         // Formato que envía el navegador en los campos con TextMode="Date"
@@ -25,40 +29,40 @@ namespace Strategic.Componentes
         #region Propiedades de configuracion
 
         
-        /// Texto de la etiqueta del campo Desde.
+        /// Clave de la etiqueta del campo Desde.
         
         public string EtiquetaDesde
         {
             get
             {
                 string etiqueta = Convert.ToString(ViewState["EtiquetaDesde"]);
-                return string.IsNullOrEmpty(etiqueta) ? "Fecha desde" : etiqueta;
+                return string.IsNullOrEmpty(etiqueta) ? "filtroFechas.desde" : etiqueta;
             }
             set { ViewState["EtiquetaDesde"] = value; }
         }
 
         
-        /// Texto de la etiqueta del campo Hasta.
+        /// Clave de la etiqueta del campo Hasta.
         
         public string EtiquetaHasta
         {
             get
             {
                 string etiqueta = Convert.ToString(ViewState["EtiquetaHasta"]);
-                return string.IsNullOrEmpty(etiqueta) ? "Fecha hasta" : etiqueta;
+                return string.IsNullOrEmpty(etiqueta) ? "filtroFechas.hasta" : etiqueta;
             }
             set { ViewState["EtiquetaHasta"] = value; }
         }
 
         
-        /// Texto del botón de aplicar filtro.
+        /// Clave del texto del botón de aplicar filtro.
         
         public string TextoBoton
         {
             get
             {
                 string texto = Convert.ToString(ViewState["TextoBoton"]);
-                return string.IsNullOrEmpty(texto) ? "Aplicar filtro" : texto;
+                return string.IsNullOrEmpty(texto) ? "filtroFechas.aplicar" : texto;
             }
             set { ViewState["TextoBoton"] = value; }
         }
@@ -132,7 +136,7 @@ namespace Strategic.Componentes
                 return true;
             }
 
-            MostrarError("La fecha hasta no puede ser anterior a la fecha desde");
+            MostrarError(Traductor.T("filtroFechas.errorRango"));
             return false;
         }
 
@@ -160,9 +164,9 @@ namespace Strategic.Componentes
 
         protected override void OnPreRender(EventArgs e)
         {
-            lblDesde.Text = EtiquetaDesde;
-            lblHasta.Text = EtiquetaHasta;
-            btnAplicar.Text = TextoBoton;
+            lblDesde.Text = Traductor.T(EtiquetaDesde);
+            lblHasta.Text = Traductor.T(EtiquetaHasta);
+            btnAplicar.Text = Traductor.T(TextoBoton);
             pnlAccion.Visible = MostrarBoton;
 
             base.OnPreRender(e);

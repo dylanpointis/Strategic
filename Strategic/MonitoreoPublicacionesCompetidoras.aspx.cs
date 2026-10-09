@@ -10,9 +10,9 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-007-037 - Gestionar Monitoreo de publicaciones competidoras
-    public partial class MonitoreoPublicacionesCompetidoras : Page
+    public partial class MonitoreoPublicacionesCompetidoras : PaginaBase
     {
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
         private readonly BLLProducto bllProducto = new BLLProducto();
@@ -22,6 +22,31 @@ namespace Strategic
             // Las columnas se arman en el Init para que la grilla pueda
             // reconstruirse en cada postback a partir de su ViewState
             ConfigurarGrilla();
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("monitoreo.titulo");
+            lblProducto.Text = Traductor.T("monitoreo.producto");
+            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
+            lblEstado.Text = Traductor.T("comun.estado");
+            ddlEstado.Items[0].Text = Traductor.T("comun.todos");
+            ddlEstado.Items[1].Text = Traductor.T("publicacion.estado.activa");
+            ddlEstado.Items[2].Text = Traductor.T("publicacion.estado.pausada");
+            ddlEstado.Items[3].Text = Traductor.T("publicacion.estado.finalizada");
+            ddlEstado.Items[4].Text = Traductor.T("publicacion.estado.noEncontrada");
+            ddlEstado.Items[5].Text = Traductor.T("publicacion.estado.error");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            MostrarCantidad();
+
+            // Las primeras opciones de los combos se agregan desde codigo: en
+            // el Init de un postback todavia no se recuperaron del ViewState
+            if (ddlProducto.Items.Count > 0)
+            {
+                ddlProducto.Items[0].Text = Traductor.T("monitoreo.todosLosProductos");
+                ddlCompetidor.Items[0].Text = Traductor.T("monitoreo.todosLosCompetidores");
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -79,17 +104,17 @@ namespace Strategic
             grillaPublicaciones.FilasPorPagina = 10;
             grillaPublicaciones.MostrarSelectorFilas = true;
 
-            grillaPublicaciones.AgregarColumna("NombreProducto", "Producto propio", "celda-usuario");
-            grillaPublicaciones.AgregarColumna("NombreCompetidor", "Competidor");
-            grillaPublicaciones.AgregarColumna("Url", "URL");
-            grillaPublicaciones.AgregarColumna("UltimoPrecio", "Último precio", "celda-numero", "${0:N2}");
-            grillaPublicaciones.AgregarColumna("FechaUltimaVerificacion", "Última verificación", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
-            grillaPublicaciones.AgregarColumna("Estado", "Estado");
+            grillaPublicaciones.AgregarColumna("NombreProducto", "mapearProductos.productoPropio", "celda-usuario");
+            grillaPublicaciones.AgregarColumna("NombreCompetidor", "mapearProductos.competidor");
+            grillaPublicaciones.AgregarColumna("Url", "monitoreo.url");
+            grillaPublicaciones.AgregarColumna("UltimoPrecio", "monitoreo.ultimoPrecio", "celda-numero", "${0:N2}");
+            grillaPublicaciones.AgregarColumna("FechaUltimaVerificacion", "monitoreo.ultimaVerificacion", "celda-fecha", "{0:dd/MM/yyyy HH:mm}");
+            grillaPublicaciones.AgregarColumnaTraducida("EstadoTexto", "comun.estado");
 
             // El texto sale de la fila: una publicacion activa se pausa y una
             // pausada (o con error) se reactiva
-            grillaPublicaciones.AgregarColumnaAccion("Monitoreo", "PausarReactivar", "Pausar", "AccionPausarReactivar");
-            grillaPublicaciones.AgregarColumnaAccion("Desactivar", "Desactivar", "Desactivar");
+            grillaPublicaciones.AgregarColumnaAccion("monitoreo.monitoreo", "PausarReactivar", "comun.accion.pausar", "AccionPausarReactivar");
+            grillaPublicaciones.AgregarColumnaAccion("monitoreo.desactivar", "Desactivar", "monitoreo.desactivar");
         }
 
         
@@ -128,7 +153,7 @@ namespace Strategic
 
                 if (vieneDeFiltros && publicaciones.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -141,10 +166,16 @@ namespace Strategic
         private void MostrarPublicaciones(List<BEPublicacionCompetencia> publicaciones, string mensajeVacio)
         {
             grillaPublicaciones.Cargar(publicaciones, mensajeVacio);
+            MostrarCantidad();
+        }
 
-            lblCantidad.Text = publicaciones.Count == 1
-                ? "1 publicación"
-                : string.Format("{0} publicaciones", publicaciones.Count);
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaPublicaciones.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("monitoreo.cantidadUno")
+                : Traductor.T("monitoreo.cantidad", cantidad);
         }
 
         
@@ -167,7 +198,7 @@ namespace Strategic
         private void CargarCombos()
         {
             ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem("Todos los productos", string.Empty));
+            ddlProducto.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosProductos"), string.Empty));
 
             foreach (BEProducto producto in bllProducto.TraerListaProductos())
             {
@@ -177,7 +208,7 @@ namespace Strategic
             }
 
             ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem("Todos los competidores", string.Empty));
+            ddlCompetidor.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosCompetidores"), string.Empty));
 
             // Se listan todos, no solo los activos: una publicacion mapeada
             // puede seguir apareciendo aunque su competidor haya sido dado de baja

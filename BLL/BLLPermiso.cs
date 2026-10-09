@@ -61,14 +61,14 @@ namespace BLL
 
         public BEFamilia TraerFamiliaConHijos(int codPermiso)
         {
-            ValidarCodigo(codPermiso, "familia");
+            ValidarCodigo(codPermiso);
 
             return dalPermiso.TraerArbolDeFamilia(codPermiso);
         }
 
         public List<BEComponente> TraerHijosDeFamilia(int codPermiso)
         {
-            ValidarCodigo(codPermiso, "familia");
+            ValidarCodigo(codPermiso);
 
             return dalPermiso.TraerHijosDeFamilia(codPermiso);
         }
@@ -84,7 +84,7 @@ namespace BLL
             // Alternativa 4.3 del CU [#ERR040]
             if (dalPermiso.ContarPermisosConNombre(nombre.Trim(), null) > 0)
             {
-                throw new Exception("Ya existe un permiso o una familia con ese nombre");
+                throw new Exception(Traductor.T("error.permisoDuplicado"));
             }
 
             // En el alta todavia no hay codigo asignado, asi que la familia no
@@ -107,20 +107,20 @@ namespace BLL
 
         public void ModificarFamilia(int codPermiso, string nombre, string descripcion, List<int> componentes, string nombreUsuarioEnSesion)
         {
-            ValidarCodigo(codPermiso, "familia");
+            ValidarCodigo(codPermiso);
             ValidarDatos(nombre, componentes);
 
             BEComponente actual = dalPermiso.TraerPermisoPorId(codPermiso);
 
             if (actual == null || !actual.EsFamilia)
             {
-                throw new Exception("No se encontro la familia seleccionada");
+                throw new Exception(Traductor.T("error.familiaNoEncontrada"));
             }
 
             // Alternativa 4.3 del CU [#ERR040]
             if (dalPermiso.ContarPermisosConNombre(nombre.Trim(), codPermiso) > 0)
             {
-                throw new Exception("Ya existe un permiso o una familia con ese nombre");
+                throw new Exception(Traductor.T("error.permisoDuplicado"));
             }
 
             // Alternativa 4.2 del CU [#ERR041]
@@ -139,20 +139,20 @@ namespace BLL
 
         public void CambiarEstadoFamilia(int codPermiso, bool activo, string nombreUsuarioEnSesion)
         {
-            ValidarCodigo(codPermiso, "familia");
+            ValidarCodigo(codPermiso);
 
             BEComponente familia = dalPermiso.TraerPermisoPorId(codPermiso);
 
             if (familia == null || !familia.EsFamilia)
             {
-                throw new Exception("No se encontro la familia seleccionada");
+                throw new Exception(Traductor.T("error.familiaNoEncontrada"));
             }
 
             if (familia.Activo == activo)
             {
                 throw new Exception(activo
-                    ? "La familia ya se encuentra activa"
-                    : "La familia ya se encuentra dada de baja");
+                    ? Traductor.T("error.familiaYaActiva")
+                    : Traductor.T("error.familiaYaDadaDeBaja"));
             }
 
             if (!activo)
@@ -160,13 +160,13 @@ namespace BLL
                 // Alternativa 2.1 del CU [#ERR042]
                 if (dalPermiso.ContarRolesConComponente(codPermiso) > 0)
                 {
-                    throw new Exception("No se puede dar de baja la familia porque esta asignada a uno o mas roles");
+                    throw new Exception(Traductor.T("error.familiaEnRoles"));
                 }
 
                 // Alternativa 2.2 del CU [#ERR043]
                 if (dalPermiso.ContarFamiliasQueContienen(codPermiso) > 0)
                 {
-                    throw new Exception("No se puede dar de baja la familia porque esta contenida en otra familia");
+                    throw new Exception(Traductor.T("error.familiaEnFamilia"));
                 }
             }
 
@@ -188,17 +188,17 @@ namespace BLL
             // Campos obligatorios incompletos [#ERR001]
             if (string.IsNullOrWhiteSpace(nombre))
             {
-                throw new Exception("Debe completar el nombre de la familia");
+                throw new Exception(Traductor.T("error.nombreFamiliaRequerido"));
             }
 
             if (nombre.Trim().Length > 80)
             {
-                throw new Exception("El nombre de la familia supera los 80 caracteres");
+                throw new Exception(Traductor.T("error.nombreFamiliaLargo"));
             }
 
             if (componentes == null || componentes.Count == 0)
             {
-                throw new Exception("La familia tiene que contener al menos un permiso o familia");
+                throw new Exception(Traductor.T("error.familiaVacia"));
             }
         }
 
@@ -219,25 +219,23 @@ namespace BLL
 
             if (armados.Count != componentes.Count)
             {
-                throw new Exception("Alguno de los componentes seleccionados ya no existe");
+                throw new Exception(Traductor.T("error.componenteInexistente"));
             }
 
             foreach (BEComponente componente in armados)
             {
                 if (codPermisoEditado > 0 && componente.Contiene(codPermisoEditado))
                 {
-                    throw new Exception(string.Format(
-                        "No se puede agregar \"{0}\": generaria una referencia circular",
-                        componente.Nombre));
+                    throw new Exception(Traductor.T("error.referenciaCircular", componente.Nombre));
                 }
             }
         }
 
-        private void ValidarCodigo(int codigo, string entidad)
+        private void ValidarCodigo(int codigo)
         {
             if (codigo <= 0)
             {
-                throw new Exception(string.Format("Debe seleccionar una {0}", entidad));
+                throw new Exception(Traductor.T("error.seleccioneFamilia"));
             }
         }
 

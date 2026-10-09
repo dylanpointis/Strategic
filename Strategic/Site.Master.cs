@@ -6,11 +6,16 @@ using System.Web.UI.HtmlControls;
 
 namespace Strategic
 {
-    public partial class SiteMaster : MasterPage
+    public partial class SiteMaster : MasterPage, IIdiomaObserver
     {
         // Atributo que lleva cada item del menu con el nombre del permiso que
         // lo habilita, que es el nombre del aspx al que apunta
         private const string AtributoPermiso = "data-permission";
+
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Traductor.Suscribir(this);
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -20,18 +25,38 @@ namespace Strategic
             navInicio.Visible = haySesion;
             navProfile.Visible = haySesion;
             navBienvenida.Visible = haySesion;
-
-            if (haySesion)
-            {
-                BEUsuario usuario = SessionManager.UsuarioActual;
-                string rol = usuario.Rol != null ? usuario.Rol.Nombre : string.Empty;
-
-                lblBienvenida.Text = Server.HtmlEncode(string.Format("Bienvenido {0}: {1}", rol, usuario.NombreUsuario));
-            }
             navCambiarClave.Visible = haySesion;
             navLogout.Visible = haySesion;
 
+            ActualizarIdioma();
             FiltrarMenu(SessionManager.UsuarioActual);
+        }
+
+        protected void lnkEspanol_Click(object sender, EventArgs e)
+        {
+            Traductor.CambiarIdioma(Traductor.Espanol);
+        }
+
+        protected void lnkIngles_Click(object sender, EventArgs e)
+        {
+            Traductor.CambiarIdioma(Traductor.Ingles);
+        }
+
+        // Los textos del menu estan en el markup y se resuelven solos al
+        // dibujar; aca van los que se arman desde codigo
+        public void ActualizarIdioma()
+        {
+            lnkEspanol.CssClass = Traductor.IdiomaActual == Traductor.Espanol ? "idioma-actual" : string.Empty;
+            lnkIngles.CssClass = Traductor.IdiomaActual == Traductor.Ingles ? "idioma-actual" : string.Empty;
+
+            BEUsuario usuario = SessionManager.UsuarioActual;
+
+            if (usuario != null)
+            {
+                string rol = usuario.Rol != null ? usuario.Rol.Nombre : string.Empty;
+
+                lblBienvenida.Text = Server.HtmlEncode(Traductor.T("master.bienvenida", rol, usuario.NombreUsuario));
+            }
         }
 
         

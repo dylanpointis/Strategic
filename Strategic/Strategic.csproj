@@ -209,6 +209,8 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
+    <Content Include="App_Data\Idiomas\en.json" />
+    <Content Include="App_Data\Idiomas\es.json" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
@@ -353,6 +355,9 @@
     </Compile>
     <Compile Include="AccesoDenegado.aspx.designer.cs">
       <DependentUpon>AccesoDenegado.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Componentes\PaginaBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Seguridad\PaginaSegura.cs">
       <SubType>ASPXCodeBehind</SubType>

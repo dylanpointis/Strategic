@@ -215,6 +215,37 @@ textarea {
         }
 
 
+        /* Selector de idioma */
+
+        .strategic-navbar .auth-nav .selector-idioma {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.65rem 0.8rem;
+            color: #493442;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+            .strategic-navbar .auth-nav .selector-idioma-opciones {
+                display: flex;
+                gap: 0.35rem;
+                color: #c9b3c2;
+            }
+
+            .strategic-navbar .auth-nav .selector-idioma a {
+                color: #8a6d80;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .strategic-navbar .auth-nav .selector-idioma a:hover,
+                .strategic-navbar .auth-nav .selector-idioma a.idioma-actual {
+                    color: #c6128f;
+                }
+
+
         /* Salir */
 
         .strategic-navbar .auth-nav .nav-bienvenida .nav-link {

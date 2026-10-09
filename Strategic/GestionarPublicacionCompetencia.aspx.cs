@@ -1,13 +1,13 @@
 using BE;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using System;
-using System.Web.UI;
 
 namespace Strategic
 {
     // CU-007-037, pasos 5 a 8: confirmacion de Pausar / Reactivar / Desactivar
-    public partial class GestionarPublicacionCompetencia : Page
+    public partial class GestionarPublicacionCompetencia : PaginaBase
     {
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
@@ -25,6 +25,20 @@ namespace Strategic
         {
             get { return Convert.ToString(ViewState["AccionAConfirmar"]); }
             set { ViewState["AccionAConfirmar"] = value; }
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("gestionarPublicacion.titulo");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // Lo que se esta confirmando se conoce recien al recuperar el
+            // ViewState: se vuelve a cargar para armar los textos en el idioma nuevo
+            if (PublicacionAConfirmar > 0)
+            {
+                CargarPublicacion(Request.QueryString["id"], Request.QueryString["accion"]);
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -84,7 +98,7 @@ namespace Strategic
 
             if (!int.TryParse(idTexto, out idProductoCompetencia) || idProductoCompetencia <= 0)
             {
-                MostrarSinDatos("No se indicó qué publicación gestionar");
+                MostrarSinDatos(Traductor.T("gestionarPublicacion.sinPublicacion"));
                 return;
             }
 
@@ -94,7 +108,7 @@ namespace Strategic
 
                 if (publicacion == null)
                 {
-                    MostrarSinDatos("No se encontró la publicación indicada");
+                    MostrarSinDatos(Traductor.T("gestionarPublicacion.noEncontrada"));
                     return;
                 }
 
@@ -111,8 +125,8 @@ namespace Strategic
 
                 string descripcion = string.Format("{0} ({1})", publicacion.NombreProducto, publicacion.NombreCompetidor);
 
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(TextoConfirmacion(accion), descripcion));
-                btnConfirmar.Text = accion;
+                lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(TextoConfirmacion(accion), descripcion));
+                btnConfirmar.Text = Traductor.T(TextoBoton(accion));
                 btnConfirmar.CssClass = accion == "Desactivar" ? "btn btn-strategic-danger" : "btn btn-strategic";
             }
             catch (Exception ex)
@@ -150,24 +164,38 @@ namespace Strategic
         {
             if (estadoActual == "Finalizada")
             {
-                return "Esta publicación ya está desactivada";
+                return Traductor.T("gestionarPublicacion.yaDesactivada");
             }
 
-            return "No se pudo determinar la acción solicitada";
+            return Traductor.T("gestionarPublicacion.accionDesconocida");
         }
 
+        // Claves de traduccion de la pregunta y del boton segun la accion
         private string TextoConfirmacion(string accion)
         {
             switch (accion)
             {
                 case "Pausar":
-                    return "¿Deseás pausar el monitoreo de {0}?";
+                    return "gestionarPublicacion.confirmarPausar";
                 case "Reactivar":
-                    return "¿Deseás reactivar el monitoreo de {0}?";
+                    return "gestionarPublicacion.confirmarReactivar";
                 case "Desactivar":
-                    return "¿Deseás desactivar el monitoreo de {0}? Esta acción no se puede deshacer.";
+                    return "gestionarPublicacion.confirmarDesactivar";
                 default:
-                    return "¿Deseás confirmar la acción sobre {0}?";
+                    return "gestionarPublicacion.confirmarAccion";
+            }
+        }
+
+        private string TextoBoton(string accion)
+        {
+            switch (accion)
+            {
+                case "Pausar":
+                    return "comun.accion.pausar";
+                case "Reactivar":
+                    return "comun.accion.reactivar";
+                default:
+                    return "monitoreo.desactivar";
             }
         }
 
@@ -176,13 +204,13 @@ namespace Strategic
             switch (accion)
             {
                 case "Pausar":
-                    return "Se pausó el monitoreo de la publicación";
+                    return Traductor.T("gestionarPublicacion.exitoPausar");
                 case "Reactivar":
-                    return "Se reactivó el monitoreo de la publicación";
+                    return Traductor.T("gestionarPublicacion.exitoReactivar");
                 case "Desactivar":
-                    return "Se desactivó la publicación";
+                    return Traductor.T("gestionarPublicacion.exitoDesactivar");
                 default:
-                    return "Se actualizó el estado de la publicación";
+                    return Traductor.T("gestionarPublicacion.exito");
             }
         }
 

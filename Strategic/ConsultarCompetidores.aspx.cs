@@ -13,8 +13,8 @@ namespace Strategic
     // La baja y la reactivacion se disparan desde este listado
     public partial class ConsultarCompetidores : PaginaSegura
     {
-        private const string MensajeSinCompetidores = "No existen competidores registrados";
-        private const string MensajeSinResultados = "No se encontraron datos con los filtros ingresados";
+        private const string MensajeSinCompetidores = "consultarCompetidores.sinCompetidores";
+        private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
@@ -23,6 +23,23 @@ namespace Strategic
             // Las columnas se arman en el Init para que la grilla pueda
             // reconstruirse en cada postback a partir de su ViewState
             ConfigurarGrilla();
+        }
+
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("consultarCompetidores.titulo");
+            lblTexto.Text = Traductor.T("comun.nombre");
+            txtTexto.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblMarketplace.Text = Traductor.T("competidor.marketplace");
+            txtMarketplace.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblEstado.Text = Traductor.T("comun.estado");
+            ddlEstado.Items[0].Text = Traductor.T("comun.activos");
+            ddlEstado.Items[1].Text = Traductor.T("comun.inactivos");
+            ddlEstado.Items[2].Text = Traductor.T("comun.todos");
+            btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnNuevo.Text = Traductor.T("consultarCompetidores.nuevo");
+            MostrarCantidad();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -80,23 +97,23 @@ namespace Strategic
             grillaCompetidores.FilasPorPagina = 10;
             grillaCompetidores.MostrarSelectorFilas = true;
 
-            grillaCompetidores.AgregarColumna("Nombre", "Nombre", "celda-usuario");
-            grillaCompetidores.AgregarColumna("Marketplace", "Marketplace");
-            grillaCompetidores.AgregarColumna("Descripcion", "Descripción");
-            grillaCompetidores.AgregarColumna("Estado", "Estado");
+            grillaCompetidores.AgregarColumna("Nombre", "comun.nombre", "celda-usuario");
+            grillaCompetidores.AgregarColumna("Marketplace", "competidor.marketplace");
+            grillaCompetidores.AgregarColumna("Descripcion", "familia.descripcion");
+            grillaCompetidores.AgregarColumnaTraducida("EstadoTexto", "comun.estado");
 
             // Cada accion lleva a una pantalla con su propio permiso: la columna
             // solo se arma si el rol la alcanza
             if (TienePermiso("ModificarCompetidor"))
             {
-                grillaCompetidores.AgregarColumnaAccion("Modificar", "Modificar", "Modificar");
+                grillaCompetidores.AgregarColumnaAccion("comun.modificar", "Modificar", "comun.modificar");
             }
 
             // El texto sale de la fila: un competidor activo se da de baja y
             // uno inactivo se reactiva
             if (TienePermiso("BajaCompetidor"))
             {
-                grillaCompetidores.AgregarColumnaAccion("Estado", "CambiarEstado", "Cambiar estado", "AccionEstado");
+                grillaCompetidores.AgregarColumnaAccion("comun.estado", "CambiarEstado", "comun.cambiarEstado", "AccionEstado");
             }
 
             btnNuevo.Visible = TienePermiso("AltaCompetidor");
@@ -114,7 +131,7 @@ namespace Strategic
 
                 if (vieneDeFiltros && competidores.Count == 0)
                 {
-                    lblAvisoFiltros.Text = MensajeSinResultados;
+                    lblAvisoFiltros.Text = Traductor.T(MensajeSinResultados);
                 }
             }
             catch (Exception ex)
@@ -127,10 +144,16 @@ namespace Strategic
         private void MostrarCompetidores(List<BECompetencia> competidores, string mensajeVacio)
         {
             grillaCompetidores.Cargar(competidores, mensajeVacio);
+            MostrarCantidad();
+        }
 
-            lblCantidad.Text = competidores.Count == 1
-                ? "1 competidor"
-                : string.Format("{0} competidores", competidores.Count);
+        private void MostrarCantidad()
+        {
+            int cantidad = grillaCompetidores.CantidadRegistros;
+
+            lblCantidad.Text = cantidad == 1
+                ? Traductor.T("consultarCompetidores.cantidadUno")
+                : Traductor.T("consultarCompetidores.cantidad", cantidad);
         }
 
         

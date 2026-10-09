@@ -28,6 +28,20 @@ namespace Strategic
             set { ViewState["EstadoAConfirmar"] = value; }
         }
 
+        public override void ActualizarIdioma()
+        {
+            Title = Traductor.T("bajaRol.titulo");
+            btnCancelar.Text = Traductor.T("comun.cancelar");
+            btnVolver.Text = Traductor.T("comun.volverAlListado");
+
+            // Lo que se esta confirmando se conoce recien al recuperar el
+            // ViewState: se vuelve a cargar para armar los textos en el idioma nuevo
+            if (RolAConfirmar > 0)
+            {
+                CargarRol(Request.QueryString["rol"]);
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -53,8 +67,8 @@ namespace Strategic
 
                 bllRol.CambiarEstadoRol(codRol, activo, enSesion.NombreUsuario);
 
-                Session["MensajeRoles"] = string.Format(
-                    activo ? "Se reactivó el rol {0}" : "Se dio de baja el rol {0}",
+                Session["MensajeRoles"] = Traductor.T(
+                    activo ? "bajaRol.exitoReactivar" : "bajaRol.exitoBaja",
                     rol != null ? rol.Nombre : codRol.ToString());
 
                 Response.Redirect("~/ConsultarRoles.aspx");
@@ -76,7 +90,7 @@ namespace Strategic
 
             if (!int.TryParse(valor, out codRol))
             {
-                MostrarSinRegistro("No se indicó qué rol dar de baja");
+                MostrarSinRegistro(Traductor.T("bajaRol.sinRol"));
                 return;
             }
 
@@ -86,20 +100,18 @@ namespace Strategic
 
                 if (rol == null)
                 {
-                    MostrarSinRegistro("No se encontró el rol indicado");
+                    MostrarSinRegistro(Traductor.T("rol.noEncontrado"));
                     return;
                 }
 
                 RolAConfirmar = rol.CodRol;
                 EstadoAConfirmar = !rol.Activo;
 
-                lblConfirmacion.Text = Server.HtmlEncode(string.Format(
-                    rol.Activo
-                        ? "¿Deseás dar de baja el rol {0}? No va a poder asignarse a nuevos usuarios."
-                        : "¿Deseás reactivar el rol {0}?",
+                lblConfirmacion.Text = Server.HtmlEncode(Traductor.T(
+                    rol.Activo ? "bajaRol.confirmarBaja" : "bajaRol.confirmarReactivar",
                     rol.Nombre));
 
-                btnConfirmar.Text = rol.Activo ? "Dar de baja" : "Reactivar";
+                btnConfirmar.Text = Traductor.T(rol.AccionEstado);
                 btnConfirmar.CssClass = rol.Activo ? "btn btn-strategic-danger" : "btn btn-strategic";
             }
             catch (Exception ex)
