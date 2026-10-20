@@ -17,6 +17,7 @@
           CU-004-015 Ver Historial de Stock
           CU-004-016 Ver Historial de Ventas
      002. Analisis
+          CU-002-005 Generar Recomendaciones
           CU-002-006 Generar Predicciones
           CU-002-007 Comparar Precios con Competidores
      005. Gestion de Usuarios y Permisos
@@ -68,6 +69,10 @@ WHERE [IdProductoCompetencia] IN (
 GO
 
 DELETE FROM [dbo].[ProductoCompetencia]
+WHERE [IdProducto] IN (SELECT [IdProducto] FROM [dbo].[Producto] WHERE [Codigo] LIKE 'SKU-1%')
+GO
+
+DELETE FROM [dbo].[Recomendacion]
 WHERE [IdProducto] IN (SELECT [IdProducto] FROM [dbo].[Producto] WHERE [Codigo] LIKE 'SKU-1%')
 GO
 
@@ -128,7 +133,11 @@ VALUES
     (3, N'SKU-1003', N'Monitor 27" 144 Hz',             N'Activo',  320000.00,   7,  20,  2, N'Monitores',   0, '2026-09-05T03:00:00', N'Samsung'),
     (4, N'SKU-1004', N'Auriculares Bluetooth ANC',      N'Pausado',  62000.00,   0,  50,  4, N'Audio',       0, '2026-09-05T03:00:00', N'JBL'),
     (5, N'SKU-1005', N'Notebook 14" Core i5 16GB',      N'Activo',  890000.00,   4,  15,  2, N'Notebooks',   0, '2026-09-05T03:00:00', N'Lenovo'),
-    (6, N'SKU-1006', N'Webcam HD (discontinuada)',      N'Inactivo', 25000.00,   0, NULL, NULL, N'Periféricos', 1, '2026-07-01T03:00:00', N'Genius')
+    (6, N'SKU-1006', N'Webcam HD (discontinuada)',      N'Inactivo', 25000.00,   0, NULL, NULL, N'Periféricos', 1, '2026-07-01T03:00:00', N'Genius'),
+    -- SKU-1007 y SKU-1008 quedan mas de un 15% por encima de la competencia
+    -- para las recomendaciones de precio (CU-002-005)
+    (7, N'SKU-1007', N'Parlante portátil Bluetooth 20W', N'Activo',  78000.00,  10,  40,  5, N'Audio',       0, '2026-09-05T03:00:00', N'JBL'),
+    (8, N'SKU-1008', N'Silla gamer ergonómica',          N'Activo', 210000.00,   6,  20,  3, N'Gaming',      0, '2026-09-05T03:00:00', N'Corsair')
 
 SET IDENTITY_INSERT [dbo].[Producto] OFF
 GO
@@ -255,7 +264,17 @@ VALUES
     (18, N'V-2026-0018', '2026-08-04T12:00:00',  53400.00, N'Completada'),
     (19, N'V-2026-0019', '2026-08-18T18:45:00',  72000.00, N'Completada'),
     (20, N'V-2026-0020', '2026-08-29T10:20:00',  91000.00, N'Completada'),
-    (21, N'V-2026-0021', '2026-09-04T16:00:00',  92502.50, N'Completada')
+    (21, N'V-2026-0021', '2026-09-04T16:00:00',  92502.50, N'Completada'),
+
+    -- Recomendaciones (CU-002-005): los periodos terminan en la ultima
+    -- sincronizacion (05/09). Mes actual 07/08 al 05/09, anterior 08/07 al 06/08
+    (22, N'V-2026-0022', '2026-07-14T11:00:00', 156000.00, N'Completada'),
+    (23, N'V-2026-0023', '2026-07-27T15:20:00', 234000.00, N'Completada'),
+    (24, N'V-2026-0024', '2026-08-05T10:45:00',  78000.00, N'Completada'),
+    (25, N'V-2026-0025', '2026-08-25T12:10:00', 156000.00, N'Completada'),
+    (26, N'V-2026-0026', '2026-07-30T17:00:00', 210000.00, N'Completada'),
+    (27, N'V-2026-0027', '2026-08-14T09:30:00', 420000.00, N'Completada'),
+    (28, N'V-2026-0028', '2026-09-01T14:00:00', 210000.00, N'Completada')
 
 SET IDENTITY_INSERT [dbo].[Venta] OFF
 GO
@@ -292,7 +311,16 @@ VALUES
     (18, 2, 3,  17800.00),
     (19, 2, 4,  18000.00),
     (20, 2, 5,  18200.00),
-    (21, 2, 5,  18500.50)
+    (21, 2, 5,  18500.50),
+    -- Parlante (producto 7): 6 unidades el mes anterior y 2 el actual
+    (22, 7, 2,  78000.00),
+    (23, 7, 3,  78000.00),
+    (24, 7, 1,  78000.00),
+    (25, 7, 2,  78000.00),
+    -- Silla (producto 8): 1 unidad el mes anterior y 3 el actual
+    (26, 8, 1, 210000.00),
+    (27, 8, 2, 210000.00),
+    (28, 8, 1, 210000.00)
 GO
 
 
@@ -345,7 +373,9 @@ VALUES
     (6, 5, 2, N'https://articulo.mercadolibre.com.ar/MLA-1106-notebook-14-core-i5-16gb-_JM',        N'Activa',     '2026-08-01T09:00:00', '2026-09-08T06:00:00'),
     (7, 4, 1, N'https://articulo.mercadolibre.com.ar/MLA-1107-auriculares-bluetooth-anc-_JM',       N'Activa',     '2026-09-07T18:00:00', NULL),
     (8, 2, 2, N'https://articulo.mercadolibre.com.ar/MLA-1108-mouse-inalambrico-oficina-_JM',       N'Finalizada', '2026-07-15T09:00:00', '2026-09-05T06:00:00'),
-    (9, 6, 1, N'https://articulo.mercadolibre.com.ar/MLA-1109-webcam-hd-720p-_JM',                  N'Activa',     '2026-06-20T09:00:00', '2026-07-01T06:00:00')
+    (9, 6, 1, N'https://articulo.mercadolibre.com.ar/MLA-1109-webcam-hd-720p-_JM',                  N'Activa',     '2026-06-20T09:00:00', '2026-07-01T06:00:00'),
+    (10, 7, 1, N'https://articulo.mercadolibre.com.ar/MLA-1110-parlante-bluetooth-20w-_JM',         N'Activa',     '2026-07-20T09:00:00', '2026-09-05T06:00:00'),
+    (11, 8, 3, N'https://articulo.mercadolibre.com.ar/MLA-1111-silla-gamer-ergonomica-_JM',         N'Activa',     '2026-07-20T09:05:00', '2026-09-05T06:00:00')
 
 SET IDENTITY_INSERT [dbo].[ProductoCompetencia] OFF
 GO
@@ -361,6 +391,8 @@ GO
      - mapeo 2: el producto propio quedo mas barato
      - mapeo 3: los dos precios terminan iguales
      - mapeo 6: la competencia bajo el precio por debajo del propio
+     - mapeos 10 y 11: el producto propio queda mas de un 15% mas
+       caro (recomendaciones de precio del CU-002-005)
    ------------------------------------------------------------ */
 
 INSERT INTO [dbo].[HistorialPrecioCompetencia]
@@ -390,7 +422,13 @@ VALUES
     (6, 905000.00, 890000.00, '2026-09-05T06:00:00'),
     (6, 869000.00, 890000.00, '2026-09-08T06:00:00'),
 
-    (8,  19000.00,  18500.50, '2026-09-05T06:00:00')
+    (8,  19000.00,  18500.50, '2026-09-05T06:00:00'),
+
+    (10,  64000.00,  76000.00, '2026-08-20T06:00:00'),
+    (10,  64000.00,  78000.00, '2026-09-05T06:00:00'),
+
+    (11, 182000.00, 205000.00, '2026-08-20T06:00:00'),
+    (11, 175000.00, 210000.00, '2026-09-05T06:00:00')
 GO
 
 
@@ -412,7 +450,7 @@ GO
 
 /* ------------------------------------------------------------
    Control: los mapeos activos de productos vigentes son los que
-   se ven en Comparar Precios. El conteo tiene que dar 7.
+   se ven en Comparar Precios. El conteo tiene que dar 9.
    ------------------------------------------------------------ */
 
 SELECT COUNT(*) AS MapeosComparables

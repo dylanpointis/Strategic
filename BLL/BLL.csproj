@@ -43,6 +43,7 @@
     <Compile Include="BLLPermiso.cs" />
     <Compile Include="BLLPrediccion.cs" />
     <Compile Include="BLLProducto.cs" />
+    <Compile Include="BLLRecomendacion.cs" />
     <Compile Include="BLLRol.cs" />
     <Compile Include="BLLRespaldo.cs" />
     <Compile Include="BLLDigitoVerificador.cs" />

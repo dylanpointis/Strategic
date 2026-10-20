@@ -178,13 +178,16 @@ GO
 CREATE TABLE [dbo].[Recomendacion](
     [IdRecomendacion] INT IDENTITY(1,1) NOT NULL,
     [IdProducto] INT NOT NULL,
+    [Regla] NVARCHAR(30) NOT NULL,
     [Tipo] NVARCHAR(20) NOT NULL,
     [Titulo] NVARCHAR(255) NOT NULL,
     [Descripcion] NVARCHAR(1000) NOT NULL,
+    [Justificacion] NVARCHAR(1000) NULL,
     [AccionSugerida] NVARCHAR(255) NULL,
     [Prioridad] NVARCHAR(10) NOT NULL,
     [Estado] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Recomendacion_Estado] DEFAULT('Activa'),
     [FechaGeneracion] DATETIME NOT NULL CONSTRAINT [DF_Recomendacion_FechaGeneracion] DEFAULT(GETDATE()),
+    [NombreUsuario] VARCHAR(50) NULL,
     CONSTRAINT [PK_Recomendacion] PRIMARY KEY CLUSTERED ([IdRecomendacion] ASC),
     CONSTRAINT [FK_Recomendacion_Producto] FOREIGN KEY ([IdProducto]) REFERENCES [dbo].[Producto]([IdProducto])
 )
@@ -2124,5 +2127,120 @@ BEGIN
 
     INSERT INTO [dbo].[DVV_Columna] ([Tabla], [Columna], [DVV])
     VALUES (@Tabla, @Columna, @DVV);
+END
+GO
+
+
+/* ============================================================
+   002. Analisis - CU-002-005 Generar Recomendaciones
+   ------------------------------------------------------------
+   Las recomendaciones se calculan en la BLL con reglas fijas
+   sobre productos, precios de la competencia y ventas; aca solo
+   se traen esos datos y se guarda la recomendacion que el
+   usuario elige. Regla identifica la condicion que la origino
+   (SinStock, StockBajo, Sobrestock, PrecioAlto,
+   PrecioAltoVentasBajas, CaidaVentas).
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaVentaPorFecha]
+    @FechaInicio DATETIME,
+    @FechaFin DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Una fila por item: la DAL arma cada venta con sus items.
+    -- Trae todos los estados; quien consulta decide cuales cuentan
+    SELECT
+        V.IdVenta,
+        V.NroVenta,
+        V.Fecha,
+        V.MontoTotal,
+        V.Estado,
+        IV.IdItemVenta,
+        IV.IdProducto,
+        IV.Cantidad,
+        IV.PrecioVenta
+    FROM [dbo].[Venta] V
+    INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+    WHERE V.Fecha >= @FechaInicio
+      AND V.Fecha < DATEADD(DAY, 1, @FechaFin)
+    ORDER BY V.Fecha ASC, V.IdVenta ASC, IV.IdItemVenta ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerProductoCompetencia]
+    @IdProducto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Publicaciones del producto con el ultimo precio relevado de cada una
+    SELECT
+        PC.IdProductoCompetencia,
+        PC.IdProducto,
+        PC.IdCompetencia,
+        C.Nombre          AS NombreCompetidor,
+        C.Marketplace,
+        PC.URL,
+        PC.Estado,
+        UP.PrecioCompetencia AS UltimoPrecio,
+        UP.FechaConsulta     AS FechaUltimoPrecio
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Competencia] C ON C.IdCompetencia = PC.IdCompetencia
+    OUTER APPLY (
+        SELECT TOP (1)
+            H.PrecioCompetencia,
+            H.FechaConsulta
+        FROM [dbo].[HistorialPrecioCompetencia] H
+        WHERE H.IdProductoCompetencia = PC.IdProductoCompetencia
+        ORDER BY H.FechaConsulta DESC
+    ) UP
+    WHERE PC.IdProducto = @IdProducto
+    ORDER BY C.Nombre ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[ExisteRecomendacionGuardada]
+    @IdProducto INT,
+    @Regla NVARCHAR(30),
+    @Fecha DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- La misma regla para el mismo producto se guarda una vez por dia
+    SELECT COUNT(*) AS Cantidad
+    FROM [dbo].[Recomendacion]
+    WHERE [IdProducto] = @IdProducto
+      AND [Regla] = @Regla
+      AND CONVERT(DATE, [FechaGeneracion]) = @Fecha
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarRecomendacion]
+    @IdProducto INT,
+    @Regla NVARCHAR(30),
+    @Tipo NVARCHAR(20),
+    @Titulo NVARCHAR(255),
+    @Descripcion NVARCHAR(1000),
+    @Justificacion NVARCHAR(1000) = NULL,
+    @AccionSugerida NVARCHAR(255) = NULL,
+    @Prioridad NVARCHAR(10),
+    @FechaGeneracion DATETIME,
+    @NombreUsuario VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Nace en estado Activa (valor por defecto de la tabla)
+    INSERT INTO [dbo].[Recomendacion]
+        ([IdProducto], [Regla], [Tipo], [Titulo], [Descripcion], [Justificacion],
+         [AccionSugerida], [Prioridad], [FechaGeneracion], [NombreUsuario])
+    VALUES
+        (@IdProducto, @Regla, @Tipo, @Titulo, @Descripcion, @Justificacion,
+         @AccionSugerida, @Prioridad, @FechaGeneracion, @NombreUsuario)
+
+    SELECT SCOPE_IDENTITY() AS IdRecomendacion
 END
 GO

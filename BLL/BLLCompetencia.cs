@@ -232,6 +232,16 @@ namespace BLL
 
         #endregion
 
+        public List<BEProductoCompetencia> TraerProductoCompetencia(int idProducto)
+        {
+            if (idProducto <= 0)
+            {
+                throw new Exception(Traductor.T("error.productoInvalido"));
+            }
+
+            return dalCompetencia.TraerProductoCompetencia(idProducto);
+        }
+
         public List<BEComparacionPrecio> TraerComparacionPrecios()
         {
             return dalCompetencia.TraerComparacionPrecios();

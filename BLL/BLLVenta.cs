@@ -30,6 +30,17 @@ namespace BLL
                 Normalizar(estado));
         }
 
+        // Ventas del rango con sus items, en todos los estados
+        public List<BEVenta> TraerListaVentaPorFecha(DateTime fechaInicio, DateTime fechaFin)
+        {
+            if (fechaFin < fechaInicio)
+            {
+                throw new Exception(Traductor.T("filtroFechas.errorRango"));
+            }
+
+            return dalVenta.TraerListaVentaPorFecha(fechaInicio.Date, fechaFin.Date);
+        }
+
         
         /// Agrupa las ventas por dia para alimentar el grafico de facturacion.
         

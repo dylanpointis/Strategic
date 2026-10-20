@@ -167,6 +167,40 @@ namespace DAL
             return 0;
         }
 
+        // Publicaciones de la competencia asociadas a un producto, con su ultimo precio
+        public List<BEProductoCompetencia> TraerProductoCompetencia(int idProducto)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerProductoCompetencia", parametros);
+            List<BEProductoCompetencia> publicaciones = new List<BEProductoCompetencia>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                publicaciones.Add(new BEProductoCompetencia
+                {
+                    IdProductoCompetencia = Convert.ToInt32(row["IdProductoCompetencia"]),
+                    IdProducto = Convert.ToInt32(row["IdProducto"]),
+                    IdCompetencia = Convert.ToInt32(row["IdCompetencia"]),
+                    NombreCompetidor = row["NombreCompetidor"].ToString(),
+                    Marketplace = row["Marketplace"].ToString(),
+                    Url = row["URL"].ToString(),
+                    Estado = row["Estado"].ToString(),
+                    UltimoPrecio = row["UltimoPrecio"] == DBNull.Value
+                        ? (decimal?)null
+                        : Convert.ToDecimal(row["UltimoPrecio"]),
+                    FechaUltimoPrecio = row["FechaUltimoPrecio"] == DBNull.Value
+                        ? (DateTime?)null
+                        : Convert.ToDateTime(row["FechaUltimoPrecio"])
+                });
+            }
+
+            return publicaciones;
+        }
+
         public List<BEComparacionPrecio> TraerComparacionPrecios()
         {
             return MapearComparaciones(dalCon.ConsultaProcAlmacenado("TraerComparacionPrecios", null));

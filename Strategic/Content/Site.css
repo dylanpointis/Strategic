@@ -1119,6 +1119,16 @@ textarea {
         word-break: break-word;
     }
 
+/* Item que ocupa todo el ancho, para textos largos (recomendaciones) */
+.detalle-item-completo {
+    grid-column: 1 / -1;
+}
+
+    .detalle-item-completo dd {
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
 /* ---------- Selector de permisos y familias (Composite) ---------- */
 
 .selector-permisos {

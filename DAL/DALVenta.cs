@@ -53,6 +53,56 @@ namespace DAL
             return unidades;
         }
 
+        // El SP devuelve una fila por item: se agrupan en su venta respetando el orden
+        public List<BEVenta> TraerListaVentaPorFecha(DateTime fechaInicio, DateTime fechaFin)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@FechaInicio", fechaInicio),
+                new SqlParameter("@FechaFin", fechaFin)
+            };
+
+            DataTable tabla = dalCon.ConsultaProcAlmacenado("TraerListaVentaPorFecha", parametros);
+            List<BEVenta> ventas = new List<BEVenta>();
+            Dictionary<int, BEVenta> ventasPorId = new Dictionary<int, BEVenta>();
+
+            foreach (DataRow row in tabla.Rows)
+            {
+                int idVenta = Convert.ToInt32(row["IdVenta"]);
+                BEVenta venta;
+
+                if (!ventasPorId.TryGetValue(idVenta, out venta))
+                {
+                    venta = new BEVenta
+                    {
+                        IdVenta = idVenta,
+                        NroVenta = row["NroVenta"].ToString(),
+                        Fecha = Convert.ToDateTime(row["Fecha"]),
+                        MontoTotal = Convert.ToDecimal(row["MontoTotal"]),
+                        Estado = row["Estado"].ToString()
+                    };
+
+                    ventasPorId.Add(idVenta, venta);
+                    ventas.Add(venta);
+                }
+
+                BEItemVenta item = new BEItemVenta
+                {
+                    IdItemVenta = Convert.ToInt32(row["IdItemVenta"]),
+                    IdVenta = idVenta,
+                    IdProducto = Convert.ToInt32(row["IdProducto"]),
+                    Cantidad = Convert.ToInt32(row["Cantidad"]),
+                    PrecioVenta = Convert.ToDecimal(row["PrecioVenta"])
+                };
+
+                venta.Items.Add(item);
+                venta.CantidadItems = venta.Items.Count;
+                venta.UnidadesVendidas = venta.UnidadesVendidas + item.Cantidad;
+            }
+
+            return ventas;
+        }
+
         private List<BEVenta> MapearVentas(DataTable tabla)
         {
             List<BEVenta> ventas = new List<BEVenta>();

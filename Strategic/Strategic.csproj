@@ -189,6 +189,7 @@
     <Content Include="HistorialStock.aspx" />
     <Content Include="HistorialVentas.aspx" />
     <Content Include="Predicciones.aspx" />
+    <Content Include="Recomendaciones.aspx" />
     <Content Include="ProductosSincronizados.aspx" />
     <Content Include="Scripts\strategic-graficos.js" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -536,6 +537,13 @@
     </Compile>
     <Compile Include="Predicciones.aspx.designer.cs">
       <DependentUpon>Predicciones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recomendaciones.aspx.cs">
+      <DependentUpon>Recomendaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recomendaciones.aspx.designer.cs">
+      <DependentUpon>Recomendaciones.aspx</DependentUpon>
     </Compile>
     <Compile Include="HistorialPrecios.aspx.cs">
       <DependentUpon>HistorialPrecios.aspx</DependentUpon>

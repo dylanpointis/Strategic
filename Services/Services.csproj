@@ -111,6 +111,7 @@
 
   <ItemGroup>
     <Compile Include="ClavePorDefecto.cs" />
+    <Compile Include="DatosInsuficientesException.cs" />
     <Compile Include="Encriptacion.cs" />
     <Compile Include="Evento.cs" />
     <Compile Include="IIdiomaObserver.cs" />
