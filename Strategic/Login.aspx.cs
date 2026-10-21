@@ -10,6 +10,7 @@ namespace Strategic
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
+        private readonly BLLSuscripcion bllSuscripcion = new BLLSuscripcion();
 
         public override void ActualizarIdioma()
         {
@@ -40,6 +41,23 @@ namespace Strategic
             {
                 // Intenta realizar el inicio de sesión y redirige al menú principal si es exitoso
                 BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), txtClave.Text);
+
+                // Con la suscripcion vencida solo se puede renovar. El personal de
+                // Strategic entra igual: tiene que poder ver la facturacion del cliente
+                if (!bllSuscripcion.TieneServicioActivo() && !TienePermiso(usuario, "ReporteFacturacion"))
+                {
+                    if (!TienePermiso(usuario, "RenovarSuscripcion"))
+                    {
+                        lblError.Text = Traductor.T("login.suscripcionVencida");
+                        return;
+                    }
+
+                    SessionManager.UsuarioActual = usuario;
+                    SessionManager.SuscripcionVencida = true;
+                    Response.Redirect("~/RenovarSuscripcion.aspx");
+                    return;
+                }
+
                 SessionManager.UsuarioActual = usuario;
                 Response.Redirect("~/Default.aspx");
             }
@@ -63,6 +81,11 @@ namespace Strategic
             {
                 lblError.Text = ex.Message;
             }
+        }
+
+        private bool TienePermiso(BEUsuario usuario, string permiso)
+        {
+            return usuario.Rol != null && usuario.Rol.TienePermiso(permiso);
         }
     }
 }

@@ -1405,6 +1405,48 @@ textarea {
     margin-top: 20px;
 }
 
+/* ---------- Suscripcion: datos de pago y QR ---------- */
+
+.subtitulo-seccion {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #493442;
+    margin: 24px 0 12px;
+}
+
+.datos-pago {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+    .datos-pago .detalle-grid {
+        flex: 1 1 320px;
+    }
+
+.qr-pago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    max-width: 200px;
+    text-align: center;
+}
+
+.qr-pago-imagen svg {
+    display: block;
+    border: 1px solid #f5e3ef;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.qr-pago-texto {
+    font-size: 0.78rem;
+    color: #8a6d80;
+}
+
 
 /* ---------- Responsive ---------- */
 

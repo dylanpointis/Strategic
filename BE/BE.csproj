@@ -57,6 +57,7 @@
     <Compile Include="BEItemVenta.cs" />
     <Compile Include="BEProductoCompetencia.cs" />
     <Compile Include="BERecomendacion.cs" />
+    <Compile Include="BESuscripcion.cs" />
     <Compile Include="Composite\BEComponente.cs" />
     <Compile Include="Composite\BEPermiso.cs" />
     <Compile Include="Composite\BEFamilia.cs" />

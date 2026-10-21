@@ -70,6 +70,21 @@ namespace Services
             get { return InconsistenciasDV != null; }
         }
 
+        // La suscripcion de la instancia vencio: mientras no se renueve, el
+        // usuario solo puede usar la pantalla de renovacion
+        public static bool SuscripcionVencida
+        {
+            get
+            {
+                object valor = HttpContext.Current.Session["SuscripcionVencida"];
+                return valor != null && (bool)valor;
+            }
+            set
+            {
+                HttpContext.Current.Session["SuscripcionVencida"] = value;
+            }
+        }
+
         public static void CerrarSesion()
         {
             HttpContext.Current.Session.Clear();

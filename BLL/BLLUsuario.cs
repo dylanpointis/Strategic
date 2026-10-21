@@ -176,6 +176,15 @@ namespace BLL
             return usuario;
         }
 
+        // Verificacion adicional de la clave del usuario en sesion antes de una
+        // accion delicada, como la baja de la suscripcion (CU-009-043)
+        public bool ValidarClave(string nombreUsuario, string clave)
+        {
+            BEUsuario usuario = ValidarUsuario(nombreUsuario, string.Empty);
+
+            return usuario != null && Encriptacion.VerificarPBKDF2(clave, usuario.Salt, usuario.Clave);
+        }
+
         // Politica de claves: minimo 8 caracteres, una mayuscula, un numero y
         // un caracter especial
         private void ValidarPoliticaDeClave(string clave)

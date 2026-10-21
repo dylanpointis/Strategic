@@ -190,6 +190,9 @@
     <Content Include="HistorialVentas.aspx" />
     <Content Include="Predicciones.aspx" />
     <Content Include="Recomendaciones.aspx" />
+    <Content Include="RenovarSuscripcion.aspx" />
+    <Content Include="BajaSuscripcion.aspx" />
+    <Content Include="ReporteFacturacion.aspx" />
     <Content Include="ProductosSincronizados.aspx" />
     <Content Include="Scripts\strategic-graficos.js" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -544,6 +547,27 @@
     </Compile>
     <Compile Include="Recomendaciones.aspx.designer.cs">
       <DependentUpon>Recomendaciones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RenovarSuscripcion.aspx.cs">
+      <DependentUpon>RenovarSuscripcion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RenovarSuscripcion.aspx.designer.cs">
+      <DependentUpon>RenovarSuscripcion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaSuscripcion.aspx.cs">
+      <DependentUpon>BajaSuscripcion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaSuscripcion.aspx.designer.cs">
+      <DependentUpon>BajaSuscripcion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReporteFacturacion.aspx.cs">
+      <DependentUpon>ReporteFacturacion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReporteFacturacion.aspx.designer.cs">
+      <DependentUpon>ReporteFacturacion.aspx</DependentUpon>
     </Compile>
     <Compile Include="HistorialPrecios.aspx.cs">
       <DependentUpon>HistorialPrecios.aspx</DependentUpon>

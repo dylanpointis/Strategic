@@ -301,15 +301,22 @@ CREATE TABLE [dbo].[HistorialSincronizacion](
 )
 GO
 
+-- Historial de la suscripcion del cliente: cada fila es un periodo pagado.
+-- Planes de Strategic: Basico, Pro y Max.
+-- Renovar agrega una fila; la facturacion de Strategic sale de sumar Monto
+-- por FechaPago. NumeroOperacion se guarda encriptado con AES
 CREATE TABLE [dbo].[Suscripcion](
     [IdSuscripcion] INT IDENTITY(1,1) NOT NULL,
+    [FechaPago] DATETIME NOT NULL,
     [FechaInicio] DATETIME NOT NULL,
     [FechaVencimiento] DATETIME NOT NULL,
     [Estado] NVARCHAR(20) NOT NULL,
     [Plan] NVARCHAR(50) NOT NULL,
     [Monto] DECIMAL(10,2) NOT NULL,
     [NumeroOperacion] NVARCHAR(100) NULL,
-    CONSTRAINT [PK_Suscripcion] PRIMARY KEY CLUSTERED ([IdSuscripcion] ASC)
+    CONSTRAINT [PK_Suscripcion] PRIMARY KEY CLUSTERED ([IdSuscripcion] ASC),
+    CONSTRAINT [CK_Suscripcion_Estado] CHECK ([Estado] IN ('Activa', 'Cancelada', 'Vencida')),
+    CONSTRAINT [CK_Suscripcion_Plan] CHECK ([Plan] IN (N'Básico', N'Pro', N'Max'))
 )
 GO
 
@@ -318,7 +325,9 @@ INSERT INTO [dbo].[Rol] ([CodRol], [Nombre], [Activo]) VALUES
 (1, 'WebMaster', 1),
 (2, 'Administrador', 1),
 (3, 'Analista', 1),
-(4, 'Usuario', 1)
+(4, 'Usuario', 1),
+-- Empleado de Strategic que atiende a este cliente: solo ve la facturacion
+(5, 'Soporte Strategic', 1)
 SET IDENTITY_INSERT [dbo].[Rol] OFF
 GO
 
@@ -384,6 +393,10 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 -- WebMaster, por eso no entra en la familia Auditoria que usa el Administrador
 (48, 'RealizarRestore',                    'Restaurar la base de datos desde un backup',     'Simple', 1),
 (49, 'RepararDigitoVerificador',           'Reparar el digito verificador',                  'Simple', 1),
+-- 009. Suscripciones (continuacion): la baja es solo del WebMaster y el
+-- reporte de facturacion es del personal de Strategic, no del cliente
+(50, 'BajaSuscripcion',                    'Dar de baja la suscripcion del cliente',         'Simple', 1),
+(51, 'ReporteFacturacion',                 'Ver la facturacion de la suscripcion',           'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -437,8 +450,9 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 (45, 28), (45, 29), (45, 30), (45, 31), (45, 32), (45, 33),
 -- Auditoria
 (46, 34), (46, 35),
--- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
-(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49)
+-- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos.
+-- ReporteFacturacion queda afuera: el WebMaster es del cliente
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50)
 GO
 
 
@@ -447,10 +461,11 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      38 pantallas (todo)
-     Administrador  30 pantallas
-     Analista       13 pantallas
-     Usuario         2 pantallas
+     WebMaster          39 pantallas (todo menos la facturacion)
+     Administrador      30 pantallas
+     Analista           13 pantallas
+     Usuario             2 pantallas
+     Soporte Strategic   1 pantalla
    ------------------------------------------------------------ */
 
 INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
@@ -463,7 +478,9 @@ INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 -- pantallas sueltas que el mapa le da sin el resto de su modulo
 (3, 37), (3, 38), (3, 40), (3, 27), (3, 28),
 -- Usuario: dos permisos simples
-(4,  1), (4, 10)
+(4,  1), (4, 10),
+-- Soporte Strategic: solo el reporte de facturacion
+(5, 51)
 GO
 
 -- Usuario: WebMasterStrategic  Clave: 'Admin123'  Rol: WebMaster
@@ -493,7 +510,15 @@ INSERT INTO [dbo].[DigitoVerificador] ([Tabla], [DVH], [DVV]) VALUES
 ('Producto', NULL, NULL),
 ('Competencia', NULL, NULL),
 ('ProductoCompetencia', NULL, NULL),
-('Automatizacion', NULL, NULL)
+('Automatizacion', NULL, NULL),
+('Suscripcion', NULL, NULL)
+GO
+
+-- Alta inicial de la suscripcion: la carga Strategic al instalar la
+-- instancia, por eso no tiene numero de operacion. Sin un periodo vigente
+-- el sistema solo deja renovar
+INSERT INTO [dbo].[Suscripcion] ([FechaPago], [FechaInicio], [FechaVencimiento], [Estado], [Plan], [Monto], [NumeroOperacion]) VALUES
+(GETDATE(), GETDATE(), DATEADD(MONTH, 1, GETDATE()), 'Activa', N'Max', 42000.00, NULL)
 GO
 
 CREATE PROCEDURE [dbo].[ValidarUsuario]
@@ -2242,5 +2267,117 @@ BEGIN
          @AccionSugerida, @Prioridad, @FechaGeneracion, @NombreUsuario)
 
     SELECT SCOPE_IDENTITY() AS IdRecomendacion
+END
+GO
+
+/* ============================================================
+   009. Suscripciones - CU-009-042 Renovar Suscripcion
+                        CU-009-043 Baja Suscripcion
+   ------------------------------------------------------------
+   Suscripcion es el historial de periodos pagados del cliente.
+   Renovar agrega una fila Activa con el numero de operacion ya
+   encriptado (AES, en la BLL). La baja pasa a Cancelada los
+   periodos Activos; el acceso sigue hasta su vencimiento.
+   Un periodo Activo cuyo vencimiento ya paso queda Vencido.
+   La comparacion del numero de operacion repetido se hace en la
+   BLL: con AES y vector aleatorio, el mismo numero encriptado dos
+   veces da textos distintos y no se puede buscar en SQL.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaSuscripciones]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- La primera fila es la mas reciente: de ahi sale el estado actual
+    SELECT
+        [IdSuscripcion],
+        [FechaPago],
+        [FechaInicio],
+        [FechaVencimiento],
+        [Estado],
+        [Plan],
+        [Monto],
+        [NumeroOperacion]
+    FROM [dbo].[Suscripcion]
+    ORDER BY [FechaVencimiento] DESC, [IdSuscripcion] DESC
+END
+GO
+
+CREATE PROCEDURE [dbo].[ActualizarSuscripcionesVencidas]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Suscripcion]
+    SET [Estado] = 'Vencida'
+    WHERE [Estado] = 'Activa'
+      AND [FechaVencimiento] < GETDATE()
+
+    -- La BLL recalcula el digito verificador solo si cambio algo
+    SELECT @@ROWCOUNT AS Cantidad
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarSuscripcion]
+    @FechaPago DATETIME,
+    @FechaInicio DATETIME,
+    @FechaVencimiento DATETIME,
+    @Plan NVARCHAR(50),
+    @Monto DECIMAL(10,2),
+    @NumeroOperacion NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[Suscripcion]
+        ([FechaPago], [FechaInicio], [FechaVencimiento], [Estado], [Plan], [Monto], [NumeroOperacion])
+    VALUES
+        (@FechaPago, @FechaInicio, @FechaVencimiento, 'Activa', @Plan, @Monto, @NumeroOperacion)
+
+    SELECT SCOPE_IDENTITY() AS IdSuscripcion
+END
+GO
+
+CREATE PROCEDURE [dbo].[CancelarSuscripcion]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Incluye los periodos ya pagados por adelantado: el acceso sigue
+    -- hasta el ultimo vencimiento, pero no se renueva mas
+    UPDATE [dbo].[Suscripcion]
+    SET [Estado] = 'Cancelada'
+    WHERE [Estado] = 'Activa'
+END
+GO
+
+/* ------------------------------------------------------------
+   Reporte de facturacion (personal de Strategic)
+   Cada fila de Suscripcion es un cobro: la facturacion es la
+   suma de Monto por FechaPago, sin importar el estado actual
+   del periodo.
+   ------------------------------------------------------------ */
+
+CREATE PROCEDURE [dbo].[FiltrarSuscripcionesPorFechaPago]
+    @FechaDesde DATETIME = NULL,
+    @FechaHasta DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        [IdSuscripcion],
+        [FechaPago],
+        [FechaInicio],
+        [FechaVencimiento],
+        [Estado],
+        [Plan],
+        [Monto],
+        [NumeroOperacion]
+    FROM [dbo].[Suscripcion]
+    WHERE (@FechaDesde IS NULL OR [FechaPago] >= @FechaDesde)
+      AND (@FechaHasta IS NULL OR [FechaPago] < DATEADD(DAY, 1, @FechaHasta))
+    ORDER BY [FechaPago] DESC
 END
 GO

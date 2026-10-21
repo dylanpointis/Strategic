@@ -32,6 +32,8 @@ namespace Strategic.Seguridad
             "RealizarRestore"
         };
 
+        public const string PaginaConSuscripcionVencida = "RenovarSuscripcion";
+
         
         /// Usuario logueado. Queda disponible desde el Page_Init en adelante.
         
@@ -88,6 +90,13 @@ namespace Strategic.Seguridad
             if (SessionManager.SistemaInconsistente && Array.IndexOf(PaginasConSistemaInconsistente, NombrePagina) < 0)
             {
                 Response.Redirect("~/RepararDigitoVerificador.aspx");
+                return;
+            }
+
+            // Con la suscripcion vencida solo queda la pantalla de renovacion
+            if (SessionManager.SuscripcionVencida && NombrePagina != PaginaConSuscripcionVencida)
+            {
+                Response.Redirect("~/RenovarSuscripcion.aspx");
                 return;
             }
 

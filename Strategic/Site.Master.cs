@@ -1,5 +1,6 @@
 ﻿using BE;
 using Services;
+using Strategic.Seguridad;
 using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -86,7 +87,10 @@ namespace Strategic
 
                     if (!string.IsNullOrEmpty(permiso))
                     {
-                        item.Visible = rol != null && rol.TienePermiso(permiso);
+                        // Con la suscripcion vencida solo queda la opcion de renovar
+                        item.Visible = rol != null
+                            && rol.TienePermiso(permiso)
+                            && (!SessionManager.SuscripcionVencida || permiso == PaginaSegura.PaginaConSuscripcionVencida);
 
                         // El atributo era para el servidor, no tiene que viajar al navegador
                         item.Attributes.Remove(AtributoPermiso);

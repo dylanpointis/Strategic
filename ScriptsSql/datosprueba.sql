@@ -25,6 +25,10 @@
           CU-005-018 Alta Usuario
           CU-005-019 Baja Usuario
           CU-005-020 Modificar Usuario
+     009. Suscripciones
+          CU-009-042 Renovar Suscripcion
+          CU-009-043 Baja Suscripcion
+          Reporte de facturacion (rol Soporte Strategic)
    ============================================================ */
 
 USE [Strategic]
@@ -38,11 +42,11 @@ GO
    ------------------------------------------------------------ */
 
 DELETE FROM [dbo].[Eventos]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
 GO
 
 DELETE FROM [dbo].[Usuario]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
 GO
 
 DELETE FROM [dbo].[ItemVenta]
@@ -83,6 +87,10 @@ DELETE FROM [dbo].[Competencia]
 WHERE [Nombre] IN (N'TecnoStore Online', N'MegaCompu', N'Gamer Point', N'Insumos del Sur')
 GO
 
+-- La suscripcion de la instancia solo tiene los periodos de prueba
+DELETE FROM [dbo].[Suscripcion]
+GO
+
 
 /* ------------------------------------------------------------
    Usuario
@@ -96,6 +104,7 @@ GO
        el desbloqueo desde Modificar Usuario
      - lgarcia es el segundo administrador: sin el, el sistema no
        deja dar de baja al usuario Admin
+     - acastro es la empleada de Strategic que ve la facturacion
    ------------------------------------------------------------ */
 
 -- Usuario: lgarcia     Clave: 'lucia.garcia'      Rol: Administrador
@@ -103,6 +112,7 @@ GO
 -- Usuario: svega       Clave: 'sofia.vega'        Rol: Usuario
 -- Usuario: rlopez      Clave: 'ramiro.lopez'      Rol: Analista (dado de baja)
 -- Usuario: jperez      Clave: 'juan.perez'        Rol: Usuario (bloqueado)
+-- Usuario: acastro     Clave: 'ana.castro'        Rol: Soporte Strategic
 -- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario]
     ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos])
@@ -111,7 +121,8 @@ VALUES
     (N'mfernandez', N'Martín', N'Fernández', N'martin.fernandez@strategic.local', 'zdKh4G9jJZWSbhllcwQmLCvkCO95MAKoMiYMcoWbbFs=', 'XxEPRET0EmKo8+bR5HKCXA==', 3, 0, 1, 0),
     (N'svega',      N'Sofía',  N'Vega',      N'sofia.vega@strategic.local',      'PA8bOrpegg6nDwaYwxSoVC1GZI1/eQnc95SoDIKI+Js=', 'YnjP4Hy8BjbY5uWqUqYXIQ==', 4, 0, 1, 0),
     (N'rlopez',     N'Ramiro', N'López',     N'ramiro.lopez@strategic.local',    'jQwrKheogMGfCEj1xX15QfLmoQec7eQWBVgEZozvaHQ=', 'pAyR3GyUc6HfqPR/NLegPA==', 3, 0, 0, 0),
-    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'ctzZH760RFP1gI9fEx80kVA1DRiRdZpwjeNAoA+i0AA=', 'Cm45fylw3gRLLwBWTJFXbw==', 4, 1, 1, 3)
+    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'ctzZH760RFP1gI9fEx80kVA1DRiRdZpwjeNAoA+i0AA=', 'Cm45fylw3gRLLwBWTJFXbw==', 4, 1, 1, 3),
+    (N'acastro',    N'Ana',    N'Castro',    N'ana.castro@strategic.local',      'AJZmfXc+UbTd52iH4oauMdNlMhVxjmPPdB3rLB/TacI=', 'Y/4rkAmyyovvQJCkN9+FZQ==', 5, 0, 1, 0)
 GO
 
 
@@ -463,7 +474,7 @@ GO
 
 /* ------------------------------------------------------------
    Control: usuarios de prueba por estado. Deberia devolver
-   3 activos, 1 inactivo y 1 bloqueado.
+   4 activos, 1 inactivo y 1 bloqueado.
    ------------------------------------------------------------ */
 
 SELECT
@@ -471,7 +482,31 @@ SELECT
     SUM(CASE WHEN [Activo] = 0 THEN 1 ELSE 0 END)                     AS Inactivos,
     SUM(CASE WHEN [Bloqueado] = 1 THEN 1 ELSE 0 END)                  AS Bloqueados
 FROM [dbo].[Usuario]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
+GO
+
+/* ------------------------------------------------------------
+   Suscripcion
+   Historial de la suscripcion del cliente: un periodo mensual
+   del plan Max pagado por fila, de marzo a noviembre de 2026,
+   con dos subas de precio. El ultimo periodo esta Activo; los anteriores ya
+   vencieron. Los numeros de operacion estan encriptados con AES
+   y la clave ClaveAES del Web.config; en claro son:
+     84213307561, 84391122045, TRF-0051872, 85017734219,
+     85244098113, TRF-0063390, 85871206654, 86102345987
+   ------------------------------------------------------------ */
+
+INSERT INTO [dbo].[Suscripcion]
+    ([FechaPago], [FechaInicio], [FechaVencimiento], [Estado], [Plan], [Monto], [NumeroOperacion])
+VALUES
+    ('2026-03-02T10:15:00', '2026-03-02T10:15:00', '2026-04-02T10:15:00', N'Vencida', N'Max',         35000.00, N'/rB1hU/RFLTBO556I41d5EuajH8QAmOD2yJ6kMw/BxM='),
+    ('2026-03-30T18:40:00', '2026-04-02T10:15:00', '2026-05-02T10:15:00', N'Vencida', N'Max',         35000.00, N'prKxwfp2gp6HOVSOA/aF56fcCq1d0lT007E39v0pbP0='),
+    ('2026-05-04T09:05:00', '2026-05-04T09:05:00', '2026-06-04T09:05:00', N'Vencida', N'Max',         35000.00, N'WBW6YJW5PttfF77nyrzrW1lMY5hE90Iz/rIKDv/XTa4='),
+    ('2026-06-01T11:20:00', '2026-06-04T09:05:00', '2026-07-04T09:05:00', N'Vencida', N'Max',         38500.00, N'lJF3OFOvIPUzkXAoxACvCTueh4ISKXZAEq9tvn2gIp8='),
+    ('2026-07-03T16:45:00', '2026-07-04T09:05:00', '2026-08-04T09:05:00', N'Vencida', N'Max',         38500.00, N'lWbg10umji+AlCwU/3dR5bFdLaarSlx+07ZD92DnMLc='),
+    ('2026-08-03T12:00:00', '2026-08-04T09:05:00', '2026-09-04T09:05:00', N'Vencida', N'Max',         38500.00, N'LHDXLUw7SOGWp7EKu4chlx4RCxmVDYvfi9Oq9VYS8uQ='),
+    ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',         42000.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
+    ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',         42000.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
 GO
 
 /* ------------------------------------------------------------
