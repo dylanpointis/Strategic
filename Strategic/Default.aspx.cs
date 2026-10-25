@@ -1,5 +1,4 @@
-﻿using BE;
-using Services;
+﻿using Services;
 using System;
 using System.Web.UI;
 
@@ -16,13 +15,7 @@ namespace Strategic
         {
             if (SessionManager.HayUsuarioLogueado)
             {
-                // El rol Soporte Strategic no tiene dashboard: su entrada es la facturacion
-                BEUsuario usuario = SessionManager.UsuarioActual;
-                bool sinDashboard = usuario.Rol != null
-                    && !usuario.Rol.TienePermiso("Dashboard")
-                    && usuario.Rol.TienePermiso("ReporteFacturacion");
-
-                Response.Redirect(sinDashboard ? "~/ReporteFacturacion.aspx" : "~/Dashboard.aspx");
+                Response.Redirect("~/Dashboard.aspx");
                 return;
             }
 

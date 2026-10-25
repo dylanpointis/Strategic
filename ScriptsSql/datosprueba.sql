@@ -28,7 +28,6 @@
      009. Suscripciones
           CU-009-042 Renovar Suscripcion
           CU-009-043 Baja Suscripcion
-          Reporte de facturacion (rol Soporte Strategic)
    ============================================================ */
 
 USE [Strategic]
@@ -42,11 +41,11 @@ GO
    ------------------------------------------------------------ */
 
 DELETE FROM [dbo].[Eventos]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
 GO
 
 DELETE FROM [dbo].[Usuario]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
 GO
 
 DELETE FROM [dbo].[ItemVenta]
@@ -104,7 +103,6 @@ GO
        el desbloqueo desde Modificar Usuario
      - lgarcia es el segundo administrador: sin el, el sistema no
        deja dar de baja al usuario Admin
-     - acastro es la empleada de Strategic que ve la facturacion
    ------------------------------------------------------------ */
 
 -- Usuario: lgarcia     Clave: 'lucia.garcia'      Rol: Administrador
@@ -112,7 +110,6 @@ GO
 -- Usuario: svega       Clave: 'sofia.vega'        Rol: Usuario
 -- Usuario: rlopez      Clave: 'ramiro.lopez'      Rol: Analista (dado de baja)
 -- Usuario: jperez      Clave: 'juan.perez'        Rol: Usuario (bloqueado)
--- Usuario: acastro     Clave: 'ana.castro'        Rol: Soporte Strategic
 -- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario]
     ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos])
@@ -121,8 +118,7 @@ VALUES
     (N'mfernandez', N'Martín', N'Fernández', N'martin.fernandez@strategic.local', 'zdKh4G9jJZWSbhllcwQmLCvkCO95MAKoMiYMcoWbbFs=', 'XxEPRET0EmKo8+bR5HKCXA==', 3, 0, 1, 0),
     (N'svega',      N'Sofía',  N'Vega',      N'sofia.vega@strategic.local',      'PA8bOrpegg6nDwaYwxSoVC1GZI1/eQnc95SoDIKI+Js=', 'YnjP4Hy8BjbY5uWqUqYXIQ==', 4, 0, 1, 0),
     (N'rlopez',     N'Ramiro', N'López',     N'ramiro.lopez@strategic.local',    'jQwrKheogMGfCEj1xX15QfLmoQec7eQWBVgEZozvaHQ=', 'pAyR3GyUc6HfqPR/NLegPA==', 3, 0, 0, 0),
-    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'ctzZH760RFP1gI9fEx80kVA1DRiRdZpwjeNAoA+i0AA=', 'Cm45fylw3gRLLwBWTJFXbw==', 4, 1, 1, 3),
-    (N'acastro',    N'Ana',    N'Castro',    N'ana.castro@strategic.local',      'AJZmfXc+UbTd52iH4oauMdNlMhVxjmPPdB3rLB/TacI=', 'Y/4rkAmyyovvQJCkN9+FZQ==', 5, 0, 1, 0)
+    (N'jperez',     N'Juan',   N'Pérez',     N'juan.perez@strategic.local',      'ctzZH760RFP1gI9fEx80kVA1DRiRdZpwjeNAoA+i0AA=', 'Cm45fylw3gRLLwBWTJFXbw==', 4, 1, 1, 3)
 GO
 
 
@@ -474,7 +470,7 @@ GO
 
 /* ------------------------------------------------------------
    Control: usuarios de prueba por estado. Deberia devolver
-   4 activos, 1 inactivo y 1 bloqueado.
+   3 activos, 1 inactivo y 1 bloqueado.
    ------------------------------------------------------------ */
 
 SELECT
@@ -482,7 +478,7 @@ SELECT
     SUM(CASE WHEN [Activo] = 0 THEN 1 ELSE 0 END)                     AS Inactivos,
     SUM(CASE WHEN [Bloqueado] = 1 THEN 1 ELSE 0 END)                  AS Bloqueados
 FROM [dbo].[Usuario]
-WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez', N'acastro')
+WHERE [NombreUsuario] IN (N'lgarcia', N'mfernandez', N'svega', N'rlopez', N'jperez')
 GO
 
 /* ------------------------------------------------------------

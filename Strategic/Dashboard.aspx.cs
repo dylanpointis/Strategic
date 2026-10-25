@@ -3,6 +3,7 @@ using BLL;
 using Services;
 using Strategic.Componentes;
 using Strategic.Seguridad;
+using Strategic.ServiciosWeb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +110,12 @@ namespace Strategic
 
         private void CargarDashboard(bool vieneDeFiltros, bool recargarCategorias)
         {
+            // El rango se valida antes de pedirle los datos al web service
+            if (!filtroFechas.Validar())
+            {
+                return;
+            }
+
             try
             {
                 // Se consulta una sola vez por request: alimenta el combo de categorías
@@ -124,10 +131,29 @@ namespace Strategic
                 DateTime? fechaHasta = filtroFechas.FechaHasta;
                 string categoria = ddlCategoria.SelectedValue;
 
-                BEResumenDashboard resumen = bllDashboard.TraerResumen(fechaDesde, fechaHasta, categoria);
-                List<BEVentaPorCategoria> porCategoria = bllDashboard.TraerVentasPorCategoria(fechaDesde, fechaHasta, categoria);
-                List<BETopProducto> topProductos = bllDashboard.TraerTopProductos(fechaDesde, fechaHasta, categoria);
-                List<BEProducto> bajoStock = bllDashboard.TraerProductosBajoStock(categoria);
+                // Las metricas se piden a los web services EstadisticasVentas y EstadisticasStock
+                string desde = ClienteServicioWeb.FormatearFecha(fechaDesde);
+                string hasta = ClienteServicioWeb.FormatearFecha(fechaHasta);
+
+                BEResumenDashboard resumen = new BEResumenDashboard();
+                List<BEVentaPorCategoria> porCategoria;
+                List<BETopProducto> topProductos;
+                List<BEProducto> bajoStock;
+
+                using (ClienteEstadisticasVentas ventas = new ClienteEstadisticasVentas())
+                {
+                    resumen.FacturacionTotal = ventas.ObtenerFacturacion(desde, hasta, categoria);
+                    resumen.CantidadVentas = ventas.ObtenerCantidadVentas(desde, hasta, categoria);
+                    porCategoria = ventas.ObtenerProductosVendidosPorCategoria(desde, hasta, categoria).ToList();
+                    topProductos = ventas.ObtenerTopProductos(desde, hasta, categoria).ToList();
+                }
+
+                resumen.UnidadesVendidas = porCategoria.Sum(c => c.Unidades);
+
+                using (ClienteEstadisticasStock stock = new ClienteEstadisticasStock())
+                {
+                    bajoStock = stock.ObtenerProductosBajoStock(categoria).ToList();
+                }
 
                 string mensajeVacio = vieneDeFiltros ? MensajeSinFiltros : MensajeSinVentas;
 

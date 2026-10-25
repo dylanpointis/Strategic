@@ -15,17 +15,6 @@ namespace DAL
             return MapearSuscripciones(dalCon.ConsultaProcAlmacenado("TraerListaSuscripciones", null));
         }
 
-        public List<BESuscripcion> FiltrarSuscripcionesPorFechaPago(DateTime? fechaDesde, DateTime? fechaHasta)
-        {
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@FechaDesde", fechaDesde),
-                new SqlParameter("@FechaHasta", fechaHasta)
-            };
-
-            return MapearSuscripciones(dalCon.ConsultaProcAlmacenado("FiltrarSuscripcionesPorFechaPago", parametros));
-        }
-
         // Pasa a Vencida los periodos activos que ya terminaron. Devuelve cuantos cambio
         public int ActualizarSuscripcionesVencidas()
         {

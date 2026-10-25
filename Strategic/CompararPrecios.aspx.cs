@@ -3,6 +3,7 @@ using BLL;
 using Services;
 using Strategic.Componentes;
 using Strategic.Seguridad;
+using Strategic.ServiciosWeb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace Strategic
         {
             try
             {
-                List<BEComparacionPrecio> comparaciones = bllCompetencia.FiltrarComparacionPrecios(
+                List<BEComparacionPrecio> comparaciones = ConsultarComparacion(
                     ObtenerId(ddlProducto.SelectedValue),
                     ddlCategoria.SelectedValue,
                     ObtenerId(ddlCompetidor.SelectedValue));
@@ -187,21 +188,28 @@ namespace Strategic
         
         private void CargarComparacionCompleta()
         {
-            // Se consulta una sola vez por request: alimenta los combos y define
-            // cuál de los dos avisos del CU hay que mostrar
-            List<BEProducto> productos = CargarCombos();
-            List<BEComparacionPrecio> comparaciones = bllCompetencia.TraerComparacionPrecios();
+            try
+            {
+                // Se consulta una sola vez por request: alimenta los combos y define
+                // cuál de los dos avisos del CU hay que mostrar
+                List<BEProducto> productos = CargarCombos();
+                List<BEComparacionPrecio> comparaciones = ConsultarComparacion(null, null, null);
 
-            MostrarComparacion(comparaciones, MensajeSinMapeos);
+                MostrarComparacion(comparaciones, MensajeSinMapeos);
 
-            // Los avisos se resuelven acá y no al filtrar: una consulta filtrada
-            // sin resultados no significa que falten datos cargados
+                // Los avisos se resuelven acá y no al filtrar: una consulta filtrada
+                // sin resultados no significa que falten datos cargados
 
-            // Alternativa 2.1 del CU: no hay productos sincronizados
-            pnlSinDatos.Visible = productos.Count == 0;
+                // Alternativa 2.1 del CU: no hay productos sincronizados
+                pnlSinDatos.Visible = productos.Count == 0;
 
-            // Alternativa 2.2 del CU: hay productos pero ninguno tiene competidores
-            pnlSinMapeos.Visible = productos.Count > 0 && comparaciones.Count == 0;
+                // Alternativa 2.2 del CU: hay productos pero ninguno tiene competidores
+                pnlSinMapeos.Visible = productos.Count > 0 && comparaciones.Count == 0;
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
+            }
         }
 
         private void MostrarComparacion(List<BEComparacionPrecio> comparaciones, string mensajeVacio)
@@ -384,6 +392,18 @@ namespace Strategic
             }
 
             return productos;
+        }
+
+        // La comparacion se pide al web service EstadisticasCompetencia
+        private List<BEComparacionPrecio> ConsultarComparacion(int? idProducto, string categoria, int? idCompetencia)
+        {
+            using (ClienteEstadisticasCompetencia competencia = new ClienteEstadisticasCompetencia())
+            {
+                return competencia.ObtenerComparacionPreciosCompetencia(
+                    idProducto ?? 0,
+                    categoria,
+                    idCompetencia ?? 0).ToList();
+            }
         }
 
         private int? ObtenerId(string valor)

@@ -190,11 +190,16 @@
     <Content Include="HistorialVentas.aspx" />
     <Content Include="Predicciones.aspx" />
     <Content Include="Recomendaciones.aspx" />
+    <Content Include="EstadisticasVentas.asmx" />
+    <Content Include="EstadisticasStock.asmx" />
+    <Content Include="EstadisticasCompetencia.asmx" />
     <Content Include="RenovarSuscripcion.aspx" />
     <Content Include="BajaSuscripcion.aspx" />
-    <Content Include="ReporteFacturacion.aspx" />
     <Content Include="ProductosSincronizados.aspx" />
     <Content Include="Scripts\strategic-graficos.js" />
+    <Content Include="Content\images\Strategic_ISOTIPO_PNG.ico" />
+    <Content Include="Content\images\Strategic_ISOTIPO_PNG.png" />
+    <Content Include="Content\images\Strategic_LOGO_PNG.png" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -363,6 +368,20 @@
     <Compile Include="Componentes\PaginaBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="EstadisticasVentas.asmx.cs">
+      <DependentUpon>EstadisticasVentas.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EstadisticasStock.asmx.cs">
+      <DependentUpon>EstadisticasStock.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EstadisticasCompetencia.asmx.cs">
+      <DependentUpon>EstadisticasCompetencia.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiciosWeb\ClienteServicioWeb.cs" />
+    <Compile Include="ServiciosWeb\ClientesEstadisticas.cs" />
     <Compile Include="Seguridad\PaginaSegura.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -561,13 +580,6 @@
     </Compile>
     <Compile Include="BajaSuscripcion.aspx.designer.cs">
       <DependentUpon>BajaSuscripcion.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ReporteFacturacion.aspx.cs">
-      <DependentUpon>ReporteFacturacion.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ReporteFacturacion.aspx.designer.cs">
-      <DependentUpon>ReporteFacturacion.aspx</DependentUpon>
     </Compile>
     <Compile Include="HistorialPrecios.aspx.cs">
       <DependentUpon>HistorialPrecios.aspx</DependentUpon>

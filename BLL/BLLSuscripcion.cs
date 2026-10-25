@@ -23,9 +23,6 @@ namespace BLL
         public const string AliasStrategic = "STRATEGIC.PAGO.DEMO";
         public const string TitularStrategic = "Strategic S.A.";
 
-        public const string AgrupacionSemana = "Semana";
-        public const string AgrupacionMes = "Mes";
-
         private readonly DALSuscripcion dalSuscripcion = new DALSuscripcion();
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
         private readonly BLLEvento bllEvento = new BLLEvento();
@@ -237,100 +234,6 @@ namespace BLL
             // la baja (CU-009-043, paso 4; MailService.EnviarMailBajaSuscripcion)
 
             return finDeAcceso;
-        }
-
-        #endregion
-
-        #region Reporte de facturacion
-
-        public List<BESuscripcion> FiltrarPagos(DateTime? fechaDesde, DateTime? fechaHasta)
-        {
-            if (fechaDesde.HasValue && fechaHasta.HasValue && fechaHasta.Value < fechaDesde.Value)
-            {
-                throw new Exception(Traductor.T("filtroFechas.errorRango"));
-            }
-
-            ActualizarVencidas();
-
-            return Desencriptar(dalSuscripcion.FiltrarSuscripcionesPorFechaPago(
-                fechaDesde.HasValue ? fechaDesde.Value.Date : (DateTime?)null,
-                fechaHasta.HasValue ? fechaHasta.Value.Date : (DateTime?)null));
-        }
-
-        public decimal CalcularFacturacionTotal(List<BESuscripcion> pagos)
-        {
-            decimal total = 0;
-
-            foreach (BESuscripcion pago in pagos)
-            {
-                total = total + pago.Monto;
-            }
-
-            return total;
-        }
-
-        public decimal CalcularPagoPromedio(List<BESuscripcion> pagos)
-        {
-            if (pagos.Count == 0)
-            {
-                return 0;
-            }
-
-            return CalcularFacturacionTotal(pagos) / pagos.Count;
-        }
-
-        // Suma lo cobrado por semana (de lunes a domingo) o por mes. La clave
-        // es el primer dia del periodo. Los periodos sin cobros entre el primero
-        // y el ultimo van en cero para que el grafico muestre los huecos
-        public List<KeyValuePair<DateTime, decimal>> AgruparFacturacion(List<BESuscripcion> pagos, string agrupacion)
-        {
-            bool porSemana = agrupacion == AgrupacionSemana;
-            Dictionary<DateTime, decimal> acumulado = new Dictionary<DateTime, decimal>();
-
-            foreach (BESuscripcion pago in pagos)
-            {
-                DateTime periodo = InicioDePeriodo(pago.FechaPago, porSemana);
-
-                if (acumulado.ContainsKey(periodo))
-                {
-                    acumulado[periodo] = acumulado[periodo] + pago.Monto;
-                }
-                else
-                {
-                    acumulado.Add(periodo, pago.Monto);
-                }
-            }
-
-            List<KeyValuePair<DateTime, decimal>> facturacion = new List<KeyValuePair<DateTime, decimal>>();
-
-            if (acumulado.Count == 0)
-            {
-                return facturacion;
-            }
-
-            DateTime desde = acumulado.Keys.Min();
-            DateTime hasta = acumulado.Keys.Max();
-
-            for (DateTime periodo = desde; periodo <= hasta; periodo = porSemana ? periodo.AddDays(7) : periodo.AddMonths(1))
-            {
-                decimal monto;
-                acumulado.TryGetValue(periodo, out monto);
-
-                facturacion.Add(new KeyValuePair<DateTime, decimal>(periodo, monto));
-            }
-
-            return facturacion;
-        }
-
-        private DateTime InicioDePeriodo(DateTime fecha, bool porSemana)
-        {
-            if (porSemana)
-            {
-                int diasDesdeElLunes = ((int)fecha.DayOfWeek + 6) % 7;
-                return fecha.Date.AddDays(-diasDesdeElLunes);
-            }
-
-            return new DateTime(fecha.Year, fecha.Month, 1);
         }
 
         #endregion

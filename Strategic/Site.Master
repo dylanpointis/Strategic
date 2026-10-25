@@ -14,7 +14,7 @@
     </asp:PlaceHolder>
 
     <webopt:bundlereference runat="server" path="~/Content/css" />
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Content/images/Strategic_ISOTIPO_PNG.ico" rel="icon" type="image/x-icon" />
 </head>
 <body>
     <form runat="server">
@@ -39,8 +39,8 @@
 
         <nav class="navbar navbar-expand-lg navbar-light strategic-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand strategic-logo" href="~/">
-                    <img src="/Content/images/Strategic_LOGO_PNG.png" alt="Strategic" class="strategic-logo-img" />
+                <a class="navbar-brand strategic-logo" href="<%: ResolveUrl("~/Dashboard.aspx") %>">
+                    <img src="<%: ResolveUrl("~/Content/images/Strategic_LOGO_PNG.png") %>" alt="Strategic" class="strategic-logo-img" />
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar" title="<%: Traductor.T("master.alternarNavegacion") %>" aria-controls="mainNavbar"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,6 @@
                             </ul>
                         </li>
                         <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx"><%: Traductor.T("master.menu.suscripcion") %></a></li>
-                        <li runat="server" class="nav-item" data-permission="ReporteFacturacion"><a class="nav-link" href="ReporteFacturacion.aspx"><%: Traductor.T("master.menu.facturacion") %></a></li>
                     </ul>
                     <ul class="navbar-nav auth-nav">
 <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login"><%: Traductor.T("master.ingresar") %></a></li>

@@ -303,8 +303,7 @@ GO
 
 -- Historial de la suscripcion del cliente: cada fila es un periodo pagado.
 -- Planes de Strategic: Basico, Pro y Max.
--- Renovar agrega una fila; la facturacion de Strategic sale de sumar Monto
--- por FechaPago. NumeroOperacion se guarda encriptado con AES
+-- Renovar agrega una fila. NumeroOperacion se guarda encriptado con AES
 CREATE TABLE [dbo].[Suscripcion](
     [IdSuscripcion] INT IDENTITY(1,1) NOT NULL,
     [FechaPago] DATETIME NOT NULL,
@@ -325,9 +324,7 @@ INSERT INTO [dbo].[Rol] ([CodRol], [Nombre], [Activo]) VALUES
 (1, 'WebMaster', 1),
 (2, 'Administrador', 1),
 (3, 'Analista', 1),
-(4, 'Usuario', 1),
--- Empleado de Strategic que atiende a este cliente: solo ve la facturacion
-(5, 'Soporte Strategic', 1)
+(4, 'Usuario', 1)
 SET IDENTITY_INSERT [dbo].[Rol] OFF
 GO
 
@@ -393,10 +390,8 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 -- WebMaster, por eso no entra en la familia Auditoria que usa el Administrador
 (48, 'RealizarRestore',                    'Restaurar la base de datos desde un backup',     'Simple', 1),
 (49, 'RepararDigitoVerificador',           'Reparar el digito verificador',                  'Simple', 1),
--- 009. Suscripciones (continuacion): la baja es solo del WebMaster y el
--- reporte de facturacion es del personal de Strategic, no del cliente
+-- 009. Suscripciones (continuacion): la baja es solo del WebMaster
 (50, 'BajaSuscripcion',                    'Dar de baja la suscripcion del cliente',         'Simple', 1),
-(51, 'ReporteFacturacion',                 'Ver la facturacion de la suscripcion',           'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -450,8 +445,7 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 (45, 28), (45, 29), (45, 30), (45, 31), (45, 32), (45, 33),
 -- Auditoria
 (46, 34), (46, 35),
--- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos.
--- ReporteFacturacion queda afuera: el WebMaster es del cliente
+-- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
 (47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50)
 GO
 
@@ -461,11 +455,10 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster          39 pantallas (todo menos la facturacion)
-     Administrador      30 pantallas
-     Analista           13 pantallas
-     Usuario             2 pantallas
-     Soporte Strategic   1 pantalla
+     WebMaster      39 pantallas (todo)
+     Administrador  30 pantallas
+     Analista       13 pantallas
+     Usuario         2 pantallas
    ------------------------------------------------------------ */
 
 INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
@@ -478,9 +471,7 @@ INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 -- pantallas sueltas que el mapa le da sin el resto de su modulo
 (3, 37), (3, 38), (3, 40), (3, 27), (3, 28),
 -- Usuario: dos permisos simples
-(4,  1), (4, 10),
--- Soporte Strategic: solo el reporte de facturacion
-(5, 51)
+(4,  1), (4, 10)
 GO
 
 -- Usuario: WebMasterStrategic  Clave: 'Admin123'  Rol: WebMaster
@@ -2349,35 +2340,5 @@ BEGIN
     UPDATE [dbo].[Suscripcion]
     SET [Estado] = 'Cancelada'
     WHERE [Estado] = 'Activa'
-END
-GO
-
-/* ------------------------------------------------------------
-   Reporte de facturacion (personal de Strategic)
-   Cada fila de Suscripcion es un cobro: la facturacion es la
-   suma de Monto por FechaPago, sin importar el estado actual
-   del periodo.
-   ------------------------------------------------------------ */
-
-CREATE PROCEDURE [dbo].[FiltrarSuscripcionesPorFechaPago]
-    @FechaDesde DATETIME = NULL,
-    @FechaHasta DATETIME = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        [IdSuscripcion],
-        [FechaPago],
-        [FechaInicio],
-        [FechaVencimiento],
-        [Estado],
-        [Plan],
-        [Monto],
-        [NumeroOperacion]
-    FROM [dbo].[Suscripcion]
-    WHERE (@FechaDesde IS NULL OR [FechaPago] >= @FechaDesde)
-      AND (@FechaHasta IS NULL OR [FechaPago] < DATEADD(DAY, 1, @FechaHasta))
-    ORDER BY [FechaPago] DESC
 END
 GO
