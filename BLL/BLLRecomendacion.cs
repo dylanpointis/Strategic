@@ -39,6 +39,7 @@ namespace BLL
         private readonly BLLVenta bllVenta = new BLLVenta();
         private readonly BLLEvento bllEvento = new BLLEvento();
         private readonly DALRecomendacion dalRecomendacion = new DALRecomendacion();
+        private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
 
         #region Generacion
 
@@ -500,6 +501,8 @@ namespace BLL
 
             recomendacion.IdRecomendacion = dalRecomendacion.RegistrarRecomendacion(recomendacion);
             recomendacion.Guardada = true;
+
+            bllDigitoVerificador.PersistirDV("Recomendacion");
 
             bllEvento.RegistrarEvento(new Evento(
                 recomendacion.NombreUsuario,

@@ -23,10 +23,20 @@ namespace Strategic
                 throw new SoapException("El servicio solo atiende pedidos locales.", SoapException.ClientFaultCode);
             }
 
-            return bllCompetencia.FiltrarComparacionPrecios(
-                idProducto > 0 ? idProducto : (int?)null,
-                categoria,
-                idCompetencia > 0 ? idCompetencia : (int?)null);
+            int? producto = null;
+            int? competencia = null;
+
+            if (idProducto > 0)
+            {
+                producto = idProducto;
+            }
+
+            if (idCompetencia > 0)
+            {
+                competencia = idCompetencia;
+            }
+
+            return bllCompetencia.FiltrarComparacionPrecios(producto,categoria,competencia);
         }
     }
 }

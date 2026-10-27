@@ -35,6 +35,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLEvento.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="BLLProducto.cs" />
     <Compile Include="BLLRecomendacion.cs" />
     <Compile Include="BLLSuscripcion.cs" />
+    <Compile Include="BLLIntegracion.cs" />
     <Compile Include="BLLRol.cs" />
     <Compile Include="BLLRespaldo.cs" />
     <Compile Include="BLLDigitoVerificador.cs" />

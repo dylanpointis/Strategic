@@ -190,6 +190,9 @@
     <Content Include="HistorialVentas.aspx" />
     <Content Include="Predicciones.aspx" />
     <Content Include="Recomendaciones.aspx" />
+    <Content Include="ConfigurarIntegracion.aspx" />
+    <Content Include="ImportarDatos.aspx" />
+    <Content Include="HistorialSincronizaciones.aspx" />
     <Content Include="EstadisticasVentas.asmx" />
     <Content Include="EstadisticasStock.asmx" />
     <Content Include="EstadisticasCompetencia.asmx" />
@@ -380,8 +383,12 @@
       <DependentUpon>EstadisticasCompetencia.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiciosWeb\ClienteServicioWeb.cs" />
-    <Compile Include="ServiciosWeb\ClientesEstadisticas.cs" />
+    <Compile Include="ServiciosWeb\ClienteServicioWeb.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiciosWeb\ClientesEstadisticas.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Seguridad\PaginaSegura.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -567,6 +574,27 @@
     <Compile Include="Recomendaciones.aspx.designer.cs">
       <DependentUpon>Recomendaciones.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ConfigurarIntegracion.aspx.cs">
+      <DependentUpon>ConfigurarIntegracion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConfigurarIntegracion.aspx.designer.cs">
+      <DependentUpon>ConfigurarIntegracion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ImportarDatos.aspx.cs">
+      <DependentUpon>ImportarDatos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ImportarDatos.aspx.designer.cs">
+      <DependentUpon>ImportarDatos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HistorialSincronizaciones.aspx.cs">
+      <DependentUpon>HistorialSincronizaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HistorialSincronizaciones.aspx.designer.cs">
+      <DependentUpon>HistorialSincronizaciones.aspx</DependentUpon>
+    </Compile>
     <Compile Include="RenovarSuscripcion.aspx.cs">
       <DependentUpon>RenovarSuscripcion.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -640,9 +668,7 @@
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BE\BE.csproj">
       <Project>{4a802f3f-89d0-4a7d-a303-cf2691502c34}</Project>

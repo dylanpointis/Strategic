@@ -271,7 +271,8 @@ CREATE TABLE [dbo].[ConfiguracionIntegracion](
     [TipoArchivo] NVARCHAR(20) NOT NULL,
     [FechaConfiguracion] DATETIME NOT NULL CONSTRAINT [DF_ConfiguracionIntegracion_FechaConfiguracion] DEFAULT(GETDATE()),
     CONSTRAINT [PK_ConfiguracionIntegracion] PRIMARY KEY CLUSTERED ([IdConfiguracion] ASC),
-    CONSTRAINT [CK_ConfiguracionIntegracion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock'))
+    CONSTRAINT [CK_ConfiguracionIntegracion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock')),
+    CONSTRAINT [UQ_ConfiguracionIntegracion_TipoArchivo] UNIQUE ([TipoArchivo])
 )
 GO
 
@@ -297,7 +298,8 @@ CREATE TABLE [dbo].[HistorialSincronizacion](
     [FechaEjecucion] DATETIME NOT NULL CONSTRAINT [DF_HistorialSincronizacion_FechaEjecucion] DEFAULT(GETDATE()),
     CONSTRAINT [PK_HistorialSincronizacion] PRIMARY KEY CLUSTERED ([IdSincronizacion] ASC),
     CONSTRAINT [FK_HistorialSincronizacion_ConfiguracionIntegracion] FOREIGN KEY ([IdConfiguracion]) REFERENCES [dbo].[ConfiguracionIntegracion]([IdConfiguracion]),
-    CONSTRAINT [CK_HistorialSincronizacion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock'))
+    CONSTRAINT [CK_HistorialSincronizacion_TipoArchivo] CHECK ([TipoArchivo] IN ('Productos', 'Ventas', 'Stock')),
+    CONSTRAINT [CK_HistorialSincronizacion_Estado] CHECK ([Estado] IN ('Exitosa', 'ConErrores', 'Fallida'))
 )
 GO
 
@@ -392,6 +394,9 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 (49, 'RepararDigitoVerificador',           'Reparar el digito verificador',                  'Simple', 1),
 -- 009. Suscripciones (continuacion): la baja es solo del WebMaster
 (50, 'BajaSuscripcion',                    'Dar de baja la suscripcion del cliente',         'Simple', 1),
+-- 006. Integraciones (continuacion): configurar el mapeo es solo del
+-- WebMaster, por eso no entra en la familia Integraciones del Administrador
+(52, 'ConfigurarIntegracion',              'Configurar el mapeo de los archivos a importar', 'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -446,7 +451,7 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 -- Auditoria
 (46, 34), (46, 35),
 -- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
-(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50)
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50), (47, 52)
 GO
 
 
@@ -455,7 +460,7 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      39 pantallas (todo)
+     WebMaster      40 pantallas (todo)
      Administrador  30 pantallas
      Analista       13 pantallas
      Usuario         2 pantallas
@@ -488,20 +493,39 @@ INSERT INTO [dbo].[CatalogoAutomatizacion] ([IdCatalogoAutomatizacion], [Nombre]
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] OFF
 GO
 
--- Tablas controladas por digito verificador (Eventos queda afuera: es solo
--- de auditoria y crece de a miles). Quedan sin DV: la primera vez
+-- Tablas controladas por digito verificador: todas las de la base menos
+-- Eventos (es solo de auditoria y crece de a miles) y las tres del propio
+-- digito verificador, que no pueden controlarse a si mismas.
+-- Quedan sin DV: la primera vez
 -- que el sistema las compara (en el login) toma los datos actuales como
 -- referencia y lo calcula
 INSERT INTO [dbo].[DigitoVerificador] ([Tabla], [DVH], [DVV]) VALUES
+-- Seguridad
 ('Usuario', NULL, NULL),
 ('Rol', NULL, NULL),
 ('Permiso', NULL, NULL),
 ('Rol_Permiso', NULL, NULL),
 ('Permiso_Componente', NULL, NULL),
+-- Catalogo y ventas
 ('Producto', NULL, NULL),
+('Venta', NULL, NULL),
+('ItemVenta', NULL, NULL),
+('HistorialPrecioProducto', NULL, NULL),
+('HistorialStock', NULL, NULL),
+('Recomendacion', NULL, NULL),
+-- Competencia
 ('Competencia', NULL, NULL),
 ('ProductoCompetencia', NULL, NULL),
+('HistorialPrecioCompetencia', NULL, NULL),
+-- Automatizaciones
+('CatalogoAutomatizacion', NULL, NULL),
 ('Automatizacion', NULL, NULL),
+('HistorialAutomatizacion', NULL, NULL),
+-- Integraciones
+('ConfiguracionIntegracion', NULL, NULL),
+('MapeoColumna', NULL, NULL),
+('HistorialSincronizacion', NULL, NULL),
+-- Suscripcion
 ('Suscripcion', NULL, NULL)
 GO
 
@@ -2340,5 +2364,310 @@ BEGIN
     UPDATE [dbo].[Suscripcion]
     SET [Estado] = 'Cancelada'
     WHERE [Estado] = 'Activa'
+END
+GO
+
+
+/* ============================================================
+   006. Integraciones y Sincronizacion
+        CU-006-029 Configurar Integracion
+        CU-006-030 Importar y sincronizar Datos
+        CU-006-031 Consultar Historial de Sincronizaciones
+   ------------------------------------------------------------
+   Hay una configuracion por tipo de archivo (Productos, Ventas,
+   Stock) con el mapeo campo de Strategic = columna del cliente.
+   La BLL lee el XML del cliente, aplica el mapeo y valida cada
+   registro. La DAL recorre los registros validos y llama, uno por
+   uno, a ImportarProducto / ImportarLineaVenta / ImportarStockProducto,
+   todos dentro de la misma transaccion: si alguno falla, la DAL
+   hace rollback y no queda nada a medias. Cada SP devuelve si el
+   registro fue un alta ('Importado') o una actualizacion ('Actualizado').
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerConfiguracionIntegracion]
+    @TipoArchivo NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Una fila por campo mapeado; sin configuracion no devuelve nada
+    SELECT
+        C.IdConfiguracion,
+        C.TipoArchivo,
+        C.FechaConfiguracion,
+        M.IdMapeo,
+        M.ColumnaStrategic,
+        M.ColumnaCliente
+    FROM [dbo].[ConfiguracionIntegracion] C
+    LEFT JOIN [dbo].[MapeoColumna] M ON M.IdConfiguracion = C.IdConfiguracion
+    WHERE C.TipoArchivo = @TipoArchivo
+    ORDER BY M.IdMapeo ASC
+END
+GO
+
+-- @Mapeos: "CampoStrategic=ColumnaCliente" separados por comas. Si el tipo
+-- ya tenia configuracion se reemplaza su mapeo (no se borra la fila porque
+-- la referencia el historial de sincronizaciones)
+CREATE PROCEDURE [dbo].[GuardarConfiguracionIntegracion]
+    @TipoArchivo NVARCHAR(20),
+    @Mapeos NVARCHAR(MAX)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @IdConfiguracion INT =
+            (SELECT [IdConfiguracion] FROM [dbo].[ConfiguracionIntegracion] WHERE [TipoArchivo] = @TipoArchivo);
+
+        IF @IdConfiguracion IS NULL
+        BEGIN
+            INSERT INTO [dbo].[ConfiguracionIntegracion] ([TipoArchivo], [FechaConfiguracion])
+            VALUES (@TipoArchivo, GETDATE());
+
+            SET @IdConfiguracion = SCOPE_IDENTITY();
+        END
+        ELSE
+        BEGIN
+            UPDATE [dbo].[ConfiguracionIntegracion]
+            SET [FechaConfiguracion] = GETDATE()
+            WHERE [IdConfiguracion] = @IdConfiguracion;
+
+            DELETE FROM [dbo].[MapeoColumna] WHERE [IdConfiguracion] = @IdConfiguracion;
+        END
+
+        INSERT INTO [dbo].[MapeoColumna] ([IdConfiguracion], [ColumnaStrategic], [ColumnaCliente])
+        SELECT
+            @IdConfiguracion,
+            LEFT(value, CHARINDEX('=', value) - 1),
+            SUBSTRING(value, CHARINDEX('=', value) + 1, 100)
+        FROM STRING_SPLIT(@Mapeos, ',')
+        WHERE CHARINDEX('=', value) > 1;
+
+        COMMIT TRANSACTION;
+
+        SELECT @IdConfiguracion AS IdConfiguracion;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
+-- Codigos de los productos vigentes: la BLL valida contra ellos que las
+-- ventas y el stock importados refieran a productos existentes
+CREATE PROCEDURE [dbo].[TraerCodigosProductos]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT [Codigo] FROM [dbo].[Producto] WHERE [BorradoLogico] = 0
+END
+GO
+
+-- Alta o actualizacion de un producto por su codigo. Los campos opcionales
+-- que vienen en NULL conservan el valor que tenia el producto. Deja historial
+-- de precio y de stock cuando cambian (y el inicial si el producto es nuevo)
+CREATE PROCEDURE [dbo].[ImportarProducto]
+    @Codigo NVARCHAR(50),
+    @Nombre NVARCHAR(255),
+    @Estado NVARCHAR(20) = NULL,
+    @Precio DECIMAL(10,2),
+    @Stock INT,
+    @StockMinimo INT = NULL,
+    @StockMaximo INT = NULL,
+    @Categoria NVARCHAR(100) = NULL,
+    @Marca NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Ante el primer error corta y deshace la transaccion de la DAL
+    SET XACT_ABORT ON;
+
+    DECLARE @Ahora DATETIME = GETDATE();
+    DECLARE @IdProducto INT;
+    DECLARE @PrecioAnterior DECIMAL(10,2);
+    DECLARE @StockAnterior INT;
+
+    SELECT
+        @IdProducto = [IdProducto],
+        @PrecioAnterior = [Precio],
+        @StockAnterior = [Stock]
+    FROM [dbo].[Producto]
+    WHERE [Codigo] = @Codigo;
+
+    IF @IdProducto IS NULL
+    BEGIN
+        -- Producto nuevo
+        INSERT INTO [dbo].[Producto]
+            ([Codigo], [Nombre], [Estado], [Precio], [Stock], [StockMaximo], [StockMinimo], [Categoria], [BorradoLogico], [FechaSincronizacion], [Marca])
+        VALUES
+            (@Codigo, @Nombre, ISNULL(@Estado, N'Activo'), @Precio, @Stock, @StockMaximo, @StockMinimo, @Categoria, 0, @Ahora, @Marca);
+
+        SET @IdProducto = SCOPE_IDENTITY();
+
+        INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha]) VALUES (@IdProducto, @Precio, @Ahora);
+        INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha]) VALUES (@IdProducto, @Stock, @Ahora);
+
+        SELECT 'Importado' AS Resultado;
+        RETURN;
+    END
+
+    -- Producto existente: ISNULL conserva lo que habia si el dato no vino
+    UPDATE [dbo].[Producto]
+    SET [Nombre] = @Nombre,
+        [Precio] = @Precio,
+        [Stock] = @Stock,
+        [Estado] = ISNULL(@Estado, [Estado]),
+        [StockMinimo] = ISNULL(@StockMinimo, [StockMinimo]),
+        [StockMaximo] = ISNULL(@StockMaximo, [StockMaximo]),
+        [Categoria] = ISNULL(@Categoria, [Categoria]),
+        [Marca] = ISNULL(@Marca, [Marca]),
+        [FechaSincronizacion] = @Ahora
+    WHERE [IdProducto] = @IdProducto;
+
+    -- Historial solo si cambio
+    IF @PrecioAnterior <> @Precio
+        INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha]) VALUES (@IdProducto, @Precio, @Ahora);
+
+    IF @StockAnterior <> @Stock
+        INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha]) VALUES (@IdProducto, @Stock, @Ahora);
+
+    SELECT 'Actualizado' AS Resultado;
+END
+GO
+
+-- Una linea de venta (un producto dentro de una venta):
+--   - si la venta no existe, la da de alta con esta linea como primer item;
+--   - si @AgregarItem = 1, la venta se creo en esta misma importacion y la
+--     linea se le agrega como otro item (y suma al monto total);
+--   - si la venta ya existia de antes, solo se actualiza su estado, para
+--     no duplicar items al importar dos veces el mismo archivo
+CREATE PROCEDURE [dbo].[ImportarLineaVenta]
+    @NroVenta NVARCHAR(50),
+    @Fecha DATETIME,
+    @Estado NVARCHAR(20),
+    @CodigoProducto NVARCHAR(50),
+    @Cantidad INT,
+    @PrecioVenta DECIMAL(10,2),
+    @AgregarItem BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Ante el primer error corta y deshace la transaccion de la DAL
+    SET XACT_ABORT ON;
+
+    DECLARE @IdVenta INT = (SELECT [IdVenta] FROM [dbo].[Venta] WHERE [NroVenta] = @NroVenta);
+    DECLARE @IdProducto INT = (SELECT [IdProducto] FROM [dbo].[Producto] WHERE [Codigo] = @CodigoProducto);
+
+    IF @IdVenta IS NULL
+    BEGIN
+        INSERT INTO [dbo].[Venta] ([NroVenta], [Fecha], [MontoTotal], [Estado])
+        VALUES (@NroVenta, @Fecha, @Cantidad * @PrecioVenta, @Estado);
+
+        SET @IdVenta = SCOPE_IDENTITY();
+
+        INSERT INTO [dbo].[ItemVenta] ([IdVenta], [IdProducto], [Cantidad], [PrecioVenta])
+        VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioVenta);
+
+        SELECT 'Importado' AS Resultado;
+        RETURN;
+    END
+
+    IF @AgregarItem = 1
+    BEGIN
+        INSERT INTO [dbo].[ItemVenta] ([IdVenta], [IdProducto], [Cantidad], [PrecioVenta])
+        VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioVenta);
+
+        UPDATE [dbo].[Venta]
+        SET [MontoTotal] = [MontoTotal] + @Cantidad * @PrecioVenta
+        WHERE [IdVenta] = @IdVenta;
+
+        SELECT 'Importado' AS Resultado;
+        RETURN;
+    END
+
+    UPDATE [dbo].[Venta] SET [Estado] = @Estado WHERE [IdVenta] = @IdVenta;
+
+    SELECT 'Actualizado' AS Resultado;
+END
+GO
+
+-- Actualiza el stock de un producto existente y deja historial si cambio
+CREATE PROCEDURE [dbo].[ImportarStockProducto]
+    @CodigoProducto NVARCHAR(50),
+    @Stock INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Ante el primer error corta y deshace la transaccion de la DAL
+    SET XACT_ABORT ON;
+
+    DECLARE @Ahora DATETIME = GETDATE();
+    DECLARE @IdProducto INT;
+    DECLARE @StockAnterior INT;
+
+    SELECT
+        @IdProducto = [IdProducto],
+        @StockAnterior = [Stock]
+    FROM [dbo].[Producto]
+    WHERE [Codigo] = @CodigoProducto;
+
+    UPDATE [dbo].[Producto]
+    SET [Stock] = @Stock,
+        [FechaSincronizacion] = @Ahora
+    WHERE [IdProducto] = @IdProducto;
+
+    IF @StockAnterior <> @Stock
+        INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha]) VALUES (@IdProducto, @Stock, @Ahora);
+
+    SELECT 'Actualizado' AS Resultado;
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarSincronizacion]
+    @IdConfiguracion INT,
+    @TipoArchivo NVARCHAR(20),
+    @RegistrosImportados INT,
+    @RegistrosActualizados INT,
+    @RegistrosError INT,
+    @Estado NVARCHAR(20),
+    @Detalle NVARCHAR(2000) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[HistorialSincronizacion]
+        ([IdConfiguracion], [TipoArchivo], [RegistrosImportados], [RegistrosActualizados],
+         [RegistrosError], [Estado], [Detalle], [FechaEjecucion])
+    VALUES
+        (@IdConfiguracion, @TipoArchivo, @RegistrosImportados, @RegistrosActualizados,
+         @RegistrosError, @Estado, @Detalle, GETDATE())
+
+    SELECT SCOPE_IDENTITY() AS IdSincronizacion
+END
+GO
+
+-- CU-006-031: el historial completo; los filtros se aplican en la BLL
+CREATE PROCEDURE [dbo].[TraerHistorialSincronizaciones]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        [IdSincronizacion],
+        [IdConfiguracion],
+        [TipoArchivo],
+        [RegistrosImportados],
+        [RegistrosActualizados],
+        [RegistrosError],
+        [Estado],
+        [Detalle],
+        [FechaEjecucion]
+    FROM [dbo].[HistorialSincronizacion]
+    ORDER BY [FechaEjecucion] DESC, [IdSincronizacion] DESC
 END
 GO

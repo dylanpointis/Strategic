@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Exportacion de existencias de un e-commerce de ejemplo. Stock no viene
+  configurado en datosprueba.sql: primero hay que usar este archivo como
+  muestra en Configurar Integracion (CodigoArticulo -> Codigo de producto,
+  Disponible -> Stock; Deposito no se mapea).
+  Resultado esperado al importarlo: 4 actualizados y 1 con error (SKU-9999 no
+  existe en el catalogo). SKU-1005 no cambia, asi que no deja historial de stock.
+-->
+<Inventario>
+  <Existencia>
+    <CodigoArticulo>SKU-1001</CodigoArticulo>
+    <Deposito>Central</Deposito>
+    <Disponible>14</Disponible>
+  </Existencia>
+  <Existencia>
+    <CodigoArticulo>SKU-1002</CodigoArticulo>
+    <Deposito>Central</Deposito>
+    <Disponible>30</Disponible>
+  </Existencia>
+  <Existencia>
+    <CodigoArticulo>SKU-1004</CodigoArticulo>
+    <Deposito>Central</Deposito>
+    <Disponible>6</Disponible>
+  </Existencia>
+  <Existencia>
+    <CodigoArticulo>SKU-1005</CodigoArticulo>
+    <Deposito>Central</Deposito>
+    <Disponible>4</Disponible>
+  </Existencia>
+  <Existencia>
+    <CodigoArticulo>SKU-9999</CodigoArticulo>
+    <Deposito>Central</Deposito>
+    <Disponible>3</Disponible>
+  </Existencia>
+</Inventario>

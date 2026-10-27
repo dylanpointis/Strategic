@@ -36,6 +36,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DALConexion.cs" />
@@ -46,6 +47,7 @@
     <Compile Include="DALProducto.cs" />
     <Compile Include="DALRecomendacion.cs" />
     <Compile Include="DALSuscripcion.cs" />
+    <Compile Include="DALIntegracion.cs" />
     <Compile Include="DALRol.cs" />
     <Compile Include="DALRespaldo.cs" />
     <Compile Include="DALDigitoVerificador.cs" />

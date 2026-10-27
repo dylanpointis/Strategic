@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Exportacion de pedidos de un e-commerce de ejemplo: una fila por linea de
+  pedido (el mapeo de Ventas de datosprueba.sql ya tiene estas columnas).
+  Resultado esperado: 4 lineas importadas (ventas V-2026-0101 con dos items,
+  V-2026-0102 y V-2026-0103) y 1 actualizada (V-2026-0005 ya existe: solo se
+  sincroniza su estado). Hay fechas y decimales en mas de un formato a proposito.
+-->
+<Pedidos>
+  <LineaPedido>
+    <NumeroPedido>V-2026-0101</NumeroPedido>
+    <FechaPedido>2026-10-20T15:30:00</FechaPedido>
+    <SKU>SKU-1001</SKU>
+    <Unidades>1</Unidades>
+    <PrecioUnitario>47500.00</PrecioUnitario>
+    <EstadoPedido>Completada</EstadoPedido>
+  </LineaPedido>
+  <LineaPedido>
+    <NumeroPedido>V-2026-0101</NumeroPedido>
+    <FechaPedido>2026-10-20T15:30:00</FechaPedido>
+    <SKU>SKU-1002</SKU>
+    <Unidades>2</Unidades>
+    <PrecioUnitario>18500.50</PrecioUnitario>
+    <EstadoPedido>Completada</EstadoPedido>
+  </LineaPedido>
+  <LineaPedido>
+    <NumeroPedido>V-2026-0102</NumeroPedido>
+    <FechaPedido>2026-10-21 10:05</FechaPedido>
+    <SKU>SKU-1007</SKU>
+    <Unidades>1</Unidades>
+    <PrecioUnitario>78000.00</PrecioUnitario>
+    <EstadoPedido>Completada</EstadoPedido>
+  </LineaPedido>
+  <LineaPedido>
+    <NumeroPedido>V-2026-0103</NumeroPedido>
+    <FechaPedido>22/10/2026 11:40</FechaPedido>
+    <SKU>SKU-1003</SKU>
+    <Unidades>1</Unidades>
+    <PrecioUnitario>320000,00</PrecioUnitario>
+    <EstadoPedido>pendiente</EstadoPedido>
+  </LineaPedido>
+  <LineaPedido>
+    <NumeroPedido>V-2026-0005</NumeroPedido>
+    <FechaPedido>2026-08-19T19:30:00</FechaPedido>
+    <SKU>SKU-1005</SKU>
+    <Unidades>1</Unidades>
+    <PrecioUnitario>132000.00</PrecioUnitario>
+    <EstadoPedido>Cancelada</EstadoPedido>
+  </LineaPedido>
+</Pedidos>

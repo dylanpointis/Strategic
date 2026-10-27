@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Exportacion de catalogo de un e-commerce de ejemplo, con sus propios nombres
+  de columna (el mapeo de Productos de datosprueba.sql ya los tiene asignados).
+  Resultado esperado: 2 importados (SKU-1101 y SKU-1102), 2 actualizados
+  (SKU-1001 cambia de precio y de stock, SKU-1002 cambia de stock) y 2 con
+  error (precio no numerico y nombre vacio). La columna Peso no se mapea.
+-->
+<Catalogo>
+  <Articulo>
+    <SKU>SKU-1001</SKU>
+    <Descripcion>Teclado mecánico RGB 87 teclas</Descripcion>
+    <PrecioVenta>47500.00</PrecioVenta>
+    <CantDisponible>9</CantDisponible>
+    <Situacion>Activo</Situacion>
+    <Rubro>Periféricos</Rubro>
+    <Fabricante>Redragon</Fabricante>
+    <StockMin>5</StockMin>
+    <StockMax>100</StockMax>
+    <Peso>0.9</Peso>
+  </Articulo>
+  <Articulo>
+    <SKU>SKU-1002</SKU>
+    <Descripcion>Mouse inalámbrico 2.4 GHz</Descripcion>
+    <PrecioVenta>18500.50</PrecioVenta>
+    <CantDisponible>25</CantDisponible>
+    <Situacion>Activo</Situacion>
+    <Rubro>Periféricos</Rubro>
+    <Fabricante>Logitech</Fabricante>
+    <StockMin>10</StockMin>
+    <StockMax>80</StockMax>
+    <Peso>0.1</Peso>
+  </Articulo>
+  <Articulo>
+    <SKU>SKU-1101</SKU>
+    <Descripcion>Hub USB-C 7 en 1</Descripcion>
+    <PrecioVenta>32900.00</PrecioVenta>
+    <CantDisponible>15</CantDisponible>
+    <Situacion>Activo</Situacion>
+    <Rubro>Periféricos</Rubro>
+    <Fabricante>Ugreen</Fabricante>
+    <StockMin>3</StockMin>
+    <StockMax>40</StockMax>
+    <Peso>0.2</Peso>
+  </Articulo>
+  <Articulo>
+    <SKU>SKU-1102</SKU>
+    <Descripcion>Pad mouse XL 90x40</Descripcion>
+    <PrecioVenta>12500,00</PrecioVenta>
+    <CantDisponible>30</CantDisponible>
+    <Situacion>activo</Situacion>
+    <Rubro>Gaming</Rubro>
+    <Fabricante>HyperX</Fabricante>
+    <StockMin>5</StockMin>
+    <StockMax>60</StockMax>
+    <Peso>0.4</Peso>
+  </Articulo>
+  <Articulo>
+    <SKU>SKU-1103</SKU>
+    <Descripcion>Cable HDMI 2.1 2 m</Descripcion>
+    <PrecioVenta>consultar</PrecioVenta>
+    <CantDisponible>50</CantDisponible>
+    <Situacion>Activo</Situacion>
+    <Rubro>Periféricos</Rubro>
+    <Fabricante>Ugreen</Fabricante>
+    <StockMin>10</StockMin>
+    <StockMax>100</StockMax>
+    <Peso>0.1</Peso>
+  </Articulo>
+  <Articulo>
+    <SKU>SKU-1104</SKU>
+    <Descripcion></Descripcion>
+    <PrecioVenta>8900.00</PrecioVenta>
+    <CantDisponible>20</CantDisponible>
+    <Situacion>Activo</Situacion>
+    <Rubro>Audio</Rubro>
+    <Fabricante>JBL</Fabricante>
+    <StockMin>2</StockMin>
+    <StockMax>30</StockMax>
+    <Peso>0.3</Peso>
+  </Articulo>
+</Catalogo>

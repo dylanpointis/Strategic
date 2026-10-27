@@ -58,6 +58,11 @@
     <Compile Include="BEProductoCompetencia.cs" />
     <Compile Include="BERecomendacion.cs" />
     <Compile Include="BESuscripcion.cs" />
+    <Compile Include="BEConfiguracionIntegracion.cs" />
+    <Compile Include="BEMapeoColumna.cs" />
+    <Compile Include="BECampoIntegracion.cs" />
+    <Compile Include="BEHistorialSincronizacion.cs" />
+    <Compile Include="BEResultadoIntegracion.cs" />
     <Compile Include="Composite\BEComponente.cs" />
     <Compile Include="Composite\BEPermiso.cs" />
     <Compile Include="Composite\BEFamilia.cs" />

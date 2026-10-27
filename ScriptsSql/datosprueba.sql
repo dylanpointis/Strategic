@@ -25,6 +25,11 @@
           CU-005-018 Alta Usuario
           CU-005-019 Baja Usuario
           CU-005-020 Modificar Usuario
+     006. Integraciones y Sincronizacion
+          CU-006-029 Configurar Integracion
+          CU-006-030 Importar y sincronizar Datos
+          CU-006-031 Consultar Historial de Sincronizaciones
+          (archivos XML de ejemplo en ScriptsSql/ArchivosEjemplo)
      009. Suscripciones
           CU-009-042 Renovar Suscripcion
           CU-009-043 Baja Suscripcion
@@ -88,6 +93,16 @@ GO
 
 -- La suscripcion de la instancia solo tiene los periodos de prueba
 DELETE FROM [dbo].[Suscripcion]
+GO
+
+-- Las integraciones de la instancia son solo las de prueba
+DELETE FROM [dbo].[HistorialSincronizacion]
+GO
+
+DELETE FROM [dbo].[MapeoColumna]
+GO
+
+DELETE FROM [dbo].[ConfiguracionIntegracion]
 GO
 
 
@@ -503,6 +518,57 @@ VALUES
     ('2026-08-03T12:00:00', '2026-08-04T09:05:00', '2026-09-04T09:05:00', N'Vencida', N'Max',         38500.00, N'LHDXLUw7SOGWp7EKu4chlx4RCxmVDYvfi9Oq9VYS8uQ='),
     ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',         42000.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
     ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',         42000.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
+GO
+
+/* ------------------------------------------------------------
+   Integraciones (modulo 006)
+   Productos y Ventas ya tienen el mapeo configurado con los
+   nombres de columna de los archivos de ScriptsSql/ArchivosEjemplo
+   (productos.xml y ventas.xml), asi que se pueden importar
+   directamente. Stock queda sin configurar a proposito: sirve
+   para probar el CU-006-029 con stock.xml y el aviso #ERR044 al
+   intentar importar sin configuracion.
+   El historial trae una sincronizacion de cada estado.
+   ------------------------------------------------------------ */
+
+SET IDENTITY_INSERT [dbo].[ConfiguracionIntegracion] ON
+INSERT INTO [dbo].[ConfiguracionIntegracion] ([IdConfiguracion], [TipoArchivo], [FechaConfiguracion]) VALUES
+    (1, N'Productos', '2026-07-30T10:00:00'),
+    (2, N'Ventas',    '2026-07-30T10:20:00')
+SET IDENTITY_INSERT [dbo].[ConfiguracionIntegracion] OFF
+GO
+
+INSERT INTO [dbo].[MapeoColumna] ([IdConfiguracion], [ColumnaStrategic], [ColumnaCliente]) VALUES
+    (1, N'Codigo',         N'SKU'),
+    (1, N'Nombre',         N'Descripcion'),
+    (1, N'Precio',         N'PrecioVenta'),
+    (1, N'Stock',          N'CantDisponible'),
+    (1, N'Estado',         N'Situacion'),
+    (1, N'Categoria',      N'Rubro'),
+    (1, N'Marca',          N'Fabricante'),
+    (1, N'StockMinimo',    N'StockMin'),
+    (1, N'StockMaximo',    N'StockMax'),
+    (2, N'NroVenta',       N'NumeroPedido'),
+    (2, N'Fecha',          N'FechaPedido'),
+    (2, N'CodigoProducto', N'SKU'),
+    (2, N'Cantidad',       N'Unidades'),
+    (2, N'PrecioVenta',    N'PrecioUnitario'),
+    (2, N'Estado',         N'EstadoPedido')
+GO
+
+INSERT INTO [dbo].[HistorialSincronizacion]
+    ([IdConfiguracion], [TipoArchivo], [RegistrosImportados], [RegistrosActualizados], [RegistrosError], [Estado], [Detalle], [FechaEjecucion])
+VALUES
+    (1, N'Productos', 8, 0, 0, N'Exitosa', NULL, '2026-08-01T09:00:00'),
+    (2, N'Ventas', 12, 0, 2, N'ConErrores',
+        N'Registro 4: el producto SKU-9999 no existe en el catálogo.' + CHAR(10) +
+        N'Registro 9: Cantidad debe ser un número entero mayor o igual a 1 (0).',
+        '2026-08-20T18:00:00'),
+    (1, N'Productos', 0, 0, 0, N'Fallida',
+        N'No se encontró la columna CantDisponible (campo Stock) en el archivo.',
+        '2026-09-05T06:00:00'),
+    (1, N'Productos', 0, 8, 0, N'Exitosa', NULL, '2026-09-05T06:10:00'),
+    (2, N'Ventas', 16, 0, 0, N'Exitosa', NULL, '2026-09-10T08:30:00')
 GO
 
 /* ------------------------------------------------------------

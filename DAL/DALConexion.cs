@@ -93,6 +93,36 @@ namespace DAL
             }
         }
 
+        // Conexion ya abierta, para cuando varias llamadas tienen que ir en la
+        // misma transaccion (por ejemplo la importacion de datos). Quien la pide
+        // la cierra con using
+        public SqlConnection AbrirConexion()
+        {
+            SqlConnection con = CrearConexion();
+            con.Open();
+            return con;
+        }
+
+        // Ejecuta un SP dentro de una transaccion ya abierta. No hace commit ni
+        // rollback: eso lo decide quien abrio la transaccion
+        public DataTable ConsultaProcAlmacenado(string nombreProc, SqlParameter[] parametros, SqlTransaction transaccion)
+        {
+            DataTable tabla = new DataTable();
+
+            using (SqlCommand command = new SqlCommand(nombreProc, transaccion.Connection, transaccion))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                AgregarParametros(command, parametros);
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(tabla);
+                }
+            }
+
+            return tabla;
+        }
+
         private void AgregarParametros(SqlCommand command, SqlParameter[] parametros)
         {
             if (parametros == null)

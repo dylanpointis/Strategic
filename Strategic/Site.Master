@@ -86,6 +86,7 @@
                         <li runat="server" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navIntegraciones" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%: Traductor.T("master.menu.integraciones") %></a>
                             <ul class="dropdown-menu" aria-labelledby="navIntegraciones">
+                                <li runat="server" data-permission="ConfigurarIntegracion"><a class="dropdown-item" href="ConfigurarIntegracion.aspx"><%: Traductor.T("master.menu.configurarIntegracion") %></a></li>
                                 <li runat="server" data-permission="ImportarDatos"><a class="dropdown-item" href="ImportarDatos.aspx"><%: Traductor.T("master.menu.importarDatos") %></a></li>
                                 <li runat="server" data-permission="HistorialSincronizaciones"><a class="dropdown-item" href="HistorialSincronizaciones.aspx"><%: Traductor.T("master.menu.historialSincronizaciones") %></a></li>
                             </ul>
