@@ -246,6 +246,11 @@ textarea {
                 }
 
 
+        .strategic-navbar .auth-nav .selector-idioma-publico {
+            padding: 0.5rem 0.8rem;
+        }
+
+
         /* Salir */
 
         .strategic-navbar .auth-nav .nav-bienvenida .nav-link {
@@ -1486,5 +1491,553 @@ textarea {
     .filtros-acciones .btn {
         flex: 1 1 100%;
         min-width: 0;
+    }
+}
+
+
+/* =========================================================
+   BIENVENIDA (Default.aspx sin sesion)
+   Paleta de la guia de identidad visual de Strategic
+   ========================================================= */
+
+.bienvenida {
+    --bv-primario: #7C3AED;
+    --bv-primario-hover: #6D28D9;
+    --bv-secundario: #E600A9;
+    --bv-fondo: #F8FAFC;
+    --bv-superficie: #FFFFFF;
+    --bv-oscuro: #111827;
+    --bv-texto-secundario: #64748B;
+    --bv-borde: #E2E8F0;
+    --bv-exito: #10B981;
+    --bv-degradado: linear-gradient(110deg, #6D00C7 0%, #B000D9 45%, #E600A9 72%, #FF3D69 100%);
+    color: var(--bv-oscuro);
+    padding-bottom: 24px;
+}
+
+    .bienvenida h1,
+    .bienvenida h2,
+    .bienvenida h3 {
+        color: var(--bv-oscuro);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+    }
+
+    .bienvenida h2 {
+        font-size: clamp(1.6rem, 3vw, 2.1rem);
+        margin: 10px 0 12px;
+    }
+
+    .bienvenida h3 {
+        font-size: 1.1rem;
+        margin: 0 0 8px;
+    }
+
+    .bienvenida p {
+        color: var(--bv-texto-secundario);
+        line-height: 1.6;
+    }
+
+.bv-etiqueta {
+    display: inline-block;
+    color: var(--bv-primario);
+    background-color: #F3EEFE;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.85rem;
+}
+
+.bv-degradado {
+    background: var(--bv-degradado);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ---------- Botones ---------- */
+
+.bv-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.bv-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-weight: 650;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.4rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+    .bv-boton:hover,
+    .bv-boton:focus {
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .bv-boton:focus-visible {
+        outline: 3px solid rgba(124, 58, 237, 0.35);
+        outline-offset: 2px;
+    }
+
+.bv-boton-marca {
+    color: #ffffff;
+    background: var(--bv-degradado);
+    /* El degradado cubre tambien el borde transparente; si no, se repite en los costados */
+    background-origin: border-box;
+    box-shadow: 0 8px 20px rgba(176, 0, 217, 0.25);
+}
+
+    .bv-boton-marca:hover,
+    .bv-boton-marca:focus {
+        color: #ffffff;
+        box-shadow: 0 10px 26px rgba(176, 0, 217, 0.32);
+    }
+
+.bv-boton-claro {
+    color: var(--bv-oscuro);
+    background-color: var(--bv-superficie);
+    border-color: var(--bv-borde);
+}
+
+    .bv-boton-claro:hover,
+    .bv-boton-claro:focus {
+        color: var(--bv-primario);
+        border-color: #C4B5FD;
+        background-color: #FAF7FF;
+    }
+
+.bv-boton-blanco {
+    color: var(--bv-primario-hover);
+    background-color: #ffffff;
+    box-shadow: 0 8px 20px rgba(17, 24, 39, 0.15);
+}
+
+    .bv-boton-blanco:hover,
+    .bv-boton-blanco:focus {
+        color: var(--bv-primario-hover);
+    }
+
+/* ---------- Portada ---------- */
+
+.bv-hero {
+    margin-top: 12px;
+    padding: 88px 32px;
+    border: 1px solid var(--bv-borde);
+    border-radius: 24px;
+    text-align: center;
+    background:
+        radial-gradient(circle at 85% 0%, rgba(230, 0, 169, 0.09), transparent 45%),
+        radial-gradient(circle at 15% 100%, rgba(124, 58, 237, 0.09), transparent 45%),
+        var(--bv-fondo);
+}
+
+    .bv-hero h1 {
+        margin: 0 auto 18px;
+        font-size: clamp(2rem, 4.2vw, 3.1rem);
+        line-height: 1.12;
+    }
+
+        /* La frase destacada va en su propia linea */
+        .bv-hero h1 .bv-degradado {
+            display: block;
+            padding-bottom: 0.12em;
+        }
+
+.bv-hero-bajada {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.bv-hero .bv-acciones {
+    justify-content: center;
+}
+
+/* ---------- Secciones ---------- */
+
+.bv-seccion {
+    margin-top: 88px;
+}
+
+.bv-encabezado {
+    max-width: 680px;
+    margin: 0 auto 36px;
+    text-align: center;
+}
+
+    .bv-encabezado p {
+        margin: 0;
+    }
+
+/* Quienes somos */
+.bv-nosotros {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+}
+
+/* Mision y vision: dos bloques lado a lado sobre un panel suave */
+.bv-proposito {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 44px 0;
+    border: 1px solid var(--bv-borde);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.07), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(230, 0, 169, 0.07), transparent 40%),
+        var(--bv-fondo);
+}
+
+    .bv-proposito > div {
+        padding: 0 44px;
+    }
+
+        .bv-proposito > div + div {
+            border-left: 1px solid var(--bv-borde);
+        }
+
+    .bienvenida .bv-proposito p {
+        margin: 16px 0 0;
+        color: var(--bv-oscuro);
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.55;
+    }
+
+.bv-pilares {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bv-pilares li {
+        position: relative;
+        padding: 22px 20px 20px;
+        border: 1px solid var(--bv-borde);
+        border-radius: 16px;
+        background-color: var(--bv-superficie);
+        overflow: hidden;
+    }
+
+        .bv-pilares li::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--bv-degradado);
+        }
+
+    .bv-pilares strong {
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .bv-pilares span {
+        color: var(--bv-texto-secundario);
+        font-size: 0.92rem;
+        line-height: 1.55;
+    }
+
+/* Que hacemos */
+/* 3 + 3 en escritorio, 2 por fila en tablet y 1 en celular */
+.bv-servicios {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.bv-servicio {
+    padding: 26px;
+    border: 1px solid var(--bv-borde);
+    border-radius: 16px;
+    background-color: var(--bv-superficie);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+    .bv-servicio:hover {
+        border-color: #C4B5FD;
+        box-shadow: 0 12px 30px rgba(124, 58, 237, 0.08);
+    }
+
+    .bv-servicio svg {
+        width: 44px;
+        height: 44px;
+        padding: 10px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        background-color: #F3EEFE;
+        fill: none;
+        stroke: var(--bv-primario);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .bv-servicio p {
+        margin: 0;
+        font-size: 0.93rem;
+    }
+
+/* Como trabajamos */
+.bv-pasos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+}
+
+    .bv-pasos li {
+        padding: 24px;
+        border-radius: 16px;
+        background-color: var(--bv-fondo);
+        border: 1px solid var(--bv-borde);
+    }
+
+    .bv-pasos p {
+        margin: 0;
+        font-size: 0.92rem;
+    }
+
+.bv-paso-numero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    color: #ffffff;
+    background: var(--bv-degradado);
+    font-weight: 700;
+}
+
+/* Planes */
+.bv-planes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+.bv-plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 26px;
+    border: 1px solid var(--bv-borde);
+    border-radius: 20px;
+    background-color: var(--bv-superficie);
+}
+
+    .bv-plan h3 {
+        font-size: 1.25rem;
+    }
+
+.bv-plan-destacado {
+    border: 2px solid var(--bv-primario);
+    box-shadow: 0 20px 45px rgba(124, 58, 237, 0.14);
+}
+
+.bv-plan-insignia {
+    position: absolute;
+    top: -13px;
+    left: 26px;
+    color: #ffffff;
+    background: var(--bv-degradado);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+}
+
+.bv-plan-descripcion {
+    min-height: 3.2em;
+    margin: 0 0 18px;
+    font-size: 0.93rem;
+}
+
+.bv-plan-precio strong {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.bv-plan-precio span {
+    margin-left: 6px;
+    color: var(--bv-texto-secundario);
+}
+
+.bv-plan-implementacion {
+    margin: 14px 0 20px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background-color: var(--bv-fondo);
+    border: 1px solid var(--bv-borde);
+}
+
+    .bv-plan-implementacion span {
+        display: block;
+        color: var(--bv-texto-secundario);
+        font-size: 0.8rem;
+    }
+
+    .bv-plan-implementacion strong {
+        font-size: 1rem;
+    }
+
+.bv-plan-items {
+    flex: 1;
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+}
+
+    .bv-plan-items li {
+        position: relative;
+        padding: 6px 0 6px 28px;
+        font-size: 0.92rem;
+    }
+
+        .bv-plan-items li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #D1FAE5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 11px no-repeat;
+        }
+
+    .bv-plan-items .bv-plan-incluye {
+        padding-left: 0;
+        color: var(--bv-texto-secundario);
+        font-weight: 600;
+    }
+
+        .bv-plan-items .bv-plan-incluye::before {
+            display: none;
+        }
+
+.bv-planes-nota {
+    max-width: 760px;
+    margin: 22px auto 0;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+/* Contacto */
+.bv-contacto {
+    margin-top: 88px;
+    padding: 56px 32px;
+    border-radius: 24px;
+    background: var(--bv-degradado);
+    text-align: center;
+}
+
+    .bienvenida .bv-contacto h2 {
+        color: #ffffff;
+        margin-top: 0;
+    }
+
+    .bienvenida .bv-contacto p {
+        max-width: 560px;
+        margin: 0 auto 26px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .bv-contacto small {
+        display: block;
+        margin-top: 22px;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 991.98px) {
+    .bv-nosotros,
+    .bv-proposito {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bv-proposito {
+        gap: 32px;
+    }
+
+        .bv-proposito > div + div {
+            padding-top: 32px;
+            border-left: 0;
+            border-top: 1px solid var(--bv-borde);
+        }
+
+    .bv-hero {
+        padding: 64px 28px;
+    }
+
+    .bv-servicios,
+    .bv-pasos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bv-planes {
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 480px;
+        margin: 0 auto;
+        gap: 28px;
+    }
+
+    .bv-plan-descripcion {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .bv-hero {
+        padding: 48px 20px;
+    }
+
+    .bv-pilares,
+    .bv-servicios,
+    .bv-pasos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bv-seccion,
+    .bv-contacto {
+        margin-top: 64px;
+    }
+
+    .bv-contacto {
+        padding: 40px 20px;
+    }
+
+    .bv-proposito > div {
+        padding: 0 24px;
+    }
+
+    .bv-acciones .bv-boton {
+        flex: 1 1 100%;
     }
 }

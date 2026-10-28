@@ -39,7 +39,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-light strategic-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand strategic-logo" href="<%: ResolveUrl("~/Dashboard.aspx") %>">
+                <a class="navbar-brand strategic-logo" href="<%: ResolveUrl("~/") %>">
                     <img src="<%: ResolveUrl("~/Content/images/Strategic_LOGO_PNG.png") %>" alt="Strategic" class="strategic-logo-img" />
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar" title="<%: Traductor.T("master.alternarNavegacion") %>" aria-controls="mainNavbar"
@@ -111,7 +111,15 @@
                         <li runat="server" class="nav-item" data-permission="RenovarSuscripcion"><a class="nav-link" href="RenovarSuscripcion.aspx"><%: Traductor.T("master.menu.suscripcion") %></a></li>
                     </ul>
                     <ul class="navbar-nav auth-nav">
-<li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login"><%: Traductor.T("master.ingresar") %></a></li>
+                        <%-- Sin sesion el selector de idioma queda a la vista, porque el menu de perfil no aparece --%>
+                        <li id="navIdiomaPublico" runat="server" class="nav-item selector-idioma selector-idioma-publico">
+                            <span class="selector-idioma-opciones">
+                                <asp:LinkButton ID="lnkEspanolPublico" runat="server" CausesValidation="false" OnClick="lnkEspanol_Click">ES</asp:LinkButton>
+                                <span>|</span>
+                                <asp:LinkButton ID="lnkInglesPublico" runat="server" CausesValidation="false" OnClick="lnkIngles_Click">EN</asp:LinkButton>
+                            </span>
+                        </li>
+                        <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login"><%: Traductor.T("master.ingresar") %></a></li>
                         <li id="navBienvenida" runat="server" class="nav-item nav-bienvenida">
                             <asp:Label ID="lblBienvenida" runat="server" CssClass="nav-link"></asp:Label>
                         </li>

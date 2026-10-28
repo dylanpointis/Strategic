@@ -23,6 +23,7 @@ namespace Strategic
             bool haySesion = SessionManager.HayUsuarioLogueado;
 
             navLogin.Visible = !haySesion;
+            navIdiomaPublico.Visible = !haySesion;
             navInicio.Visible = haySesion;
             navProfile.Visible = haySesion;
             navBienvenida.Visible = haySesion;
@@ -49,6 +50,8 @@ namespace Strategic
         {
             lnkEspanol.CssClass = Traductor.IdiomaActual == Traductor.Espanol ? "idioma-actual" : string.Empty;
             lnkIngles.CssClass = Traductor.IdiomaActual == Traductor.Ingles ? "idioma-actual" : string.Empty;
+            lnkEspanolPublico.CssClass = lnkEspanol.CssClass;
+            lnkInglesPublico.CssClass = lnkIngles.CssClass;
 
             BEUsuario usuario = SessionManager.UsuarioActual;
 

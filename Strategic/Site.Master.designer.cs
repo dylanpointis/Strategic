@@ -92,5 +92,14 @@ namespace Strategic
         /// Control lnkIngles.
         
         protected global::System.Web.UI.WebControls.LinkButton lnkIngles;
+
+        // Control navIdiomaPublico.
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navIdiomaPublico;
+
+        // Control lnkEspanolPublico.
+        protected global::System.Web.UI.WebControls.LinkButton lnkEspanolPublico;
+
+        // Control lnkInglesPublico.
+        protected global::System.Web.UI.WebControls.LinkButton lnkInglesPublico;
     }
 }
