@@ -5,6 +5,7 @@ using Services;
 using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Strategic
 {
@@ -13,7 +14,16 @@ namespace Strategic
     {
         private const string MensajeSinHistorial = "renovarSuscripcion.sinHistorial";
 
+        // La renovacion de esta sesion queda en Session para armar su factura
+        // al descargarla; FacturaNueva avisa que hay que descargarla sola
+        private const string ClaveFactura = "FacturaSuscripcion";
+        private const string ClaveFacturaNueva = "FacturaSuscripcionNueva";
+        private const string RutaPlantillaFactura = "~/App_Data/Plantillas/FacturaSuscripcion.html";
+        private const string RutaLogo = "~/Content/images/Strategic_LOGO_PNG.png";
+
         private readonly BLLSuscripcion bllSuscripcion = new BLLSuscripcion();
+
+        protected bool DescargaAutomatica { get; private set; }
 
         // Texto que lleva el QR de pago. Es de prueba: no apunta a una cuenta real
         protected string TextoQrJson
@@ -43,6 +53,7 @@ namespace Strategic
             btnConfirmar.Text = Traductor.T("renovarSuscripcion.confirmarPago");
             btnCancelar.Text = Traductor.T("comun.cancelar");
             lblSinSuscripcion.Text = Traductor.T("error.sinSuscripcion");
+            lnkFactura.Text = Traductor.T("renovarSuscripcion.descargarFactura");
 
             // La grilla guarda la cantidad en su ViewState
             MostrarCantidad();
@@ -71,6 +82,12 @@ namespace Strategic
         {
             if (!IsPostBack)
             {
+                // Pedido del PDF desde el boton o la descarga automatica
+                if (Request.QueryString["factura"] != null && DescargarFactura())
+                {
+                    return;
+                }
+
                 CargarSuscripcion();
 
                 if (SessionManager.SuscripcionVencida)
@@ -78,11 +95,18 @@ namespace Strategic
                     lblAvisoVencida.Text = Server.HtmlEncode(Traductor.T("renovarSuscripcion.avisoVencida"));
                 }
 
-                // Mensaje que deja la baja (o la renovacion de una suscripcion vencida) al volver
+                // Mensaje que deja la baja o la renovacion al volver
                 if (Session["MensajeSuscripcion"] != null)
                 {
                     lblExito.Text = Server.HtmlEncode(Session["MensajeSuscripcion"].ToString());
                     Session.Remove("MensajeSuscripcion");
+                }
+
+                if (Session[ClaveFacturaNueva] != null)
+                {
+                    Session.Remove(ClaveFacturaNueva);
+                    pnlFactura.Visible = true;
+                    DescargaAutomatica = true;
                 }
             }
         }
@@ -113,37 +137,71 @@ namespace Strategic
 
         protected void btnConfirmar_Click(object sender, EventArgs e)
         {
+            BESuscripcion renovacion;
+
             try
             {
                 BEUsuario enSesion = SessionManager.UsuarioActual;
 
-                BESuscripcion renovacion = bllSuscripcion.RenovarSuscripcion(txtNumeroOperacion.Text, enSesion.NombreUsuario);
-
-                // Con la renovacion vuelve el acceso al resto del sistema
-                if (SessionManager.SuscripcionVencida)
-                {
-                    SessionManager.SuscripcionVencida = false;
-                    Session["MensajeSuscripcion"] = Traductor.T(
-                        "renovarSuscripcion.exito",
-                        renovacion.FechaVencimiento.ToString("dd/MM/yyyy"));
-
-                    // Se recarga para que el menu vuelva a mostrar todas las opciones
-                    Response.Redirect("~/RenovarSuscripcion.aspx");
-                    return;
-                }
-
-                pnlRenovacion.Visible = false;
-                btnRenovar.Visible = true;
-                CargarSuscripcion();
-
-                lblExito.Text = Server.HtmlEncode(Traductor.T(
-                    "renovarSuscripcion.exito",
-                    renovacion.FechaVencimiento.ToString("dd/MM/yyyy")));
+                renovacion = bllSuscripcion.RenovarSuscripcion(txtNumeroOperacion.Text, enSesion.NombreUsuario);
             }
             catch (Exception ex)
             {
                 lblErrorRenovacion.Text = Server.HtmlEncode(ex.Message);
+                return;
             }
+
+            // Con la renovacion vuelve el acceso al resto del sistema
+            SessionManager.SuscripcionVencida = false;
+
+            Session["MensajeSuscripcion"] = Traductor.T(
+                "renovarSuscripcion.exito",
+                renovacion.FechaVencimiento.ToString("dd/MM/yyyy"));
+
+            Session[ClaveFactura] = renovacion;
+            Session[ClaveFacturaNueva] = true;
+
+            // Se recarga para que el menu vuelva a mostrar todas las opciones
+            // y para que la pagina nueva descargue la factura
+            Response.Redirect("~/RenovarSuscripcion.aspx");
+        }
+
+        // Manda el PDF de la ultima renovacion de esta sesion. Si no hay o no se
+        // puede armar, la pagina se muestra normalmente
+        private bool DescargarFactura()
+        {
+            BESuscripcion renovacion = Session[ClaveFactura] as BESuscripcion;
+
+            if (renovacion == null)
+            {
+                return false;
+            }
+
+            byte[] pdf;
+
+            try
+            {
+                string paginahtml = File.ReadAllText(Server.MapPath(RutaPlantillaFactura));
+                pdf = Reportes.GenerarFacturaSuscripcion(renovacion, SessionManager.UsuarioActual, paginahtml, Server.MapPath(RutaLogo));
+            }
+            catch (Exception)
+            {
+                lblError.Text = Server.HtmlEncode(Traductor.T("error.facturaNoGenerada"));
+                pnlFactura.Visible = true;
+                return false;
+            }
+
+            string nombreArchivo = "Factura-" + renovacion.IdSuscripcion.ToString("D8") + "-" + renovacion.FechaPago.ToString("yyyy-MM-dd") + ".pdf";
+
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + nombreArchivo);
+            Response.AppendHeader("Content-Length", pdf.Length.ToString());
+            Response.BinaryWrite(pdf);
+            Response.Flush();
+            Response.SuppressContent = true;
+            Context.ApplicationInstance.CompleteRequest();
+            return true;
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)

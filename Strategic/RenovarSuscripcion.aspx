@@ -12,6 +12,10 @@
         <asp:Label ID="lblAvisoVencida" runat="server" CssClass="mensaje-aviso"></asp:Label>
         <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>
 
+        <asp:Panel ID="pnlFactura" runat="server" CssClass="formulario-acciones" Visible="false" EnableViewState="false">
+            <asp:HyperLink ID="lnkFactura" runat="server" CssClass="btn btn-strategic-outline" NavigateUrl="~/RenovarSuscripcion?factura=1"></asp:HyperLink>
+        </asp:Panel>
+
         <asp:Panel ID="pnlSuscripcion" runat="server">
 
             <section class="strategic-card">
@@ -169,6 +173,12 @@
                 document.getElementById('qrError').textContent = <%= ErrorQrJson %>;
             }
         })();
+    </script>
+    <% } %>
+    <% if (DescargaAutomatica) { %>
+    <script type="text/javascript">
+        // Recien renovada: la factura se descarga sola y el boton queda por si el navegador la bloquea
+        window.location.href = document.getElementById('<%= lnkFactura.ClientID %>').href;
     </script>
     <% } %>
 </asp:Content>

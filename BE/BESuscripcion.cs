@@ -6,6 +6,9 @@ namespace BE
     // guarda el historial: cada renovacion es una fila nueva
     public class BESuscripcion
     {
+        // El monto del plan es el precio final, con el IVA incluido
+        public const decimal PorcentajeIva = 21m;
+
         public int IdSuscripcion { get; set; }
         public DateTime FechaPago { get; set; }
         public DateTime FechaInicio { get; set; }
@@ -30,6 +33,17 @@ namespace BE
         public string Periodo
         {
             get { return string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}", FechaInicio, FechaVencimiento); }
+        }
+
+        // Importe sin IVA, para discriminarlo en la factura
+        public decimal MontoNeto
+        {
+            get { return Math.Round(Monto / (1 + PorcentajeIva / 100), 2); }
+        }
+
+        public decimal MontoIva
+        {
+            get { return Monto - MontoNeto; }
         }
 
         // Clave de traduccion del estado, para mostrarlo en pantalla

@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Factura</title>
+</head>
+<body>
+
+    <div style="width: 80%; background-color: #7C3AED; padding: 10px">
+        <h1 style="color: #FFFFFF">Strategic</h1>
+    </div>
+
+    <table style="width: 100%; margin-top: 10px">
+        <tr>
+            <td style="font-size: 16px">@textoFactura: @NroFactura</td>
+            <td style="font-size: 16px">@textoFecha: @Fecha</td>
+        </tr>
+    </table>
+
+    <h2>@textoDetalleCliente</h2>
+    <table border="1" style="width: 100%; margin-top: 15px">
+        <thead>
+            <tr>
+                <th>@textoUsuario</th>
+                <th>@textoNombre</th>
+                <th>@textoApellido</th>
+                <th>@textoEmail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Usuario</td>
+                <td>@Nombre</td>
+                <td>@Apellido</td>
+                <td>@Email</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>@textoDetalleServicio</h2>
+    <table border="1" style="width: 100%; margin-top: 15px">
+        <thead>
+            <tr>
+                <th>@textoConcepto</th>
+                <th>@textoPeriodo</th>
+                <th>@textoImporte</th>
+            </tr>
+        </thead>
+        <tbody>
+            @FILAS
+        </tbody>
+    </table>
+
+    <hr style="margin-top: 60px" />
+    <h2>@textoDetallePago</h2>
+    <h3>@textoNeto: @Neto</h3>
+    <h3>@textoIVA: @Iva</h3>
+    <h3>@textoMontoTotal: @Total</h3>
+    <h3>@textoMetodo: @Metodo</h3>
+    <h3>@textoNumeroOperacion: @NumeroOperacion</h3>
+
+    <div style="width: 100%; background-color: #7C3AED; padding: 10px; margin-top: 30px">
+        <p style="color: #FFFFFF">@textoPie</p>
+    </div>
+
+</body>
+</html>
