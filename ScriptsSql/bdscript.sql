@@ -78,6 +78,9 @@ CREATE TABLE [dbo].[Eventos](
     [Criticidad] SMALLINT NOT NULL,
     [Fecha] VARCHAR(11) NOT NULL,
     [Hora] VARCHAR(5) NOT NULL,
+    -- Baja logica: el evento se conserva en la base pero deja de mostrarse
+    -- en la bitacora (CU-008-038)
+    [BorradoLogico] BIT NOT NULL CONSTRAINT [DF_Eventos_BorradoLogico] DEFAULT(0),
     CONSTRAINT [PK_Eventos] PRIMARY KEY CLUSTERED ([CodEvento] ASC),
     CONSTRAINT [FK_Eventos_Usuario] FOREIGN KEY ([NombreUsuario]) REFERENCES [dbo].[Usuario]([NombreUsuario])
 )
@@ -397,6 +400,9 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 -- 006. Integraciones (continuacion): configurar el mapeo es solo del
 -- WebMaster, por eso no entra en la familia Integraciones del Administrador
 (52, 'ConfigurarIntegracion',              'Configurar el mapeo de los archivos a importar', 'Simple', 1),
+-- 008. Auditoria (continuacion): la baja de eventos es solo del WebMaster,
+-- porque saca registros de la bitacora que el Administrador consulta
+(53, 'BajaEventos',                        'Dar de baja los eventos de mas de 30 dias',      'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -451,7 +457,7 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 -- Auditoria
 (46, 34), (46, 35),
 -- Acceso total: contiene a las familias de mayor nivel y los permisos sueltos
-(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50), (47, 52)
+(47, 37), (47, 39), (47, 40), (47, 41), (47, 43), (47, 44), (47, 45), (47, 46), (47, 36), (47, 48), (47, 49), (47, 50), (47, 52), (47, 53)
 GO
 
 
@@ -460,7 +466,7 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      40 pantallas (todo)
+     WebMaster      41 pantallas (todo)
      Administrador  30 pantallas
      Analista       13 pantallas
      Usuario         2 pantallas
@@ -637,34 +643,7 @@ BEGIN
         E.Fecha,
         E.Hora
     FROM [dbo].[Eventos] E
-    ORDER BY E.CodEvento DESC
-END
-GO
-
-CREATE PROCEDURE [dbo].[FiltrarEventos]
-    @NombreUsuario VARCHAR(50) = NULL,
-    @Modulo VARCHAR(50) = NULL,
-    @Evento VARCHAR(100) = NULL,
-    @FechaInicio VARCHAR(11) = NULL,
-    @FechaFin VARCHAR(11) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        E.CodEvento,
-        E.NombreUsuario,
-        E.Modulo,
-        E.Evento,
-        E.Criticidad,
-        E.Fecha,
-        E.Hora
-    FROM [dbo].[Eventos] E
-    WHERE (@NombreUsuario IS NULL OR E.NombreUsuario LIKE '%' + @NombreUsuario + '%')
-      AND (@Modulo IS NULL OR E.Modulo = @Modulo)
-      AND (@Evento IS NULL OR E.Evento LIKE '%' + @Evento + '%')
-      AND (@FechaInicio IS NULL OR E.Fecha >= @FechaInicio)
-      AND (@FechaFin IS NULL OR E.Fecha <= @FechaFin)
+    WHERE E.BorradoLogico = 0
     ORDER BY E.CodEvento DESC
 END
 GO
@@ -2669,5 +2648,30 @@ BEGIN
         [FechaEjecucion]
     FROM [dbo].[HistorialSincronizacion]
     ORDER BY [FechaEjecucion] DESC, [IdSincronizacion] DESC
+END
+GO
+
+/* ============================================================
+   008. Auditoria y Mantenimiento
+        CU-008-038 Consultar Eventos del Sistema (baja logica)
+   ------------------------------------------------------------
+   La bitacora mantiene los eventos de los ultimos 30 dias. Los
+   anteriores se dan de baja en forma logica: quedan en la base
+   (y en los backups) pero dejan de mostrarse en la consulta.
+   La fecha limite la calcula la BLL.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[BajaEventos]
+    @FechaLimite VARCHAR(11)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Eventos]
+    SET [BorradoLogico] = 1
+    WHERE [BorradoLogico] = 0
+      AND [Fecha] < @FechaLimite
+
+    SELECT @@ROWCOUNT AS Cantidad
 END
 GO

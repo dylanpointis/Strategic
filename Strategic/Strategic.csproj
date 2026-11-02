@@ -187,6 +187,7 @@
     <Content Include="ModificarCompetidor.aspx" />
     <Content Include="BajaCompetidor.aspx" />
     <Content Include="BajaFamilia.aspx" />
+    <Content Include="BajaEventos.aspx" />
     <Content Include="BajaRol.aspx" />
     <Content Include="MapearProductosCompetencia.aspx" />
     <Content Include="MonitoreoPublicacionesCompetidoras.aspx" />
@@ -520,6 +521,13 @@
     </Compile>
     <Compile Include="BajaFamilia.aspx.designer.cs">
       <DependentUpon>BajaFamilia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BajaEventos.aspx.cs">
+      <DependentUpon>BajaEventos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BajaEventos.aspx.designer.cs">
+      <DependentUpon>BajaEventos.aspx</DependentUpon>
     </Compile>
     <Compile Include="BajaRol.aspx.cs">
       <DependentUpon>BajaRol.aspx</DependentUpon>

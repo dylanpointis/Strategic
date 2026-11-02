@@ -28,18 +28,15 @@ namespace DAL
             return dalCon.ConsultaProcAlmacenado("TraerListaEventos", null);
         }
 
-        public DataTable FiltrarEventos(string nombreUsuario, string modulo, string descripcion, string fechaInicio, string fechaFin)
+        // Da de baja logica los eventos anteriores a la fecha y devuelve cuantos fueron
+        public DataTable BajaEventos(string fechaLimite)
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
-                new SqlParameter("@NombreUsuario", nombreUsuario),
-                new SqlParameter("@Modulo", modulo),
-                new SqlParameter("@Evento", descripcion),
-                new SqlParameter("@FechaInicio", fechaInicio),
-                new SqlParameter("@FechaFin", fechaFin)
+                new SqlParameter("@FechaLimite", fechaLimite)
             };
 
-            return dalCon.ConsultaProcAlmacenado("FiltrarEventos", parametros);
+            return dalCon.ConsultaProcAlmacenado("BajaEventos", parametros);
         }
     }
 }

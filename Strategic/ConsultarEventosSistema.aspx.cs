@@ -34,6 +34,7 @@ namespace Strategic
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
             btnCerrarDetalle.Text = Traductor.T("eventos.cerrarDetalle");
+            btnBajaEventos.Text = Traductor.T("eventos.bajaEventos");
             MostrarCantidad();
 
             // Lo que se arma desde codigo solo existe una vez recuperado el
@@ -60,11 +61,19 @@ namespace Strategic
         {
             if (!IsPostBack)
             {
+                btnBajaEventos.Visible = TienePermiso("BajaEventos");
+
                 List<Evento> eventos = bllEvento.TraerListaEventos();
 
                 CargarModulos(eventos);
                 CargarGrilla(eventos, "eventos.sinEventos");
+                MostrarMensajeDeOtraPantalla();
             }
+        }
+
+        protected void btnBajaEventos_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/BajaEventos.aspx");
         }
 
         protected void btnFiltrar_Click(object sender, EventArgs e)
@@ -83,7 +92,7 @@ namespace Strategic
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                lblError.Text = Server.HtmlEncode(ex.Message);
             }
         }
 
@@ -132,7 +141,7 @@ namespace Strategic
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                lblError.Text = Server.HtmlEncode(ex.Message);
             }
         }
 
@@ -200,6 +209,20 @@ namespace Strategic
             EstadoDetalle = usuario.EstadoTexto;
 
             pnlDetalleUsuario.Visible = true;
+        }
+
+        // Exito de la baja de eventos, que se confirma en BajaEventos.aspx
+        private void MostrarMensajeDeOtraPantalla()
+        {
+            string mensaje = Convert.ToString(Session["MensajeEventos"]);
+
+            if (string.IsNullOrEmpty(mensaje))
+            {
+                return;
+            }
+
+            Session.Remove("MensajeEventos");
+            lblExito.Text = Server.HtmlEncode(mensaje);
         }
 
         private void OcultarDetalle()

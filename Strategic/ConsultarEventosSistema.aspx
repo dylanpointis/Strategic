@@ -40,13 +40,17 @@
                 </div>
 
                 <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>
+                <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>
             </div>
         </section>
 
         <section class="strategic-card">
             <div class="strategic-card-header">
                 <h2><%: Traductor.T("eventos.listado") %></h2>
-                <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
+                <div class="strategic-card-acciones">
+                    <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
+                    <asp:Button ID="btnBajaEventos" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnBajaEventos_Click" />
+                </div>
             </div>
 
             <div class="strategic-card-body sin-padding">
