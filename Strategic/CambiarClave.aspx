@@ -47,12 +47,18 @@
                 <asp:Label ID="lblClaveNueva" runat="server" AssociatedControlID="txtClaveNueva" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txtClaveNueva" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvClaveNueva" runat="server" ControlToValidate="txtClaveNueva" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <%-- Misma politica que BLLUsuario.ValidarPoliticaDeClave: 8 caracteres, una mayuscula, un numero y un caracter especial --%>
+                <asp:RegularExpressionValidator ID="revClaveNueva" runat="server" ControlToValidate="txtClaveNueva"
+                    ValidationExpression="^(?=.*[A-ZÁÉÍÓÚÜÑ])(?=.*[0-9])(?=.*[^A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ]).{8,}$"
+                    CssClass="text-danger" Display="Dynamic"></asp:RegularExpressionValidator>
             </div>
 
             <div class="mb-3">
                 <asp:Label ID="lblConfirmarClave" runat="server" AssociatedControlID="txtConfirmarClave" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txtConfirmarClave" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvConfirmarClave" runat="server" ControlToValidate="txtConfirmarClave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <asp:CompareValidator ID="cvConfirmarClave" runat="server" ControlToValidate="txtConfirmarClave" ControlToCompare="txtClaveNueva"
+                    Operator="Equal" Type="String" CssClass="text-danger" Display="Dynamic"></asp:CompareValidator>
             </div>
 
             <span class="campo-ayuda"><%: Traductor.T("cambiarClave.ayuda") %></span>

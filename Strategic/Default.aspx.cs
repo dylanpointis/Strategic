@@ -1,4 +1,5 @@
-﻿using Services;
+﻿using BLL;
+using Services;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -129,6 +130,12 @@ namespace Strategic
             {
                 throw new Exception(Traductor.T("error.valorLargo", Traductor.T(campo), largoMaximo));
             }
+        }
+
+        // Precio mensual del plan: el mismo que se cobra al renovar la suscripcion
+        protected string PrecioPlan(string plan)
+        {
+            return Precio(BLLSuscripcion.PreciosMensualesUsd[plan]);
         }
 
         // Precios de referencia en dolares, con el separador de miles del idioma actual

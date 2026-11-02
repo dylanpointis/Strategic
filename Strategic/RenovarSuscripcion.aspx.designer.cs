@@ -29,6 +29,7 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Panel pnlRenovacion;
         protected global::System.Web.UI.WebControls.Label lblRenovacionPlan;
         protected global::System.Web.UI.WebControls.Label lblRenovacionMonto;
+        protected global::System.Web.UI.WebControls.Label lblRenovacionCotizacion;
         protected global::System.Web.UI.WebControls.Label lblRenovacionVencimiento;
         protected global::System.Web.UI.WebControls.Label lblCbu;
         protected global::System.Web.UI.WebControls.Label lblAlias;

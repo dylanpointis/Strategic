@@ -92,8 +92,12 @@ namespace Strategic
         /// Control rfvClaveNueva.
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvClaveNueva;
 
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revClaveNueva;
+
         /// Control rfvConfirmarClave.
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvConfirmarClave;
+
+        protected global::System.Web.UI.WebControls.CompareValidator cvConfirmarClave;
 
         /// Control lblError.
         protected global::System.Web.UI.WebControls.Label lblError;

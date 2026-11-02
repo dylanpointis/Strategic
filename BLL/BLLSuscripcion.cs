@@ -17,6 +17,18 @@ namespace BLL
         // Cada renovacion paga un mes de servicio
         private const int MesesPorRenovacion = 1;
 
+        // Precio mensual de cada plan en dolares. Son los que publica la
+        // pagina de inicio (Default.aspx), que los toma de aca
+        public static readonly Dictionary<string, decimal> PreciosMensualesUsd = new Dictionary<string, decimal>
+        {
+            { "Básico", 160m },
+            { "Pro", 240m },
+            { "Max", 480m }
+        };
+
+        // El cobro es en pesos, al tipo de cambio de referencia USD 1 = ARS 1.535
+        public const decimal TipoCambioArs = 1535m;
+
         // Datos de la cuenta de Strategic donde el cliente transfiere. Son
         // ficticios: el cobro real se verifica fuera del sistema
         public const string CbuStrategic = "1234567890123456789012";
@@ -58,9 +70,22 @@ namespace BLL
 
         #region Renovacion - CU-009-042
 
+        // Precio del plan convertido a pesos, que es lo que se cobra y se factura
+        public decimal CalcularMontoArs(string plan)
+        {
+            decimal precioUsd;
+
+            if (plan == null || !PreciosMensualesUsd.TryGetValue(plan, out precioUsd))
+            {
+                throw new Exception(Traductor.T("error.planDesconocido", plan));
+            }
+
+            return precioUsd * TipoCambioArs;
+        }
+
         // Arma el periodo que se pagaria al renovar, sin guardarlo: mismo plan
-        // y monto que el actual. Si todavia no vencio, el periodo nuevo arranca
-        // cuando termina el actual para no perder dias ya pagados
+        // que el actual, al precio vigente. Si todavia no vencio, el periodo
+        // nuevo arranca cuando termina el actual para no perder dias ya pagados
         public BESuscripcion ArmarRenovacion(List<BESuscripcion> suscripciones)
         {
             BESuscripcion actual = TraerSuscripcionActual(suscripciones);
@@ -81,7 +106,7 @@ namespace BLL
                 FechaVencimiento = inicio.AddMonths(MesesPorRenovacion),
                 Estado = "Activa",
                 Plan = actual.Plan,
-                Monto = actual.Monto
+                Monto = CalcularMontoArs(actual.Plan)
             };
         }
 

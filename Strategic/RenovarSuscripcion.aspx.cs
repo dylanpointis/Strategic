@@ -107,6 +107,9 @@ namespace Strategic
 
                 lblRenovacionPlan.Text = Server.HtmlEncode(renovacion.Plan);
                 lblRenovacionMonto.Text = string.Format("${0:N2}", renovacion.Monto);
+                lblRenovacionCotizacion.Text = Traductor.T("suscripcion.equivalenteUsd",
+                    BLLSuscripcion.PreciosMensualesUsd[renovacion.Plan].ToString("N0"),
+                    BLLSuscripcion.TipoCambioArs.ToString("N0"));
                 lblRenovacionVencimiento.Text = renovacion.FechaVencimiento.ToString("dd/MM/yyyy");
                 lblCbu.Text = BLLSuscripcion.CbuStrategic;
                 lblAlias.Text = BLLSuscripcion.AliasStrategic;

@@ -485,10 +485,10 @@ INSERT INTO [dbo].[Rol_Permiso] ([CodRol], [CodPermiso]) VALUES
 (4,  1), (4, 10)
 GO
 
--- Usuario: WebMasterStrategic  Clave: 'Admin123'  Rol: WebMaster
+-- Usuario: WebMasterStrategic  Clave: 'WebMaster123.'  Rol: WebMaster
 -- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
-('WebMasterStrategic', 'WebMaster', 'Strategic', 'strategic.services.contact@gmail.com', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
+('WebMasterStrategic', 'WebMaster', 'Strategic', 'strategic.services.contact@gmail.com', 'IJCHbENRSVA1i3jLtxqMB/TuonklilIQu5pvwyhXH1s=', 'plSEs6087+eEOjkvVZdjHg==', 1, 0, 1, 0)
 GO
 
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON
@@ -537,9 +537,9 @@ GO
 
 -- Alta inicial de la suscripcion: la carga Strategic al instalar la
 -- instancia, por eso no tiene numero de operacion. Sin un periodo vigente
--- el sistema solo deja renovar
+-- el sistema solo deja renovar. Monto: USD 480 del plan Max a ARS 1.535
 INSERT INTO [dbo].[Suscripcion] ([FechaPago], [FechaInicio], [FechaVencimiento], [Estado], [Plan], [Monto], [NumeroOperacion]) VALUES
-(GETDATE(), GETDATE(), DATEADD(MONTH, 1, GETDATE()), 'Activa', N'Max', 42000.00, NULL)
+(GETDATE(), GETDATE(), DATEADD(MONTH, 1, GETDATE()), 'Activa', N'Max', 736800.00, NULL)
 GO
 
 CREATE PROCEDURE [dbo].[ValidarUsuario]

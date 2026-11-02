@@ -69,7 +69,10 @@
 
                         <div class="detalle-item">
                             <dt><%: Traductor.T("suscripcion.montoAPagar") %></dt>
-                            <dd><asp:Label ID="lblRenovacionMonto" runat="server"></asp:Label></dd>
+                            <dd>
+                                <asp:Label ID="lblRenovacionMonto" runat="server"></asp:Label>
+                                <asp:Label ID="lblRenovacionCotizacion" runat="server" CssClass="campo-ayuda d-block"></asp:Label>
+                            </dd>
                         </div>
 
                         <div class="detalle-item">

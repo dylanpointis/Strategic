@@ -147,7 +147,7 @@
                     <h3><%: Traductor.T("bienvenida.plan.basico") %></h3>
                     <p class="bv-plan-descripcion"><%: Traductor.T("bienvenida.plan.basico.descripcion") %></p>
                     <div class="bv-plan-precio">
-                        <strong><%: Precio(160) %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
+                        <strong><%: PrecioPlan("Básico") %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
                     </div>
                     <div class="bv-plan-implementacion">
                         <span><%: Traductor.T("bienvenida.plan.implementacion") %></span>
@@ -166,7 +166,7 @@
                     <h3><%: Traductor.T("bienvenida.plan.pro") %></h3>
                     <p class="bv-plan-descripcion"><%: Traductor.T("bienvenida.plan.pro.descripcion") %></p>
                     <div class="bv-plan-precio">
-                        <strong><%: Precio(240) %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
+                        <strong><%: PrecioPlan("Pro") %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
                     </div>
                     <div class="bv-plan-implementacion">
                         <span><%: Traductor.T("bienvenida.plan.implementacion") %></span>
@@ -185,7 +185,7 @@
                     <h3><%: Traductor.T("bienvenida.plan.max") %></h3>
                     <p class="bv-plan-descripcion"><%: Traductor.T("bienvenida.plan.max.descripcion") %></p>
                     <div class="bv-plan-precio">
-                        <strong><%: Precio(480) %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
+                        <strong><%: PrecioPlan("Max") %></strong><span><%: Traductor.T("bienvenida.plan.porMes") %></span>
                     </div>
                     <div class="bv-plan-implementacion">
                         <span><%: Traductor.T("bienvenida.plan.implementacion") %></span>

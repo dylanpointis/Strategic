@@ -499,8 +499,10 @@ GO
 /* ------------------------------------------------------------
    Suscripcion
    Historial de la suscripcion del cliente: un periodo mensual
-   del plan Max pagado por fila, de marzo a noviembre de 2026,
-   con dos subas de precio. El ultimo periodo esta Activo; los anteriores ya
+   del plan Max pagado por fila, de marzo a noviembre de 2026.
+   El plan cuesta USD 480 y se cobra en pesos, por eso el monto sube
+   con el tipo de cambio: ARS 1.250, 1.400 y 1.535 (el vigente).
+   El ultimo periodo esta Activo; los anteriores ya
    vencieron. Los numeros de operacion estan encriptados con AES
    y la clave ClaveAES del Web.config; en claro son:
      84213307561, 84391122045, TRF-0051872, 85017734219,
@@ -510,14 +512,14 @@ GO
 INSERT INTO [dbo].[Suscripcion]
     ([FechaPago], [FechaInicio], [FechaVencimiento], [Estado], [Plan], [Monto], [NumeroOperacion])
 VALUES
-    ('2026-03-02T10:15:00', '2026-03-02T10:15:00', '2026-04-02T10:15:00', N'Vencida', N'Max',         35000.00, N'/rB1hU/RFLTBO556I41d5EuajH8QAmOD2yJ6kMw/BxM='),
-    ('2026-03-30T18:40:00', '2026-04-02T10:15:00', '2026-05-02T10:15:00', N'Vencida', N'Max',         35000.00, N'prKxwfp2gp6HOVSOA/aF56fcCq1d0lT007E39v0pbP0='),
-    ('2026-05-04T09:05:00', '2026-05-04T09:05:00', '2026-06-04T09:05:00', N'Vencida', N'Max',         35000.00, N'WBW6YJW5PttfF77nyrzrW1lMY5hE90Iz/rIKDv/XTa4='),
-    ('2026-06-01T11:20:00', '2026-06-04T09:05:00', '2026-07-04T09:05:00', N'Vencida', N'Max',         38500.00, N'lJF3OFOvIPUzkXAoxACvCTueh4ISKXZAEq9tvn2gIp8='),
-    ('2026-07-03T16:45:00', '2026-07-04T09:05:00', '2026-08-04T09:05:00', N'Vencida', N'Max',         38500.00, N'lWbg10umji+AlCwU/3dR5bFdLaarSlx+07ZD92DnMLc='),
-    ('2026-08-03T12:00:00', '2026-08-04T09:05:00', '2026-09-04T09:05:00', N'Vencida', N'Max',         38500.00, N'LHDXLUw7SOGWp7EKu4chlx4RCxmVDYvfi9Oq9VYS8uQ='),
-    ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',         42000.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
-    ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',         42000.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
+    ('2026-03-02T10:15:00', '2026-03-02T10:15:00', '2026-04-02T10:15:00', N'Vencida', N'Max',        600000.00, N'/rB1hU/RFLTBO556I41d5EuajH8QAmOD2yJ6kMw/BxM='),
+    ('2026-03-30T18:40:00', '2026-04-02T10:15:00', '2026-05-02T10:15:00', N'Vencida', N'Max',        600000.00, N'prKxwfp2gp6HOVSOA/aF56fcCq1d0lT007E39v0pbP0='),
+    ('2026-05-04T09:05:00', '2026-05-04T09:05:00', '2026-06-04T09:05:00', N'Vencida', N'Max',        600000.00, N'WBW6YJW5PttfF77nyrzrW1lMY5hE90Iz/rIKDv/XTa4='),
+    ('2026-06-01T11:20:00', '2026-06-04T09:05:00', '2026-07-04T09:05:00', N'Vencida', N'Max',        672000.00, N'lJF3OFOvIPUzkXAoxACvCTueh4ISKXZAEq9tvn2gIp8='),
+    ('2026-07-03T16:45:00', '2026-07-04T09:05:00', '2026-08-04T09:05:00', N'Vencida', N'Max',        672000.00, N'lWbg10umji+AlCwU/3dR5bFdLaarSlx+07ZD92DnMLc='),
+    ('2026-08-03T12:00:00', '2026-08-04T09:05:00', '2026-09-04T09:05:00', N'Vencida', N'Max',        672000.00, N'LHDXLUw7SOGWp7EKu4chlx4RCxmVDYvfi9Oq9VYS8uQ='),
+    ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',        736800.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
+    ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',        736800.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
 GO
 
 /* ------------------------------------------------------------

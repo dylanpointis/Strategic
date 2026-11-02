@@ -37,6 +37,11 @@ namespace Strategic
                 return;
             }
 
+            if (SessionManager.HayUsuarioLogueado)
+            {
+                Response.Redirect("~/Default.aspx");
+            }
+
             try
             {
                 // Intenta realizar el inicio de sesión y redirige al menú principal si es exitoso

@@ -19,8 +19,10 @@ namespace Strategic
             rfvClaveActual.ErrorMessage = Traductor.T("cambiarClave.claveActualRequerida");
             lblClaveNueva.Text = Traductor.T("cambiarClave.claveNueva");
             rfvClaveNueva.ErrorMessage = Traductor.T("cambiarClave.claveNuevaRequerida");
+            revClaveNueva.ErrorMessage = Traductor.T("cambiarClave.claveNuevaFormato");
             lblConfirmarClave.Text = Traductor.T("cambiarClave.confirmarClave");
             rfvConfirmarClave.ErrorMessage = Traductor.T("cambiarClave.confirmarClaveRequerida");
+            cvConfirmarClave.ErrorMessage = Traductor.T("error.claveConfirmacion");
             btnGuardar.Text = Traductor.T("comun.guardar");
             btnCancelar.Text = Traductor.T("comun.cancelar");
         }
