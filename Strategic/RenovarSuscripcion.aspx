@@ -11,6 +11,7 @@
 
         <asp:Label ID="lblAvisoVencida" runat="server" CssClass="mensaje-aviso"></asp:Label>
         <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>
+        <asp:Label ID="lblErrorMail" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>
 
         <asp:Panel ID="pnlFactura" runat="server" CssClass="formulario-acciones" Visible="false" EnableViewState="false">
             <asp:HyperLink ID="lnkFactura" runat="server" CssClass="btn btn-strategic-outline" NavigateUrl="~/RenovarSuscripcion?factura=1"></asp:HyperLink>
@@ -79,30 +80,22 @@
 
                     <h3 class="subtitulo-seccion"><%: Traductor.T("renovarSuscripcion.datosPago") %></h3>
 
-                    <div class="datos-pago">
-                        <dl class="detalle-grid">
-                            <div class="detalle-item">
-                                <dt><%: Traductor.T("suscripcion.cbu") %></dt>
-                                <dd><asp:Label ID="lblCbu" runat="server"></asp:Label></dd>
-                            </div>
-
-                            <div class="detalle-item">
-                                <dt><%: Traductor.T("suscripcion.alias") %></dt>
-                                <dd><asp:Label ID="lblAlias" runat="server"></asp:Label></dd>
-                            </div>
-
-                            <div class="detalle-item">
-                                <dt><%: Traductor.T("suscripcion.titular") %></dt>
-                                <dd><asp:Label ID="lblTitular" runat="server"></asp:Label></dd>
-                            </div>
-                        </dl>
-
-                        <div class="qr-pago">
-                            <div id="qrMercadoPago" class="qr-pago-imagen"></div>
-                            <span class="qr-pago-texto"><%: Traductor.T("renovarSuscripcion.qrAyuda") %></span>
-                            <span id="qrError" class="mensaje-error"></span>
+                    <dl class="detalle-grid datos-pago">
+                        <div class="detalle-item">
+                            <dt><%: Traductor.T("suscripcion.cbu") %></dt>
+                            <dd><asp:Label ID="lblCbu" runat="server"></asp:Label></dd>
                         </div>
-                    </div>
+
+                        <div class="detalle-item">
+                            <dt><%: Traductor.T("suscripcion.alias") %></dt>
+                            <dd><asp:Label ID="lblAlias" runat="server"></asp:Label></dd>
+                        </div>
+
+                        <div class="detalle-item">
+                            <dt><%: Traductor.T("suscripcion.titular") %></dt>
+                            <dd><asp:Label ID="lblTitular" runat="server"></asp:Label></dd>
+                        </div>
+                    </dl>
 
                     <p class="campo-ayuda"><%: Traductor.T("renovarSuscripcion.instrucciones") %></p>
 
@@ -157,24 +150,6 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ScriptsFinales" runat="server">
-    <% if (pnlRenovacion.Visible) { %>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-    <script type="text/javascript">
-        (function () {
-            var contenedor = document.getElementById('qrMercadoPago');
-
-            // Alternativa 4.2 [#ERR051]: sin la libreria (o si falla) se paga con CBU o alias
-            try {
-                var qr = qrcode(0, 'M');
-                qr.addData(<%= TextoQrJson %>);
-                qr.make();
-                contenedor.innerHTML = qr.createSvgTag(4, 8);
-            } catch (e) {
-                document.getElementById('qrError').textContent = <%= ErrorQrJson %>;
-            }
-        })();
-    </script>
-    <% } %>
     <% if (DescargaAutomatica) { %>
     <script type="text/javascript">
         // Recien renovada: la factura se descarga sola y el boton queda por si el navegador la bloquea

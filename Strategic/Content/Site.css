@@ -1410,7 +1410,7 @@ textarea {
     margin-top: 20px;
 }
 
-/* ---------- Suscripcion: datos de pago y QR ---------- */
+/* ---------- Suscripcion: datos de pago ---------- */
 
 .subtitulo-seccion {
     font-size: 0.95rem;
@@ -1420,36 +1420,7 @@ textarea {
 }
 
 .datos-pago {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    flex-wrap: wrap;
     margin-bottom: 16px;
-}
-
-    .datos-pago .detalle-grid {
-        flex: 1 1 320px;
-    }
-
-.qr-pago {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    max-width: 200px;
-    text-align: center;
-}
-
-.qr-pago-imagen svg {
-    display: block;
-    border: 1px solid #f5e3ef;
-    border-radius: 10px;
-    background-color: #ffffff;
-}
-
-.qr-pago-texto {
-    font-size: 0.78rem;
-    color: #8a6d80;
 }
 
 
@@ -1616,17 +1587,6 @@ textarea {
         color: var(--bv-primario);
         border-color: #C4B5FD;
         background-color: #FAF7FF;
-    }
-
-.bv-boton-blanco {
-    color: var(--bv-primario-hover);
-    background-color: #ffffff;
-    box-shadow: 0 8px 20px rgba(17, 24, 39, 0.15);
-}
-
-    .bv-boton-blanco:hover,
-    .bv-boton-blanco:focus {
-        color: var(--bv-primario-hover);
     }
 
 /* ---------- Portada ---------- */
@@ -1951,28 +1911,65 @@ textarea {
 /* Contacto */
 .bv-contacto {
     margin-top: 88px;
-    padding: 56px 32px;
+    padding: 48px 32px;
+    border: 2px solid var(--bv-primario);
     border-radius: 24px;
-    background: var(--bv-degradado);
+    background-color: var(--bv-superficie);
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.08);
     text-align: center;
 }
 
     .bienvenida .bv-contacto h2 {
-        color: #ffffff;
+        color: var(--bv-oscuro);
         margin-top: 0;
     }
 
     .bienvenida .bv-contacto p {
         max-width: 560px;
-        margin: 0 auto 26px;
-        color: rgba(255, 255, 255, 0.9);
+        margin: 0 auto 28px;
+        color: var(--bv-texto-secundario);
     }
 
     .bv-contacto small {
         display: block;
         margin-top: 22px;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--bv-texto-secundario);
     }
+
+.bv-contacto-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 640px;
+    margin: 0 auto 24px;
+    text-align: left;
+}
+
+    .bv-contacto-form .campo-ancho {
+        grid-column: 1 / -1;
+    }
+
+    .bv-contacto-form .form-label {
+        color: var(--bv-oscuro);
+        font-weight: 600;
+    }
+
+    .bv-contacto-form .form-control,
+    .bv-contacto-form .form-select {
+        max-width: none;
+        border-color: var(--bv-borde);
+    }
+
+        .bv-contacto-form .form-control:focus,
+        .bv-contacto-form .form-select:focus {
+            border-color: var(--bv-primario);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+.bv-contacto-mensajes {
+    max-width: 640px;
+    margin: 0 auto;
+}
 
 /* ---------- Responsive ---------- */
 
@@ -2031,6 +2028,10 @@ textarea {
 
     .bv-contacto {
         padding: 40px 20px;
+    }
+
+    .bv-contacto-form {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .bv-proposito > div {

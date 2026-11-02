@@ -20,8 +20,8 @@ namespace BLL
         // Datos de la cuenta de Strategic donde el cliente transfiere. Son
         // ficticios: el cobro real se verifica fuera del sistema
         public const string CbuStrategic = "1234567890123456789012";
-        public const string AliasStrategic = "STRATEGIC.PAGO.DEMO";
-        public const string TitularStrategic = "Strategic S.A.";
+        public const string AliasStrategic = "STRATEGIC.PAGO";
+        public const string TitularStrategic = "Strategic";
 
         private readonly DALSuscripcion dalSuscripcion = new DALSuscripcion();
         private readonly BLLUsuario bllUsuario = new BLLUsuario();
@@ -130,8 +130,8 @@ namespace BLL
                 string.Format("Renovacion de suscripcion: plan {0} hasta {1:dd/MM/yyyy}", renovacion.Plan, renovacion.FechaVencimiento),
                 CriticidadCambio));
 
-            // Pendiente: enviar mail al usuario y al equipo de Strategic avisando
-            // la renovacion (CU-009-042, paso 6; MailService.EnviarMailRenovacionSuscripcion)
+            // Los mails del paso 6 (factura al usuario y aviso al equipo de
+            // Strategic) los manda RenovarSuscripcion.aspx, que arma el PDF
 
             renovacion.NumeroOperacion = numeroOperacion;
             return renovacion;
@@ -230,8 +230,8 @@ namespace BLL
                 string.Format("Baja de suscripcion: acceso hasta {0:dd/MM/yyyy}", finDeAcceso),
                 CriticidadGrave));
 
-            // Pendiente: enviar mail al usuario y al equipo de Strategic avisando
-            // la baja (CU-009-043, paso 4; MailService.EnviarMailBajaSuscripcion)
+            // Los mails del paso 4 (al usuario y al equipo de Strategic) los
+            // manda BajaSuscripcion.aspx
 
             return finDeAcceso;
         }

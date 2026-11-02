@@ -1,6 +1,5 @@
 ﻿using BE;
 using BLL;
-using Newtonsoft.Json;
 using Services;
 using Strategic.Seguridad;
 using System;
@@ -24,24 +23,6 @@ namespace Strategic
         private readonly BLLSuscripcion bllSuscripcion = new BLLSuscripcion();
 
         protected bool DescargaAutomatica { get; private set; }
-
-        // Texto que lleva el QR de pago. Es de prueba: no apunta a una cuenta real
-        protected string TextoQrJson
-        {
-            get
-            {
-                return SerializarTexto(Traductor.T(
-                    "renovarSuscripcion.textoQr",
-                    BLLSuscripcion.TitularStrategic,
-                    BLLSuscripcion.AliasStrategic,
-                    lblRenovacionMonto.Text));
-            }
-        }
-
-        protected string ErrorQrJson
-        {
-            get { return SerializarTexto(Traductor.T("error.qrNoGenerado")); }
-        }
 
         public override void ActualizarIdioma()
         {
@@ -102,6 +83,12 @@ namespace Strategic
                     Session.Remove("MensajeSuscripcion");
                 }
 
+                if (Session["ErrorSuscripcion"] != null)
+                {
+                    lblErrorMail.Text = Server.HtmlEncode(Session["ErrorSuscripcion"].ToString());
+                    Session.Remove("ErrorSuscripcion");
+                }
+
                 if (Session[ClaveFacturaNueva] != null)
                 {
                     Session.Remove(ClaveFacturaNueva);
@@ -154,10 +141,41 @@ namespace Strategic
             // Con la renovacion vuelve el acceso al resto del sistema
             SessionManager.SuscripcionVencida = false;
 
-            Session["MensajeSuscripcion"] = Traductor.T(
+            string mensaje = Traductor.T(
                 "renovarSuscripcion.exito",
                 renovacion.FechaVencimiento.ToString("dd/MM/yyyy"));
 
+            // La renovacion ya quedo guardada: si un mail falla solo se muestra
+            // el error y se sigue, la factura se puede descargar igual
+            byte[] factura = null;
+            string errores = string.Empty;
+
+            try
+            {
+                factura = GenerarFactura(renovacion);
+                EnviarFactura(renovacion, factura);
+                mensaje += " " + Traductor.T("renovarSuscripcion.facturaEnviada", SessionManager.UsuarioActual.Email);
+            }
+            catch (Exception)
+            {
+                errores += Traductor.T("error.facturaNoEnviada") + " ";
+            }
+
+            try
+            {
+                AvisarStrategic(renovacion, factura);
+            }
+            catch (Exception)
+            {
+                errores += Traductor.T("error.avisoStrategicNoEnviado");
+            }
+
+            if (errores != string.Empty)
+            {
+                Session["ErrorSuscripcion"] = errores.Trim();
+            }
+
+            Session["MensajeSuscripcion"] = mensaje;
             Session[ClaveFactura] = renovacion;
             Session[ClaveFacturaNueva] = true;
 
@@ -181,8 +199,7 @@ namespace Strategic
 
             try
             {
-                string paginahtml = File.ReadAllText(Server.MapPath(RutaPlantillaFactura));
-                pdf = Reportes.GenerarFacturaSuscripcion(renovacion, SessionManager.UsuarioActual, paginahtml, Server.MapPath(RutaLogo));
+                pdf = GenerarFactura(renovacion);
             }
             catch (Exception)
             {
@@ -191,17 +208,73 @@ namespace Strategic
                 return false;
             }
 
-            string nombreArchivo = "Factura-" + renovacion.IdSuscripcion.ToString("D8") + "-" + renovacion.FechaPago.ToString("yyyy-MM-dd") + ".pdf";
-
             Response.Clear();
             Response.ContentType = "application/pdf";
-            Response.AppendHeader("Content-Disposition", "attachment; filename=" + nombreArchivo);
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + NombreArchivoFactura(renovacion));
             Response.AppendHeader("Content-Length", pdf.Length.ToString());
             Response.BinaryWrite(pdf);
             Response.Flush();
             Response.SuppressContent = true;
             Context.ApplicationInstance.CompleteRequest();
             return true;
+        }
+
+        // Manda la factura al mail del usuario que renovo
+        private void EnviarFactura(BESuscripcion renovacion, byte[] factura)
+        {
+            BEUsuario enSesion = SessionManager.UsuarioActual;
+
+            MailService.EnviarMail(enSesion.Email,
+                Traductor.T("mail.factura.asunto"),
+                Traductor.T("mail.factura.cuerpo", enSesion.Nombre, renovacion.Plan, renovacion.FechaVencimiento.ToString("dd/MM/yyyy")),
+                factura,
+                NombreArchivoFactura(renovacion));
+        }
+
+        // CU-009-042, paso 6: aviso al equipo de Strategic para que verifique la
+        // transferencia. Va siempre en español porque no lo lee el cliente, y con
+        // el numero de operacion completo para buscarlo en la cuenta
+        private void AvisarStrategic(BESuscripcion renovacion, byte[] factura)
+        {
+            BEUsuario enSesion = SessionManager.UsuarioActual;
+
+            string asunto = string.Format("Renovación de suscripción a verificar - Plan {0} - {1:dd/MM/yyyy}", renovacion.Plan, renovacion.FechaPago);
+
+            string cuerpo = string.Format(
+                "Se registró la renovación de una suscripción. Se solicita verificar que la transferencia se haya acreditado en la cuenta de Strategic.\n\n" +
+                "Instancia: {0}\n" +
+                "Cliente: {1} {2} ({3}) - {4}\n" +
+                "Fecha de pago: {5:dd/MM/yyyy HH:mm}\n" +
+                "Plan: {6}\n" +
+                "Período: {7}\n" +
+                "Monto: ${8:N2}\n" +
+                "Número de operación: {9}\n" +
+                "Factura N°: {10:D8}",
+                Request.Url.GetLeftPart(UriPartial.Authority),
+                enSesion.Nombre,
+                enSesion.Apellido,
+                enSesion.NombreUsuario,
+                enSesion.Email,
+                renovacion.FechaPago,
+                renovacion.Plan,
+                renovacion.Periodo,
+                renovacion.Monto,
+                renovacion.NumeroOperacion,
+                renovacion.IdSuscripcion);
+
+            MailService.EnviarMail(MailService.MailStrategic, asunto, cuerpo, factura, NombreArchivoFactura(renovacion));
+        }
+
+        private byte[] GenerarFactura(BESuscripcion renovacion)
+        {
+            string paginahtml = File.ReadAllText(Server.MapPath(RutaPlantillaFactura));
+
+            return Reportes.GenerarFacturaSuscripcion(renovacion, SessionManager.UsuarioActual, paginahtml, Server.MapPath(RutaLogo));
+        }
+
+        private string NombreArchivoFactura(BESuscripcion renovacion)
+        {
+            return "Factura-" + renovacion.IdSuscripcion.ToString("D8") + "-" + renovacion.FechaPago.ToString("yyyy-MM-dd") + ".pdf";
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
@@ -269,15 +342,6 @@ namespace Strategic
             lblCantidad.Text = cantidad == 1
                 ? Traductor.T("renovarSuscripcion.cantidadUno")
                 : Traductor.T("renovarSuscripcion.cantidad", cantidad);
-        }
-
-        // Escapa < > & para poder incrustar el texto dentro de un <script>
-        private string SerializarTexto(string texto)
-        {
-            JsonSerializerSettings ajustes = new JsonSerializerSettings();
-            ajustes.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
-
-            return JsonConvert.SerializeObject(texto, ajustes);
         }
     }
 }

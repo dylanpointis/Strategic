@@ -41,20 +41,87 @@ namespace Strategic
 
         protected void btnConfirmar_Click(object sender, EventArgs e)
         {
+            BEUsuario enSesion = SessionManager.UsuarioActual;
+            DateTime finDeAcceso;
+
             try
             {
-                BEUsuario enSesion = SessionManager.UsuarioActual;
-
-                DateTime finDeAcceso = bllSuscripcion.CancelarSuscripcion(txtClave.Text, enSesion.NombreUsuario);
-
-                Session["MensajeSuscripcion"] = Traductor.T("bajaSuscripcion.exito", finDeAcceso.ToString("dd/MM/yyyy"));
-
-                Response.Redirect("~/RenovarSuscripcion.aspx");
+                finDeAcceso = bllSuscripcion.CancelarSuscripcion(txtClave.Text, enSesion.NombreUsuario);
             }
             catch (Exception ex)
             {
                 lblError.Text = Server.HtmlEncode(ex.Message);
+                return;
             }
+
+            string mensaje = Traductor.T("bajaSuscripcion.exito", finDeAcceso.ToString("dd/MM/yyyy"));
+
+            // La baja ya quedo guardada: si un mail falla solo se muestra el error y se sigue
+            string errores = string.Empty;
+
+            try
+            {
+                EnviarConfirmacion(finDeAcceso);
+                mensaje += " " + Traductor.T("bajaSuscripcion.mailEnviado", enSesion.Email);
+            }
+            catch (Exception)
+            {
+                errores += Traductor.T("error.mailBajaNoEnviado") + " ";
+            }
+
+            try
+            {
+                AvisarStrategic(finDeAcceso);
+            }
+            catch (Exception)
+            {
+                errores += Traductor.T("error.avisoStrategicNoEnviado");
+            }
+
+            if (errores != string.Empty)
+            {
+                Session["ErrorSuscripcion"] = errores.Trim();
+            }
+
+            Session["MensajeSuscripcion"] = mensaje;
+            Response.Redirect("~/RenovarSuscripcion.aspx");
+        }
+
+        // CU-009-043, paso 4: confirmacion de la baja al usuario
+        private void EnviarConfirmacion(DateTime finDeAcceso)
+        {
+            BEUsuario enSesion = SessionManager.UsuarioActual;
+
+            MailService.EnviarMail(enSesion.Email,
+                Traductor.T("mail.baja.asunto"),
+                Traductor.T("mail.baja.cuerpo", enSesion.Nombre, finDeAcceso.ToString("dd/MM/yyyy")),
+                null,
+                null);
+        }
+
+        // CU-009-043, paso 4: aviso al equipo de Strategic. Va siempre en español
+        // porque no lo lee el cliente
+        private void AvisarStrategic(DateTime finDeAcceso)
+        {
+            BEUsuario enSesion = SessionManager.UsuarioActual;
+
+            string asunto = string.Format("Baja de suscripción - acceso hasta el {0:dd/MM/yyyy}", finDeAcceso);
+
+            string cuerpo = string.Format(
+                "Se registró la baja de una suscripción. El cliente conserva el acceso al sistema hasta que finaliza el período abonado.\n\n" +
+                "Instancia: {0}\n" +
+                "Cliente: {1} {2} ({3}) - {4}\n" +
+                "Fecha de la baja: {5:dd/MM/yyyy HH:mm}\n" +
+                "Acceso hasta: {6:dd/MM/yyyy}",
+                Request.Url.GetLeftPart(UriPartial.Authority),
+                enSesion.Nombre,
+                enSesion.Apellido,
+                enSesion.NombreUsuario,
+                enSesion.Email,
+                DateTime.Now,
+                finDeAcceso);
+
+            MailService.EnviarMail(MailService.MailStrategic, asunto, cuerpo, null, null);
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)

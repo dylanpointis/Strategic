@@ -482,7 +482,7 @@ GO
 -- Usuario: WebMasterStrategic  Clave: 'Admin123'  Rol: WebMaster
 -- (Clave y Salt: PBKDF2 HMAC-SHA256, 100.000 iteraciones, en base64)
 INSERT INTO [dbo].[Usuario] ([NombreUsuario], [Nombre], [Apellido], [Email], [Clave], [Salt], [CodRol], [Bloqueado], [Activo], [ContFallidos]) VALUES
-('WebMasterStrategic', 'WebMaster', 'Strategic', 'admin@strategic.local', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
+('WebMasterStrategic', 'WebMaster', 'Strategic', 'strategic.services.contact@gmail.com', 'e7V+AJs0MEHql1HC79V/uWBElWoIilUV6WR4AMZ6rCo=', 'HFpnXtdpVJ1ZtsFeg7YdEQ==', 1, 0, 1, 0)
 GO
 
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON

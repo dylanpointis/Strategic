@@ -207,9 +207,48 @@
         <%-- Contacto --%>
         <section class="bv-contacto" id="contacto">
             <h2><%: Traductor.T("bienvenida.contacto.titulo") %></h2>
-            <p><%: Traductor.T("bienvenida.contacto.texto") %></p>
-            <%-- Sin funcionalidad por ahora: el envio de la consulta se implementa mas adelante --%>
-            <button type="button" class="bv-boton bv-boton-blanco"><%: Traductor.T("bienvenida.contacto.boton") %></button>
+            <p style="min-width: 100%"><%: Traductor.T("bienvenida.contacto.texto") %></p>
+
+            <%-- La consulta le llega por mail al equipo de Strategic (MailService) --%>
+            <div class="bv-contacto-form">
+                <div class="campo">
+                    <asp:Label ID="lblNombre" runat="server" AssociatedControlID="txtNombre" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                </div>
+                <div class="campo">
+                    <asp:Label ID="lblEmpresa" runat="server" AssociatedControlID="txtEmpresa" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txtEmpresa" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                </div>
+                <div class="campo">
+                    <asp:Label ID="lblEmail" runat="server" AssociatedControlID="txtEmail" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" MaxLength="100" TextMode="Email"></asp:TextBox>
+                </div>
+                <div class="campo">
+                    <asp:Label ID="lblTelefono" runat="server" AssociatedControlID="txtTelefono" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" MaxLength="30" TextMode="Number"></asp:TextBox>
+                </div>
+                <div class="campo campo-ancho">
+                    <asp:Label ID="lblPlan" runat="server" AssociatedControlID="ddlPlan" CssClass="form-label"></asp:Label>
+                    <asp:DropDownList ID="ddlPlan" runat="server" CssClass="form-select">
+                        <asp:ListItem Value="A definir"></asp:ListItem>
+                        <asp:ListItem Value="Básico"></asp:ListItem>
+                        <asp:ListItem Value="Pro"></asp:ListItem>
+                        <asp:ListItem Value="Max"></asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+                <div class="campo campo-ancho">
+                    <asp:Label ID="lblMensaje" runat="server" AssociatedControlID="txtMensaje" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txtMensaje" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="4"></asp:TextBox>
+                </div>
+            </div>
+
+            <asp:Button ID="btnEnviar" runat="server" CssClass="bv-boton bv-boton-marca" OnClick="btnEnviar_Click" />
+
+            <div class="bv-contacto-mensajes">
+                <asp:Label ID="lblExito" runat="server" CssClass="mensaje-exito" EnableViewState="false"></asp:Label>
+                <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>
+            </div>
+
             <small><%: Traductor.T("bienvenida.contacto.cuentas") %></small>
         </section>
 

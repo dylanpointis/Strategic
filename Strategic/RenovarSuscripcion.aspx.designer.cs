@@ -15,6 +15,7 @@ namespace Strategic
     {
         protected global::System.Web.UI.WebControls.Label lblAvisoVencida;
         protected global::System.Web.UI.WebControls.Label lblExito;
+        protected global::System.Web.UI.WebControls.Label lblErrorMail;
         protected global::System.Web.UI.WebControls.Panel pnlFactura;
         protected global::System.Web.UI.WebControls.HyperLink lnkFactura;
         protected global::System.Web.UI.WebControls.Panel pnlSuscripcion;
