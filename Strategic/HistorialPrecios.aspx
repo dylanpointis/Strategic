@@ -17,9 +17,7 @@
             <div class="strategic-card-body">
                 <div class="filtros-grid">
                     <div class="filtro">
-                        <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-select" AutoPostBack="true"
-                            CausesValidation="false" OnSelectedIndexChanged="ddlProducto_SelectedIndexChanged"></asp:DropDownList>
+                        <sc:SelectorProducto ID="selectorProducto" runat="server" TextoOpcionVacia="historial.seleccioneProducto" AutoPostBack="true" OnProductoSeleccionado="selectorProducto_ProductoSeleccionado" />
                     </div>
 
                     <sc:FiltroFechas ID="filtroFechas" runat="server" MostrarBoton="false" />

@@ -36,8 +36,7 @@
                     </div>
 
                     <div class="filtro">
-                        <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-select"></asp:DropDownList>
+                        <sc:SelectorProducto ID="selectorProducto" runat="server" TextoOpcionVacia="historial.seleccioneProducto" />
                     </div>
 
                     <div class="filtro">

@@ -31,8 +31,16 @@ namespace Strategic
             lblModulo.Text = Traductor.T("eventos.modulo");
             lblEvento.Text = Traductor.T("eventos.evento");
             txtEvento.Attributes["placeholder"] = Traductor.T("comun.todos");
+            lblCriticidad.Text = Traductor.T("eventos.criticidad");
+
+            // Las opciones estan en el aspx: existen desde el Init
+            foreach (ListItem opcion in ddlCriticidad.Items)
+            {
+                opcion.Text = Traductor.T(opcion.Value == string.Empty ? "comun.todas" : "eventos.criticidad." + opcion.Value);
+            }
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnExportarXml.Text = Traductor.T("eventos.exportarXml");
             btnCerrarDetalle.Text = Traductor.T("eventos.cerrarDetalle");
             btnBajaEventos.Text = Traductor.T("eventos.bajaEventos");
             MostrarCantidad();
@@ -84,6 +92,7 @@ namespace Strategic
                     txtUsuario.Text.Trim(),
                     ddlModulo.SelectedValue,
                     txtEvento.Text.Trim(),
+                    CriticidadElegida(),
                     filtroFechas.FechaDesde,
                     filtroFechas.FechaHasta);
 
@@ -96,11 +105,44 @@ namespace Strategic
             }
         }
 
+        // Exporta lo que hay en los filtros en este momento, aunque todavia no se haya filtrado
+        protected void btnExportarXml_Click(object sender, EventArgs e)
+        {
+            byte[] archivo;
+
+            try
+            {
+                archivo = bllEvento.ExportarEventosXml(
+                    txtUsuario.Text.Trim(),
+                    ddlModulo.SelectedValue,
+                    txtEvento.Text.Trim(),
+                    CriticidadElegida(),
+                    filtroFechas.FechaDesde,
+                    filtroFechas.FechaHasta,
+                    SessionManager.UsuarioActual.NombreUsuario);
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = Server.HtmlEncode(ex.Message);
+                return;
+            }
+
+            Response.Clear();
+            Response.ContentType = "application/xml";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + bllEvento.NombreArchivoExportacion());
+            Response.AppendHeader("Content-Length", archivo.Length.ToString());
+            Response.BinaryWrite(archivo);
+            Response.Flush();
+            Response.SuppressContent = true;
+            Context.ApplicationInstance.CompleteRequest();
+        }
+
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             txtUsuario.Text = string.Empty;
             txtEvento.Text = string.Empty;
             ddlModulo.SelectedIndex = 0;
+            ddlCriticidad.SelectedIndex = 0;
             filtroFechas.Limpiar();
 
             List<Evento> eventos = bllEvento.TraerListaEventos();
@@ -223,6 +265,12 @@ namespace Strategic
 
             Session.Remove("MensajeEventos");
             lblExito.Text = Server.HtmlEncode(mensaje);
+        }
+
+        private int? CriticidadElegida()
+        {
+            int criticidad;
+            return int.TryParse(ddlCriticidad.SelectedValue, out criticidad) ? criticidad : (int?)null;
         }
 
         private void OcultarDetalle()

@@ -18,22 +18,10 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("mapearProductos.titulo");
-            lblProducto.Text = Traductor.T("mapearProductos.productoPropio");
-            valProducto.ErrorMessage = Traductor.T("mapearProductos.productoRequerido");
-            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
-            valCompetidor.ErrorMessage = Traductor.T("mapearProductos.competidorRequerido");
             lblUrl.Text = Traductor.T("mapearProductos.url");
             valUrl.ErrorMessage = Traductor.T("mapearProductos.urlRequerida");
             btnMapear.Text = Traductor.T("mapearProductos.mapear");
             btnLimpiar.Text = Traductor.T("comun.limpiar");
-
-            // Las primeras opciones de los combos se agregan desde codigo: en
-            // el Init de un postback todavia no se recuperaron del ViewState
-            if (ddlProducto.Items.Count > 0)
-            {
-                ddlProducto.Items[0].Text = Traductor.T("mapearProductos.seleccioneProducto");
-                ddlCompetidor.Items[0].Text = Traductor.T("mapearProductos.seleccioneCompetidor");
-            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -53,8 +41,9 @@ namespace Strategic
 
             try
             {
-                int idProducto = Convert.ToInt32(ddlProducto.SelectedValue);
-                int idCompetencia = Convert.ToInt32(ddlCompetidor.SelectedValue);
+                // Los dos selectores son obligatorios: con la pagina valida tienen valor
+                int idProducto = selectorProducto.IdProducto.Value;
+                int idCompetencia = selectorCompetidor.IdCompetencia.Value;
 
                 BEUsuario enSesion = SessionManager.UsuarioActual;
 
@@ -82,8 +71,8 @@ namespace Strategic
 
         private void LimpiarFormulario()
         {
-            ddlProducto.SelectedIndex = 0;
-            ddlCompetidor.SelectedIndex = 0;
+            selectorProducto.Limpiar();
+            selectorCompetidor.Limpiar();
             txtUrl.Text = string.Empty;
         }
 
@@ -97,25 +86,8 @@ namespace Strategic
             List<BEProducto> productos = bllProducto.TraerListaProductos();
             List<BECompetencia> competidores = bllCompetencia.FiltrarCompetidores(null, null, true);
 
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("mapearProductos.seleccioneProducto"), string.Empty));
-
-            foreach (BEProducto producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
-
-            ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem(Traductor.T("mapearProductos.seleccioneCompetidor"), string.Empty));
-
-            foreach (BECompetencia competidor in competidores)
-            {
-                ddlCompetidor.Items.Add(new ListItem(
-                    string.Format("{0} ({1})", competidor.Nombre, competidor.Marketplace),
-                    competidor.IdCompetencia.ToString()));
-            }
+            selectorProducto.Cargar(productos);
+            selectorCompetidor.Cargar(competidores);
 
             bool faltanDatos = productos.Count == 0 || competidores.Count == 0;
 

@@ -10,7 +10,6 @@
 namespace Strategic
 {
 
-
     public partial class Recomendaciones
     {
         protected global::System.Web.UI.WebControls.Label lblErrorAnalisis;
@@ -26,8 +25,7 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.DropDownList ddlTipo;
         protected global::System.Web.UI.WebControls.Label lblPrioridad;
         protected global::System.Web.UI.WebControls.DropDownList ddlPrioridad;
-        protected global::System.Web.UI.WebControls.Label lblProducto;
-        protected global::System.Web.UI.WebControls.DropDownList ddlProducto;
+        protected global::Strategic.Componentes.SelectorProducto selectorProducto;
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
         protected global::System.Web.UI.WebControls.Label lblError;

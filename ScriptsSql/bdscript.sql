@@ -341,7 +341,7 @@ GO
    modifican desde la aplicacion, solo se combinan en familias y se
    asignan a roles.
    Las pantallas de sesion (Login, Logout, CambiarClave) no llevan
-   permiso: son de todos los perfiles.
+   permiso: son de todos los roles.
    ------------------------------------------------------------ */
 
 SET IDENTITY_INSERT [dbo].[Permiso] ON
@@ -403,6 +403,9 @@ INSERT INTO [dbo].[Permiso] ([CodPermiso], [Nombre], [Descripcion], [Tipo], [Act
 -- 008. Auditoria (continuacion): la baja de eventos es solo del WebMaster,
 -- porque saca registros de la bitacora que el Administrador consulta
 (53, 'BajaEventos',                        'Dar de baja los eventos de mas de 30 dias',      'Simple', 1),
+-- 005. Gestion de Usuarios y Permisos (continuacion): vista de solo lectura
+-- de cada rol con su arbol; entra en la consulta de roles y familias
+(54, 'ConsultarArbolPermisos',             'Ver el arbol de permisos de cada rol',           'Simple', 1),
 
 /* ------------------------------------------------------------
    Familias iniciales (composites)
@@ -447,7 +450,7 @@ INSERT INTO [dbo].[Permiso_Componente] ([CodPadre], [CodHijo]) VALUES
 -- Usuarios
 (41, 14), (41, 15), (41, 16), (41, 17),
 -- Roles y familias consulta
-(42, 18), (42, 22),
+(42, 18), (42, 22), (42, 54),
 -- Roles y familias: la consulta mas el ABM
 (43, 42), (43, 19), (43, 20), (43, 21), (43, 23), (43, 24), (43, 25),
 -- Integraciones
@@ -466,8 +469,8 @@ GO
    permiso simple o una familia. No distingue entre los dos.
    Cada rol queda con exactamente las pantallas de su mapa de
    navegacion:
-     WebMaster      41 pantallas (todo)
-     Administrador  30 pantallas
+     WebMaster      42 pantallas (todo)
+     Administrador  31 pantallas
      Analista       13 pantallas
      Usuario         2 pantallas
    ------------------------------------------------------------ */
@@ -2673,5 +2676,47 @@ BEGIN
       AND [Fecha] < @FechaLimite
 
     SELECT @@ROWCOUNT AS Cantidad
+END
+GO
+
+/* ============================================================
+   002. Analisis - CU-002-008 Generar Reporte
+   ------------------------------------------------------------
+   Los reportes de ventas y de competencia reutilizan los SPs del
+   dashboard (CU-002-004) y de comparar precios (CU-002-007). Este
+   arma el de stock: la foto actual de cada producto con las
+   unidades vendidas en el periodo, para ver su rotacion.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerReporteStock]
+    @FechaInicio DATETIME = NULL,
+    @FechaFin DATETIME = NULL,
+    @Categoria NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        P.IdProducto,
+        P.Codigo,
+        P.Nombre,
+        ISNULL(P.Categoria, N'')    AS Categoria,
+        P.Stock,
+        P.StockMinimo,
+        P.StockMaximo,
+        ISNULL(VP.Unidades, 0)      AS UnidadesVendidas
+    FROM [dbo].[Producto] P
+    LEFT JOIN (
+        SELECT IV.IdProducto, SUM(IV.Cantidad) AS Unidades
+        FROM [dbo].[Venta] V
+        INNER JOIN [dbo].[ItemVenta] IV ON IV.IdVenta = V.IdVenta
+        WHERE V.Estado <> 'Cancelada'
+          AND (@FechaInicio IS NULL OR V.Fecha >= @FechaInicio)
+          AND (@FechaFin IS NULL OR V.Fecha < DATEADD(DAY, 1, @FechaFin))
+        GROUP BY IV.IdProducto
+    ) VP ON VP.IdProducto = P.IdProducto
+    WHERE P.BorradoLogico = 0
+      AND (@Categoria IS NULL OR P.Categoria = @Categoria)
+    ORDER BY P.Nombre ASC
 END
 GO

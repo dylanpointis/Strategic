@@ -49,9 +49,7 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("compararPrecios.titulo");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
             lblCategoria.Text = Traductor.T("productos.categoria");
-            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
             btnCerrarDetalle.Text = Traductor.T("compararPrecios.cerrarHistorial");
@@ -59,11 +57,9 @@ namespace Strategic
 
             // Lo que se arma desde codigo solo existe una vez recuperado el
             // ViewState, por eso se pregunta antes de traducirlo
-            if (ddlProducto.Items.Count > 0)
+            if (ddlCategoria.Items.Count > 0)
             {
-                ddlProducto.Items[0].Text = Traductor.T("monitoreo.todosLosProductos");
                 ddlCategoria.Items[0].Text = Traductor.T("dashboard.todasLasCategorias");
-                ddlCompetidor.Items[0].Text = Traductor.T("monitoreo.todosLosCompetidores");
             }
 
             if (PublicacionSeleccionada > 0)
@@ -92,9 +88,9 @@ namespace Strategic
             try
             {
                 List<BEComparacionPrecio> comparaciones = ConsultarComparacion(
-                    ObtenerId(ddlProducto.SelectedValue),
+                    selectorProducto.IdProducto,
                     ddlCategoria.SelectedValue,
-                    ObtenerId(ddlCompetidor.SelectedValue));
+                    selectorCompetidor.IdCompetencia);
 
                 OcultarDetalle();
                 MostrarComparacion(comparaciones, MensajeSinResultados);
@@ -112,9 +108,9 @@ namespace Strategic
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ddlProducto.SelectedIndex = 0;
+            selectorProducto.Limpiar();
             ddlCategoria.SelectedIndex = 0;
-            ddlCompetidor.SelectedIndex = 0;
+            selectorCompetidor.Limpiar();
 
             OcultarDetalle();
             CargarComparacionCompleta();
@@ -356,15 +352,7 @@ namespace Strategic
         {
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosProductos"), string.Empty));
-
-            foreach (BEProducto producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
+            selectorProducto.Cargar(productos);
 
             ddlCategoria.Items.Clear();
             ddlCategoria.Items.Add(new ListItem(Traductor.T("dashboard.todasLasCategorias"), string.Empty));
@@ -381,15 +369,7 @@ namespace Strategic
                 ddlCategoria.Items.Add(new ListItem(categoria, categoria));
             }
 
-            ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosCompetidores"), string.Empty));
-
-            foreach (BECompetencia competidor in bllCompetencia.TraerListaCompetidores())
-            {
-                ddlCompetidor.Items.Add(new ListItem(
-                    competidor.Nombre,
-                    competidor.IdCompetencia.ToString()));
-            }
+            selectorCompetidor.Cargar(bllCompetencia.TraerListaCompetidores());
 
             return productos;
         }
@@ -404,13 +384,6 @@ namespace Strategic
                     categoria,
                     idCompetencia ?? 0).ToList();
             }
-        }
-
-        private int? ObtenerId(string valor)
-        {
-            int id;
-
-            return int.TryParse(valor, out id) ? (int?)id : null;
         }
     }
 }

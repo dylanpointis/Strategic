@@ -10,14 +10,12 @@
 namespace Strategic
 {
 
-
     public partial class Predicciones
     {
         protected global::System.Web.UI.WebControls.Panel pnlSinDatos;
         protected global::System.Web.UI.WebControls.Label lblTipo;
         protected global::System.Web.UI.WebControls.DropDownList ddlTipo;
-        protected global::System.Web.UI.WebControls.Label lblProducto;
-        protected global::System.Web.UI.WebControls.DropDownList ddlProducto;
+        protected global::Strategic.Componentes.SelectorProducto selectorProducto;
         protected global::System.Web.UI.WebControls.Label lblHorizonte;
         protected global::System.Web.UI.WebControls.DropDownList ddlHorizonte;
         protected global::System.Web.UI.WebControls.Button btnGenerar;

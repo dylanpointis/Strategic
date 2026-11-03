@@ -41,7 +41,6 @@ namespace Strategic
         {
             Title = Traductor.T("predicciones.titulo");
             lblTipo.Text = Traductor.T("predicciones.tipo");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
             lblHorizonte.Text = Traductor.T("predicciones.horizonte");
             btnGenerar.Text = Traductor.T("predicciones.generar");
             btnLimpiar.Text = Traductor.T("comun.limpiar");
@@ -53,10 +52,8 @@ namespace Strategic
 
             // Lo que se arma desde codigo solo existe una vez recuperado el
             // ViewState, por eso se pregunta antes de traducirlo
-            if (ddlProducto.Items.Count > 0)
+            if (ddlTipo.Items.Count > 0)
             {
-                ddlProducto.Items[0].Text = Traductor.T("historial.seleccioneProducto");
-
                 foreach (KeyValuePair<string, string> tipo in bllPrediccion.TraerTipos())
                 {
                     ddlTipo.Items.FindByValue(tipo.Key).Text = tipo.Value;
@@ -92,10 +89,9 @@ namespace Strategic
 
         private void GenerarPrediccion()
         {
-            int idProducto;
+            int idProducto = selectorProducto.IdProducto ?? 0;
             int horizonte;
 
-            int.TryParse(ddlProducto.SelectedValue, out idProducto);
             int.TryParse(ddlHorizonte.SelectedValue, out horizonte);
 
             try
@@ -114,7 +110,7 @@ namespace Strategic
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             ddlTipo.SelectedIndex = 0;
-            ddlProducto.SelectedIndex = 0;
+            selectorProducto.Limpiar();
             ddlHorizonte.ClearSelection();
             ddlHorizonte.Items.FindByValue("30").Selected = true;
 
@@ -222,15 +218,7 @@ namespace Strategic
 
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("historial.seleccioneProducto"), "0"));
-
-            foreach (BEProducto producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
+            selectorProducto.Cargar(productos);
 
             // Sin productos sincronizados no hay historico que proyectar
             pnlSinDatos.Visible = productos.Count == 0;

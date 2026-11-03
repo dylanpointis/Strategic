@@ -10,29 +10,17 @@
 namespace Strategic
 {
 
-
     public partial class HistorialStock
     {
 
-        
-        /// Control lblProducto.
-        
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblProducto;
-
-        
-        /// Control ddlProducto.
+        /// Control selectorProducto.
         
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlProducto;
+        protected global::Strategic.Componentes.SelectorProducto selectorProducto;
 
-        
         /// Control filtroFechas.
         
         /// <remarks>
@@ -41,7 +29,6 @@ namespace Strategic
         /// </remarks>
         protected global::Strategic.Componentes.FiltroFechas filtroFechas;
 
-        
         /// Control btnFiltrar.
         
         /// <remarks>
@@ -50,7 +37,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
 
-        
         /// Control btnLimpiar.
         
         /// <remarks>
@@ -59,7 +45,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
-        
         /// Control lblError.
         
         /// <remarks>
@@ -68,7 +53,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblError;
 
-        
         /// Control lblProductoElegido.
         
         /// <remarks>
@@ -77,7 +61,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblProductoElegido;
 
-        
         /// Control pnlGrafico.
         
         /// <remarks>
@@ -86,7 +69,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlGrafico;
 
-        
         /// Control pnlSinGrafico.
         
         /// <remarks>
@@ -95,7 +77,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlSinGrafico;
 
-        
         /// Control lblSinGrafico.
         
         /// <remarks>
@@ -104,7 +85,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSinGrafico;
 
-        
         /// Control lblCantidad.
         
         /// <remarks>
@@ -113,7 +93,6 @@ namespace Strategic
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCantidad;
 
-        
         /// Control grillaStock.
         
         /// <remarks>

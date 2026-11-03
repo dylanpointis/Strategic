@@ -272,7 +272,8 @@ namespace Strategic
         {
             string paginahtml = File.ReadAllText(Server.MapPath(RutaPlantillaFactura));
 
-            return Reportes.GenerarFacturaSuscripcion(renovacion, SessionManager.UsuarioActual, paginahtml, Server.MapPath(RutaLogo));
+            // Calificado: dentro de Strategic, "Reportes" es la pantalla del CU-002-008
+            return Services.Reportes.GenerarFacturaSuscripcion(renovacion, SessionManager.UsuarioActual, paginahtml, Server.MapPath(RutaLogo));
         }
 
         private string NombreArchivoFactura(BESuscripcion renovacion)

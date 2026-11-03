@@ -55,6 +55,25 @@ namespace BLL
             return dalRol.TraerRolConComponentes(codRol);
         }
 
+        // Para ConsultarArbolPermisos: cada rol activo con su arbol de
+        // familias y permisos sueltos
+        public List<BERol> TraerRolesConArbol()
+        {
+            List<BERol> roles = new List<BERol>();
+
+            foreach (BERol rol in dalRol.FiltrarRoles(null, true))
+            {
+                BERol conComponentes = dalRol.TraerRolConComponentes(rol.CodRol);
+
+                if (conComponentes != null)
+                {
+                    roles.Add(conComponentes);
+                }
+            }
+
+            return roles;
+        }
+
         #endregion
 
         #region Alta - CU-005-022

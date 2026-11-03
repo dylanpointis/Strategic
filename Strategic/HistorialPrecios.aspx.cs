@@ -36,20 +36,12 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("historialPrecios.titulo");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
 
             // La grilla guarda la clave del mensaje vacio y la cantidad en su ViewState
             lblSinGrafico.Text = Traductor.T(grillaPrecios.MensajeVacio);
             MostrarCantidad();
-
-            // La primera opcion del combo se agrega desde codigo: en el Init
-            // de un postback todavia no se recupero del ViewState
-            if (ddlProducto.Items.Count > 0)
-            {
-                ddlProducto.Items[0].Text = Traductor.T("historial.seleccioneProducto");
-            }
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -68,7 +60,7 @@ namespace Strategic
             }
         }
 
-        protected void ddlProducto_SelectedIndexChanged(object sender, EventArgs e)
+        protected void selectorProducto_ProductoSeleccionado(object sender, EventArgs e)
         {
             ConsultarHistorial();
         }
@@ -80,7 +72,7 @@ namespace Strategic
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ddlProducto.SelectedIndex = 0;
+            selectorProducto.Limpiar();
             filtroFechas.Limpiar();
 
             LimpiarHistorial(MensajeSinProducto);
@@ -98,7 +90,7 @@ namespace Strategic
 
         private void ConsultarHistorial()
         {
-            int idProducto = ObtenerProductoElegido();
+            int idProducto = selectorProducto.IdProducto ?? 0;
 
             if (idProducto <= 0)
             {
@@ -129,9 +121,7 @@ namespace Strategic
             grillaPrecios.Cargar(historial, mensajeVacio);
             MostrarCantidad();
 
-            lblProductoElegido.Text = ddlProducto.SelectedItem != null
-                ? Server.HtmlEncode(ddlProducto.SelectedItem.Text)
-                : string.Empty;
+            lblProductoElegido.Text = Server.HtmlEncode(selectorProducto.TextoSeleccionado);
 
             ArmarGrafico(historial, mensajeVacio);
         }
@@ -173,24 +163,7 @@ namespace Strategic
 
         private void CargarProductos()
         {
-            List<BEProducto> productos = bllProducto.TraerListaProductos();
-
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("historial.seleccioneProducto"), "0"));
-
-            foreach (BEProducto producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
-        }
-
-        private int ObtenerProductoElegido()
-        {
-            int idProducto;
-
-            return int.TryParse(ddlProducto.SelectedValue, out idProducto) ? idProducto : 0;
+            selectorProducto.Cargar(bllProducto.TraerListaProductos());
         }
     }
 }

@@ -7,7 +7,7 @@ using System;
 namespace Strategic
 {
     // CU-001-003 - Cambiar Contrasena. No lleva permiso: es de todos los
-    // perfiles, solo pide sesion iniciada
+    // roles, solo pide sesion iniciada
     public partial class CambiarClave : PaginaBase
     {
         private readonly BLLUsuario bllUsuario = new BLLUsuario();

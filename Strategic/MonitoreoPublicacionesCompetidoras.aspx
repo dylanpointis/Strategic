@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MonitoreoPublicacionesCompetidoras.aspx.cs" Inherits="Strategic.MonitoreoPublicacionesCompetidoras" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MonitoreoPublicacionesCompetidoras.aspx.cs" Inherits="Strategic.MonitoreoPublicacionesCompetidoras" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -36,15 +36,11 @@
                 <div class="strategic-card-body">
                     <div class="filtros-grid">
                         <div class="filtro">
-                            <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
-                            <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-select">
-                            </asp:DropDownList>
+                            <sc:SelectorProducto ID="selectorProducto" runat="server" />
                         </div>
 
                         <div class="filtro">
-                            <asp:Label ID="lblCompetidor" runat="server" AssociatedControlID="ddlCompetidor" CssClass="form-label"></asp:Label>
-                            <asp:DropDownList ID="ddlCompetidor" runat="server" CssClass="form-select">
-                            </asp:DropDownList>
+                            <sc:SelectorCompetidor ID="selectorCompetidor" runat="server" />
                         </div>
 
                         <div class="filtro">

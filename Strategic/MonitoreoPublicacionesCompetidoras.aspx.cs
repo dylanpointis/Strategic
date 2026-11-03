@@ -1,4 +1,4 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
 using Strategic.Componentes;
@@ -27,8 +27,6 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("monitoreo.titulo");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
-            lblCompetidor.Text = Traductor.T("mapearProductos.competidor");
             lblEstado.Text = Traductor.T("comun.estado");
             ddlEstado.Items[0].Text = Traductor.T("comun.todos");
             ddlEstado.Items[1].Text = Traductor.T("publicacion.estado.activa");
@@ -39,14 +37,6 @@ namespace Strategic
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
             MostrarCantidad();
-
-            // Las primeras opciones de los combos se agregan desde codigo: en
-            // el Init de un postback todavia no se recuperaron del ViewState
-            if (ddlProducto.Items.Count > 0)
-            {
-                ddlProducto.Items[0].Text = Traductor.T("monitoreo.todosLosProductos");
-                ddlCompetidor.Items[0].Text = Traductor.T("monitoreo.todosLosCompetidores");
-            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -73,8 +63,8 @@ namespace Strategic
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ddlProducto.SelectedIndex = 0;
-            ddlCompetidor.SelectedIndex = 0;
+            selectorProducto.Limpiar();
+            selectorCompetidor.Limpiar();
             ddlEstado.SelectedIndex = 0;
 
             Consultar(false);
@@ -145,8 +135,8 @@ namespace Strategic
             try
             {
                 List<BEPublicacionCompetencia> publicaciones = bllCompetencia.FiltrarPublicacionesMonitoreo(
-                    ObtenerId(ddlProducto.SelectedValue),
-                    ObtenerId(ddlCompetidor.SelectedValue),
+                    selectorProducto.IdProducto,
+                    selectorCompetidor.IdCompetencia,
                     ddlEstado.SelectedValue);
 
                 MostrarPublicaciones(publicaciones, MensajeSinResultados);
@@ -197,32 +187,11 @@ namespace Strategic
 
         private void CargarCombos()
         {
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosProductos"), string.Empty));
-
-            foreach (BEProducto producto in bllProducto.TraerListaProductos())
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
-
-            ddlCompetidor.Items.Clear();
-            ddlCompetidor.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosCompetidores"), string.Empty));
+            selectorProducto.Cargar(bllProducto.TraerListaProductos());
 
             // Se listan todos, no solo los activos: una publicacion mapeada
             // puede seguir apareciendo aunque su competidor haya sido dado de baja
-            foreach (BECompetencia competidor in bllCompetencia.FiltrarCompetidores(null, null, null))
-            {
-                ddlCompetidor.Items.Add(new ListItem(competidor.Nombre, competidor.IdCompetencia.ToString()));
-            }
-        }
-
-        private int? ObtenerId(string valor)
-        {
-            int id;
-
-            return int.TryParse(valor, out id) ? (int?)id : null;
+            selectorCompetidor.Cargar(bllCompetencia.FiltrarCompetidores(null, null, null));
         }
     }
 }

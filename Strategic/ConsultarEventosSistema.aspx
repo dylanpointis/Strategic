@@ -31,12 +31,24 @@
                         <asp:TextBox ID="txtEvento" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
                     </div>
 
+                    <div class="filtro">
+                        <asp:Label ID="lblCriticidad" runat="server" AssociatedControlID="ddlCriticidad" CssClass="form-label"></asp:Label>
+                        <asp:DropDownList ID="ddlCriticidad" runat="server" CssClass="form-select">
+                            <asp:ListItem Value=""></asp:ListItem>
+                            <asp:ListItem Value="1"></asp:ListItem>
+                            <asp:ListItem Value="2"></asp:ListItem>
+                            <asp:ListItem Value="3"></asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+
                     <sc:FiltroFechas ID="filtroFechas" runat="server" MostrarBoton="false" />
                 </div>
 
                 <div class="filtros-acciones">
                     <asp:Button ID="btnFiltrar" runat="server" CssClass="btn btn-strategic" OnClick="btnFiltrar_Click" />
                     <asp:Button ID="btnLimpiar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnLimpiar_Click" />
+                    <%-- Descarga en XML los eventos que cumplen los filtros cargados --%>
+                    <asp:Button ID="btnExportarXml" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnExportarXml_Click" />
                 </div>
 
                 <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>

@@ -51,6 +51,7 @@
     <Compile Include="BLLRespaldo.cs" />
     <Compile Include="BLLDigitoVerificador.cs" />
     <Compile Include="BLLVenta.cs" />
+    <Compile Include="BLLReporte.cs" />
     <Compile Include="BLLUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

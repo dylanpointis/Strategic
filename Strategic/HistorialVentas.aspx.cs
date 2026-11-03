@@ -37,7 +37,6 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("historialVentas.titulo");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
             lblCategoria.Text = Traductor.T("productos.categoria");
             lblEstado.Text = Traductor.T("comun.estado");
             btnFiltrar.Text = Traductor.T("comun.filtrar");
@@ -49,9 +48,8 @@ namespace Strategic
 
             // Las primeras opciones de los combos se agregan desde codigo: en
             // el Init de un postback todavia no se recuperaron del ViewState
-            if (ddlProducto.Items.Count > 0)
+            if (ddlCategoria.Items.Count > 0)
             {
-                ddlProducto.Items[0].Text = Traductor.T("comun.todos");
                 ddlCategoria.Items[0].Text = Traductor.T("comun.todos");
                 ddlEstado.Items[0].Text = Traductor.T("comun.todos");
             }
@@ -97,7 +95,7 @@ namespace Strategic
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             filtroFechas.Limpiar();
-            ddlProducto.SelectedIndex = 0;
+            selectorProducto.Limpiar();
             ddlCategoria.SelectedIndex = 0;
             ddlEstado.SelectedIndex = 0;
 
@@ -180,15 +178,7 @@ namespace Strategic
         {
             List<BEProducto> productos = bllProducto.TraerListaProductos();
 
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("comun.todos"), "0"));
-
-            foreach (BEProducto producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(
-                    string.Format("{0} - {1}", producto.Codigo, producto.Nombre),
-                    producto.IdProducto.ToString()));
-            }
+            selectorProducto.Cargar(productos);
 
             CargarOpciones(ddlCategoria, productos.Select(producto => producto.Categoria));
             CargarOpciones(ddlEstado, ventas.Select(venta => venta.Estado));
@@ -213,14 +203,7 @@ namespace Strategic
 
         private int? ObtenerProductoElegido()
         {
-            int idProducto;
-
-            if (int.TryParse(ddlProducto.SelectedValue, out idProducto) && idProducto > 0)
-            {
-                return idProducto;
-            }
-
-            return null;
+            return selectorProducto.IdProducto;
         }
     }
 }

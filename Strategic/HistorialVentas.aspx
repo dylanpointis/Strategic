@@ -19,8 +19,7 @@
                     <sc:FiltroFechas ID="filtroFechas" runat="server" MostrarBoton="false" />
 
                     <div class="filtro">
-                        <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-select"></asp:DropDownList>
+                        <sc:SelectorProducto ID="selectorProducto" runat="server" TextoOpcionVacia="comun.todos" />
                     </div>
 
                     <div class="filtro">

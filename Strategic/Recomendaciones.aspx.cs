@@ -37,7 +37,6 @@ namespace Strategic
             Title = Traductor.T("recomendaciones.titulo");
             lblTipo.Text = Traductor.T("recomendaciones.tipo");
             lblPrioridad.Text = Traductor.T("recomendaciones.prioridad");
-            lblProducto.Text = Traductor.T("monitoreo.producto");
             ddlTipo.Items[0].Text = Traductor.T("comun.todos");
             ddlTipo.Items[1].Text = Traductor.T("recomendaciones.tipo.stock");
             ddlTipo.Items[2].Text = Traductor.T("recomendaciones.tipo.precio");
@@ -51,13 +50,6 @@ namespace Strategic
             btnGuardar.Text = Traductor.T("recomendaciones.guardar");
             btnCerrarDetalle.Text = Traductor.T("comun.cerrar");
             lnkImportarDatos.Text = Traductor.T("master.menu.importarDatos");
-
-            // El combo de productos se arma desde codigo: en el Init de un
-            // postback todavia no se recupero del ViewState
-            if (ddlProducto.Items.Count > 0)
-            {
-                ddlProducto.Items[0].Text = Traductor.T("monitoreo.todosLosProductos");
-            }
 
             // Solo con el idioma cambiado en un postback el panel ya esta
             // visible: se regeneran para que los textos salgan en el idioma nuevo
@@ -91,7 +83,7 @@ namespace Strategic
         {
             ddlTipo.SelectedIndex = 0;
             ddlPrioridad.SelectedIndex = 0;
-            ddlProducto.SelectedIndex = 0;
+            selectorProducto.Limpiar();
 
             Consultar(false);
         }
@@ -238,7 +230,7 @@ namespace Strategic
                     recomendaciones,
                     ddlTipo.SelectedValue,
                     ddlPrioridad.SelectedValue,
-                    ObtenerId(ddlProducto.SelectedValue));
+                    selectorProducto.IdProducto);
 
                 // Sin ninguna recomendacion el aviso es otro: no hay nada que filtrar
                 MostrarRecomendaciones(filtradas, recomendaciones.Count == 0
@@ -319,7 +311,7 @@ namespace Strategic
         // Solo se ofrecen los productos que tienen alguna recomendacion
         private void CargarComboProductos()
         {
-            SortedDictionary<string, int> productos = new SortedDictionary<string, int>();
+            SortedDictionary<string, BEProducto> productos = new SortedDictionary<string, BEProducto>();
 
             foreach (BERecomendacion recomendacion in RecomendacionesGeneradas)
             {
@@ -327,24 +319,16 @@ namespace Strategic
 
                 if (!productos.ContainsKey(texto))
                 {
-                    productos.Add(texto, recomendacion.IdProducto);
+                    productos.Add(texto, new BEProducto
+                    {
+                        IdProducto = recomendacion.IdProducto,
+                        Codigo = recomendacion.CodigoProducto,
+                        Nombre = recomendacion.NombreProducto
+                    });
                 }
             }
 
-            ddlProducto.Items.Clear();
-            ddlProducto.Items.Add(new ListItem(Traductor.T("monitoreo.todosLosProductos"), string.Empty));
-
-            foreach (KeyValuePair<string, int> producto in productos)
-            {
-                ddlProducto.Items.Add(new ListItem(producto.Key, producto.Value.ToString()));
-            }
-        }
-
-        private int? ObtenerId(string valor)
-        {
-            int id;
-
-            return int.TryParse(valor, out id) ? (int?)id : null;
+            selectorProducto.Cargar(productos.Values);
         }
     }
 }

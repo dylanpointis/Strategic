@@ -81,6 +81,7 @@
                                 <li runat="server" data-permission="ConsultarUsuarios"><a class="dropdown-item" href="ConsultarUsuarios.aspx"><%: Traductor.T("master.menu.consultarUsuarios") %></a></li>
                                 <li runat="server" data-permission="ConsultarRoles"><a class="dropdown-item" href="ConsultarRoles.aspx"><%: Traductor.T("master.menu.consultarRoles") %></a></li>
                                 <li runat="server" data-permission="ConsultarFamilias"><a class="dropdown-item" href="ConsultarFamilias.aspx"><%: Traductor.T("master.menu.consultarFamilias") %></a></li>
+                                <li runat="server" data-permission="ConsultarArbolPermisos"><a class="dropdown-item" href="ConsultarArbolPermisos.aspx"><%: Traductor.T("master.menu.consultarArbolPermisos") %></a></li>
                             </ul>
                         </li>
                         <li runat="server" class="nav-item dropdown">

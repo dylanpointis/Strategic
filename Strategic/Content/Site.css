@@ -1302,6 +1302,25 @@ textarea {
     color: #8a6d80;
 }
 
+/* Buscador de SelectorProducto y SelectorCompetidor: va arriba del desplegable */
+.selector-buscador {
+    margin-bottom: 6px;
+}
+
+/* El aviso de coincidencias no ocupa lugar (asi no desalinea los filtros vecinos)
+   y va a la derecha, para no tapar el mensaje del validador */
+.selector-desplegable {
+    position: relative;
+}
+
+.selector-aviso {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
 .campo-check {
     display: flex;
     align-items: center;

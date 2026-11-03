@@ -17,19 +17,13 @@
             <div class="strategic-card-body">
                 <div class="formulario-grid">
                     <div class="campo">
-                        <asp:Label ID="lblProducto" runat="server" AssociatedControlID="ddlProducto" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-control">
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="valProducto" runat="server" ControlToValidate="ddlProducto"
-                            InitialValue="" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                        <sc:SelectorProducto ID="selectorProducto" runat="server" Etiqueta="mapearProductos.productoPropio" TextoOpcionVacia="mapearProductos.seleccioneProducto"
+                            Obligatorio="true" MensajeObligatorio="mapearProductos.productoRequerido" ValidationGroup="Mapeo" />
                     </div>
 
                     <div class="campo">
-                        <asp:Label ID="lblCompetidor" runat="server" AssociatedControlID="ddlCompetidor" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlCompetidor" runat="server" CssClass="form-control">
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="valCompetidor" runat="server" ControlToValidate="ddlCompetidor"
-                            InitialValue="" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                        <sc:SelectorCompetidor ID="selectorCompetidor" runat="server" TextoOpcionVacia="mapearProductos.seleccioneCompetidor" MostrarMarketplace="true"
+                            Obligatorio="true" MensajeObligatorio="mapearProductos.competidorRequerido" ValidationGroup="Mapeo" />
                     </div>
 
                     <div class="campo campo-ancho">

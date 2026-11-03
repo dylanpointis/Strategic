@@ -165,13 +165,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="About.aspx" />
     <Content Include="CambiarClave.aspx" />
     <Content Include="AccesoDenegado.aspx" />
     <Content Include="AltaFamilia.aspx" />
     <Content Include="AltaRol.aspx" />
     <Content Include="AltaUsuario.aspx" />
     <Content Include="ConsultarFamilias.aspx" />
+    <Content Include="ConsultarArbolPermisos.aspx" />
     <Content Include="ConsultarRoles.aspx" />
     <Content Include="ModificarFamilia.aspx" />
     <Content Include="ModificarRol.aspx" />
@@ -180,6 +180,7 @@
     <Content Include="ModificarUsuario.aspx" />
     <Content Include="BajaUsuario.aspx" />
     <Content Include="RealizarBackup.aspx" />
+    <Content Include="Reportes.aspx" />
     <Content Include="RealizarRestore.aspx" />
     <Content Include="RepararDigitoVerificador.aspx" />
     <Content Include="ConsultarCompetidores.aspx" />
@@ -193,7 +194,6 @@
     <Content Include="MonitoreoPublicacionesCompetidoras.aspx" />
     <Content Include="GestionarPublicacionCompetencia.aspx" />
     <Content Include="ConsultarEventosSistema.aspx" />
-    <Content Include="Contact.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="HistorialPrecios.aspx" />
     <Content Include="HistorialStock.aspx" />
@@ -210,6 +210,7 @@
     <Content Include="BajaSuscripcion.aspx" />
     <Content Include="ProductosSincronizados.aspx" />
     <Content Include="Scripts\strategic-graficos.js" />
+    <Content Include="Scripts\strategic-selector.js" />
     <Content Include="Content\images\Strategic_ISOTIPO_PNG.ico" />
     <Content Include="Content\images\Strategic_ISOTIPO_PNG.png" />
     <Content Include="Content\images\Strategic_LOGO_PNG.png" />
@@ -296,7 +297,9 @@
     <Content Include="Site.Master" />
     <Content Include="Componentes\FiltroFechas.ascx" />
     <Content Include="Componentes\GrillaGenerica.ascx" />
+    <Content Include="Componentes\SelectorCompetidor.ascx" />
     <Content Include="Componentes\SelectorPermisos.ascx" />
+    <Content Include="Componentes\SelectorProducto.ascx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -304,13 +307,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="About.aspx.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="About.aspx.designer.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="CambiarClave.aspx.cs">
       <DependentUpon>CambiarClave.aspx</DependentUpon>
@@ -325,13 +321,6 @@
     </Compile>
     <Compile Include="ConsultarEventosSistema.aspx.designer.cs">
       <DependentUpon>ConsultarEventosSistema.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Contact.aspx.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contact.aspx.designer.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -424,6 +413,13 @@
     <Compile Include="ConsultarFamilias.aspx.designer.cs">
       <DependentUpon>ConsultarFamilias.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ConsultarArbolPermisos.aspx.cs">
+      <DependentUpon>ConsultarArbolPermisos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarArbolPermisos.aspx.designer.cs">
+      <DependentUpon>ConsultarArbolPermisos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ConsultarRoles.aspx.cs">
       <DependentUpon>ConsultarRoles.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -472,6 +468,13 @@
     </Compile>
     <Compile Include="BajaUsuario.aspx.designer.cs">
       <DependentUpon>BajaUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes.aspx.cs">
+      <DependentUpon>Reportes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reportes.aspx.designer.cs">
+      <DependentUpon>Reportes.aspx</DependentUpon>
     </Compile>
     <Compile Include="RealizarBackup.aspx.cs">
       <DependentUpon>RealizarBackup.aspx</DependentUpon>
@@ -664,6 +667,21 @@
       <DependentUpon>Componentes\FiltroFechas.ascx</DependentUpon>
     </Compile>
     <Compile Include="Componentes\ArbolPermisos.cs" />
+    <Compile Include="Componentes\BuscadorDeSelector.cs" />
+    <Compile Include="Componentes\SelectorCompetidor.ascx.cs">
+      <DependentUpon>SelectorCompetidor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Componentes\SelectorCompetidor.ascx.designer.cs">
+      <DependentUpon>SelectorCompetidor.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Componentes\SelectorProducto.ascx.cs">
+      <DependentUpon>SelectorProducto.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Componentes\SelectorProducto.ascx.designer.cs">
+      <DependentUpon>SelectorProducto.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Componentes\SelectorPermisos.ascx.cs">
       <DependentUpon>SelectorPermisos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
