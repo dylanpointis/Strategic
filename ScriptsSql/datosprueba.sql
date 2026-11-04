@@ -1,7 +1,9 @@
 ﻿/* ============================================================
    Strategic - Datos de prueba
    ------------------------------------------------------------
-   Carga un juego minimo de datos para probar las pantallas.
+   Carga un juego de datos para probar las pantallas, con ventas
+   desde enero de 2026 hasta el dia en que se corre. Las ventas
+   recientes y la suscripcion activa usan GETDATE().
    Se puede volver a ejecutar cuantas veces haga falta: primero
    borra los registros que el propio script crea y despues los
    vuelve a insertar.
@@ -358,6 +360,196 @@ GO
 
 
 /* ------------------------------------------------------------
+   Datos de enero a junio de 2026
+   Ventas, precios y stock mas viejos, para los filtros por fecha,
+   los reportes y las predicciones. Terminan antes del 08/07: asi no
+   entran en los periodos de las recomendaciones (CU-002-005).
+   SKU-1004 sigue sin historial de precios a proposito.
+   ------------------------------------------------------------ */
+
+SET IDENTITY_INSERT [dbo].[Venta] ON
+
+INSERT INTO [dbo].[Venta] ([IdVenta], [NroVenta], [Fecha], [MontoTotal], [Estado])
+VALUES
+    (101, N'V-2026-0101', '2026-01-08T10:30:00',    87000.00, N'Completada'),
+    (102, N'V-2026-0102', '2026-01-16T15:10:00',    72000.00, N'Completada'),
+    (103, N'V-2026-0103', '2026-01-27T11:45:00',   280000.00, N'Completada'),
+    (104, N'V-2026-0104', '2026-02-05T09:50:00',    45600.00, N'Completada'),
+    (105, N'V-2026-0105', '2026-02-13T17:20:00',   835200.00, N'Completada'),
+    (106, N'V-2026-0106', '2026-02-24T12:35:00',   190000.00, N'Cancelada'),
+    (107, N'V-2026-0107', '2026-03-04T10:05:00',   111000.00, N'Completada'),
+    (108, N'V-2026-0108', '2026-03-12T16:30:00',   146000.00, N'Completada'),
+    (109, N'V-2026-0109', '2026-03-23T13:15:00',   226000.00, N'Completada'),
+    (110, N'V-2026-0110', '2026-04-02T09:25:00',   288000.00, N'Completada'),
+    (111, N'V-2026-0111', '2026-04-11T18:00:00',   149000.00, N'Completada'),
+    (112, N'V-2026-0112', '2026-04-22T11:40:00',    63200.00, N'Completada'),
+    (113, N'V-2026-0113', '2026-05-06T14:20:00',   840000.00, N'Completada'),
+    (114, N'V-2026-0114', '2026-05-15T10:50:00',   115500.00, N'Completada'),
+    (115, N'V-2026-0115', '2026-05-26T16:45:00',   400000.00, N'Completada'),
+    (116, N'V-2026-0116', '2026-06-03T12:10:00',   182600.00, N'Completada'),
+    (117, N'V-2026-0117', '2026-06-12T09:35:00',   296000.00, N'Cancelada'),
+    (118, N'V-2026-0118', '2026-06-19T17:25:00',    78000.00, N'Completada'),
+    (119, N'V-2026-0119', '2026-06-29T11:05:00',   899500.00, N'Completada')
+
+SET IDENTITY_INSERT [dbo].[Venta] OFF
+GO
+
+INSERT INTO [dbo].[ItemVenta] ([IdVenta], [IdProducto], [Cantidad], [PrecioVenta])
+VALUES
+    (101, 1, 2,   36000.00),
+    (101, 2, 1,   15000.00),
+    (102, 7, 1,   72000.00),
+    (103, 3, 1,  280000.00),
+    (104, 2, 3,   15200.00),
+    (105, 5, 1,  820000.00),
+    (105, 2, 1,   15200.00),
+    (106, 8, 1,  190000.00),
+    (107, 1, 3,   37000.00),
+    (108, 7, 2,   73000.00),
+    (109, 8, 1,  195000.00),
+    (109, 2, 2,   15500.00),
+    (110, 3, 1,  288000.00),
+    (111, 1, 2,   37500.00),
+    (111, 7, 1,   74000.00),
+    (112, 2, 4,   15800.00),
+    (113, 5, 1,  840000.00),
+    (114, 1, 3,   38500.00),
+    (115, 8, 2,  200000.00),
+    (116, 7, 2,   75000.00),
+    (116, 2, 2,   16300.00),
+    (117, 3, 1,  296000.00),
+    (118, 1, 2,   39000.00),
+    (119, 5, 1,  860000.00),
+    (119, 1, 1,   39500.00)
+GO
+
+INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha])
+VALUES
+    (1,   36000.00, '2026-01-05T09:00:00'),
+    (1,   37000.00, '2026-03-01T09:00:00'),
+    (1,   38500.00, '2026-05-01T09:00:00'),
+    (1,   39500.00, '2026-06-20T09:00:00'),
+    (2,   15000.00, '2026-01-05T09:00:00'),
+    (2,   15500.00, '2026-03-10T09:00:00'),
+    (2,   16300.00, '2026-05-20T09:00:00'),
+    (3,  280000.00, '2026-01-10T09:00:00'),
+    (3,  288000.00, '2026-03-25T09:00:00'),
+    (3,  296000.00, '2026-05-30T09:00:00'),
+    (5,  820000.00, '2026-02-01T09:00:00'),
+    (5,  840000.00, '2026-04-15T09:00:00'),
+    (5,  860000.00, '2026-06-15T09:00:00'),
+    (7,   72000.00, '2026-01-05T09:00:00'),
+    (7,   74000.00, '2026-04-01T09:00:00'),
+    (7,   75000.00, '2026-06-01T09:00:00'),
+    (8,  190000.00, '2026-02-01T09:00:00'),
+    (8,  200000.00, '2026-05-01T09:00:00')
+GO
+
+INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha])
+VALUES
+    (1,  68, '2026-01-05T09:00:00'),
+    (1,  59, '2026-03-01T09:00:00'),
+    (1,  48, '2026-05-01T09:00:00'),
+    (2,  62, '2026-01-10T09:00:00'),
+    (2,  50, '2026-03-05T09:00:00'),
+    (2,  38, '2026-05-15T09:00:00'),
+    (3,  19, '2026-02-01T09:00:00'),
+    (3,  17, '2026-05-01T09:00:00'),
+    (5,  12, '2026-02-01T09:00:00'),
+    (5,  10, '2026-05-01T09:00:00'),
+    (7,  28, '2026-01-15T09:00:00'),
+    (7,  21, '2026-04-15T09:00:00'),
+    (8,  13, '2026-02-15T09:00:00'),
+    (8,  10, '2026-05-15T09:00:00')
+GO
+
+
+/* ------------------------------------------------------------
+   Ventas recientes, calculadas con la fecha en que se corre el script
+   Una venta cada 4 dias desde el 08/09 hasta el mes anterior, y 12
+   ventas repartidas dentro del mes en curso: el Dashboard abre con
+   ese periodo, asi que siempre tiene datos sin filtrar por fechas.
+   Empiezan despues de la ultima sincronizacion de los productos
+   (05/09): tampoco cambian las recomendaciones del CU-002-005.
+   Los precios son los actuales de cada producto.
+   ------------------------------------------------------------ */
+
+DECLARE @Ahora DATETIME = GETDATE()
+DECLARE @InicioMes DATETIME = DATEADD(DAY, 1 - DAY(@Ahora), CAST(CAST(@Ahora AS DATE) AS DATETIME))
+DECLARE @Fecha DATETIME = '2026-09-08T10:00:00'
+DECLARE @Indice INT = 0
+DECLARE @Numero INT = 1
+DECLARE @Total INT
+DECLARE @IdVenta INT
+
+DECLARE @Fechas TABLE ([Numero] INT IDENTITY(1,1) PRIMARY KEY, [Fecha] DATETIME NOT NULL)
+
+-- Plan de productos que se repite: cada venta toma una fila, y una de
+-- cada tres suma la que esta a cinco lugares
+DECLARE @Plan TABLE ([Orden] INT PRIMARY KEY, [IdProducto] INT NOT NULL, [Cantidad] INT NOT NULL)
+
+INSERT INTO @Plan ([Orden], [IdProducto], [Cantidad])
+VALUES (0, 1, 2), (1, 2, 3), (2, 7, 1), (3, 2, 2), (4, 1, 1), (5, 8, 1), (6, 3, 1), (7, 2, 4), (8, 7, 2), (9, 5, 1)
+
+WHILE @Fecha < @InicioMes
+BEGIN
+    INSERT INTO @Fechas ([Fecha]) VALUES (@Fecha)
+    SET @Fecha = DATEADD(DAY, 4, @Fecha)
+END
+
+-- El resto por DAY(@Ahora) reparte las ventas entre el dia 1 y hoy
+WHILE @Indice < 12
+BEGIN
+    SET @Fecha = DATEADD(HOUR, 9 + @Indice % 9, DATEADD(DAY, @Indice % DAY(@Ahora), @InicioMes))
+    INSERT INTO @Fechas ([Fecha]) VALUES (CASE WHEN @Fecha > @Ahora THEN @Ahora ELSE @Fecha END)
+    SET @Indice = @Indice + 1
+END
+
+SELECT @Total = COUNT(*) FROM @Fechas
+
+WHILE @Numero <= @Total
+BEGIN
+    INSERT INTO [dbo].[Venta] ([NroVenta], [Fecha], [MontoTotal], [Estado])
+    SELECT
+        N'V-2026-' + CAST(2000 + @Numero AS NVARCHAR(10)),
+        [Fecha],
+        0,
+        CASE WHEN @Numero % 9 = 0 THEN N'Cancelada' WHEN @Numero % 7 = 0 THEN N'Pendiente' ELSE N'Completada' END
+    FROM @Fechas
+    WHERE [Numero] = @Numero
+
+    SET @IdVenta = SCOPE_IDENTITY()
+
+    INSERT INTO [dbo].[ItemVenta] ([IdVenta], [IdProducto], [Cantidad], [PrecioVenta])
+    SELECT @IdVenta, P.[IdProducto], P.[Cantidad], PR.[Precio]
+    FROM @Plan P
+    INNER JOIN [dbo].[Producto] PR ON PR.[IdProducto] = P.[IdProducto]
+    WHERE P.[Orden] = @Numero % 10
+       OR (@Numero % 3 = 0 AND P.[Orden] = (@Numero + 5) % 10)
+
+    SET @Numero = @Numero + 1
+END
+
+UPDATE V
+SET [MontoTotal] = (SELECT SUM(IV.[Cantidad] * IV.[PrecioVenta]) FROM [dbo].[ItemVenta] IV WHERE IV.[IdVenta] = V.[IdVenta])
+FROM [dbo].[Venta] V
+WHERE V.[NroVenta] LIKE 'V-2026-2%'
+
+-- Puntos recientes de los historiales: el ultimo coincide con el valor actual
+INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha])
+SELECT [IdProducto], [Precio], DATEADD(DAY, -3, @Ahora)
+FROM [dbo].[Producto]
+WHERE [IdProducto] IN (1, 2, 3, 5, 7, 8)
+
+INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha])
+SELECT P.[IdProducto], P.[Stock] + D.[Extra], DATEADD(DAY, D.[Dias], @Ahora)
+FROM [dbo].[Producto] P
+CROSS JOIN (VALUES (-40, 6), (-15, 3), (-1, 0)) D ([Dias], [Extra])
+WHERE P.[IdProducto] IN (1, 2, 3, 5, 7, 8)
+GO
+
+
+/* ------------------------------------------------------------
    Competencia
    Competidores registrados con el CU-007-033 Alta Competidor.
    "Insumos del Sur" queda inactivo para verificar que no aparece
@@ -531,6 +723,14 @@ VALUES
     ('2026-08-03T12:00:00', '2026-08-04T09:05:00', '2026-09-04T09:05:00', N'Vencida', N'Max',        672000.00, N'LHDXLUw7SOGWp7EKu4chlx4RCxmVDYvfi9Oq9VYS8uQ='),
     ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',        736800.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
     ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',        736800.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
+
+-- El periodo activo se calcula con la fecha en que se corre el script: si
+-- no, al pasar su vencimiento el login solo dejaria entrar a renovar
+UPDATE [dbo].[Suscripcion]
+SET [FechaPago] = DATEADD(DAY, -10, GETDATE()),
+    [FechaInicio] = DATEADD(DAY, -10, GETDATE()),
+    [FechaVencimiento] = DATEADD(MONTH, 1, DATEADD(DAY, -10, GETDATE()))
+WHERE [Estado] = N'Activa'
 GO
 
 /* ------------------------------------------------------------
