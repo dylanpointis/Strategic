@@ -1,4 +1,5 @@
 ﻿using Services;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -12,7 +13,7 @@ namespace DAL
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
-                new SqlParameter("@NombreUsuario", evento.NombreUsuario),
+                new SqlParameter("@NombreUsuario", (object)evento.NombreUsuario ?? DBNull.Value),
                 new SqlParameter("@Modulo", evento.Modulo),
                 new SqlParameter("@Evento", evento.Descripcion),
                 new SqlParameter("@Criticidad", evento.Criticidad),

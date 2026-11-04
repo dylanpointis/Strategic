@@ -8,8 +8,8 @@ namespace BLL
 {
     // Patron Strategy: es el Context. Recorre las automatizaciones activas y
     // ejecuta cada una sobre los productos sin conocer la logica de cada tipo.
-    // Por ahora los cambios quedan en la base de Strategic (ver Limitaciones
-    // de la solucion en la documentacion)
+    // Los cambios quedan en la base de Strategic: todavia no se propagan al
+    // sistema del cliente
     public class BLLEjecucionAutomatizaciones
     {
         private const string ModuloAutomatizaciones = "Automatizaciones";
@@ -25,6 +25,9 @@ namespace BLL
             "HistorialAutomatizacion"
         };
 
+        // El boton y el scheduler pueden coincidir: una ejecucion espera a la otra
+        private static readonly object Bloqueo = new object();
+
         private IAutomatizacionStrategy estrategia;
 
         private readonly DALAutomatizacion dalAutomatizacion = new DALAutomatizacion();
@@ -38,8 +41,17 @@ namespace BLL
             estrategia = nuevaEstrategia;
         }
 
-        // Devuelve lo que se ejecuto; los productos que no cumplen la condicion no figuran
+        // Devuelve lo que se ejecuto; los productos que no cumplen la condicion no
+        // figuran. El usuario es null cuando la ejecucion la dispara el scheduler
         public List<BEHistorialAutomatizacion> EjecutarAutomatizaciones(string nombreUsuarioEnSesion)
+        {
+            lock (Bloqueo)
+            {
+                return Ejecutar(nombreUsuarioEnSesion);
+            }
+        }
+
+        private List<BEHistorialAutomatizacion> Ejecutar(string nombreUsuarioEnSesion)
         {
             List<BEHistorialAutomatizacion> resultados = new List<BEHistorialAutomatizacion>();
 
@@ -80,11 +92,15 @@ namespace BLL
                 }
             }
 
-            bllEvento.RegistrarEvento(new Evento(
-                nombreUsuarioEnSesion,
-                ModuloAutomatizaciones,
-                string.Format("Automatizaciones ejecutadas: {0} acciones", resultados.Count),
-                CriticidadCambio));
+            // Sin acciones no cambio ningun dato: no queda en la bitacora
+            if (resultados.Count > 0)
+            {
+                bllEvento.RegistrarEvento(new Evento(
+                    nombreUsuarioEnSesion,
+                    ModuloAutomatizaciones,
+                    string.Format("Automatizaciones ejecutadas: {0} acciones", resultados.Count),
+                    CriticidadCambio));
+            }
 
             return resultados;
         }

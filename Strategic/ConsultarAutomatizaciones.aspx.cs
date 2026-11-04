@@ -118,9 +118,10 @@ namespace Strategic
                     ? Traductor.T("consultarAutomatizaciones.ejecucionSinAcciones")
                     : Traductor.T("consultarAutomatizaciones.ejecucionFinalizada", resultados.Count, conError));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblError.Text = Server.HtmlEncode(ex.Message);
+                // Alternativa 10.3 del CU [#ERR018]
+                lblError.Text = Server.HtmlEncode(Traductor.T("error.procesarReporte"));
             }
 
             Consultar(false);
@@ -151,9 +152,9 @@ namespace Strategic
                     ddlTipo.Items.Add(new ListItem(automatizacion.Nombre, automatizacion.Tipo));
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblError.Text = Server.HtmlEncode(ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("error.procesarReporte"));
             }
         }
 
@@ -168,9 +169,9 @@ namespace Strategic
 
                 grillaAutomatizaciones.Cargar(automatizaciones, vieneDeFiltros ? MensajeSinResultados : MensajeSinAutomatizaciones);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblError.Text = Server.HtmlEncode(ex.Message);
+                lblError.Text = Server.HtmlEncode(Traductor.T("error.procesarReporte"));
                 grillaAutomatizaciones.Cargar(new List<BEAutomatizacion>(), MensajeSinResultados);
             }
 
