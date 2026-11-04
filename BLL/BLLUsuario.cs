@@ -20,6 +20,12 @@ namespace BLL
 
         private const int IntentosAntesDeBloquear = 3;
 
+        // Tope de registros alterados por login: si se toca toda una tabla no se llena la bitacora
+        private const int InconsistenciasEnBitacora = 50;
+
+        // Largo de la columna Eventos.Evento
+        private const int LargoDescripcionEvento = 100;
+
         
         /// Roles habilitados para gestionar usuarios. Queda fijo hasta que esté
         /// el sistema de permisos: en ese momento la lista sale de consultar
@@ -73,6 +79,7 @@ namespace BLL
                 // Deja en la bitacora que el login encontro inconsistencias
                 string tablas = string.Join(", ", inconsistencias.Select(i => i.Tabla).Distinct());
                 bllEvento.RegistrarEvento(new Evento(nombreUsuario, "Integridad", "Inconsistencia de datos detectada en: " + tablas, CriticidadGrave));
+                RegistrarInconsistencias(nombreUsuario, inconsistencias);
 
                 throw new InconsistenciaDVException(usuario, inconsistencias);
             }
@@ -84,6 +91,35 @@ namespace BLL
         }
 
         
+        // Un evento por cada registro alterado: tabla, clave, tipo de cambio y campos.
+        private void RegistrarInconsistencias(string nombreUsuario, List<BEInconsistenciaDV> inconsistencias)
+        {
+            foreach (BEInconsistenciaDV inconsistencia in inconsistencias.Take(InconsistenciasEnBitacora))
+            {
+                // La clave de traduccion termina en el tipo: modificado, agregado, eliminado o tablaNoCoincide
+                string tipo = inconsistencia.Detalle.Substring(inconsistencia.Detalle.LastIndexOf('.') + 1);
+                string descripcion = string.Format("DV {0} registro {1}: {2}", inconsistencia.Tabla, inconsistencia.Clave, tipo);
+
+                if (!string.IsNullOrEmpty(inconsistencia.Columna))
+                {
+                    descripcion += " (" + inconsistencia.Columna + ")";
+                }
+
+                if (descripcion.Length > LargoDescripcionEvento)
+                {
+                    descripcion = descripcion.Substring(0, LargoDescripcionEvento);
+                }
+
+                bllEvento.RegistrarEvento(new Evento(nombreUsuario, "Integridad", descripcion, CriticidadGrave));
+            }
+
+            if (inconsistencias.Count > InconsistenciasEnBitacora)
+            {
+                bllEvento.RegistrarEvento(new Evento(nombreUsuario, "Integridad",
+                    string.Format("Y {0} inconsistencias mas", inconsistencias.Count - InconsistenciasEnBitacora), CriticidadGrave));
+            }
+        }
+
         /// Deja registrado en la bitácora que el usuario cerró su sesión. Se
         /// llama antes de limpiar la sesión, que es de donde sale el nombre.
         

@@ -24,6 +24,8 @@
   "altaUsuario.creado": "User created",
   "altaUsuario.crear": "Create user",
   "altaUsuario.crearOtro": "Create another user",
+  "altaUsuario.permisosDelRol": "Permissions of the selected role",
+  "altaUsuario.resumenRol": "The {0} role enables {1} screens.",
   "altaUsuario.subtitulo": "Registration of a system user.",
   "altaUsuario.titulo": "New user",
   "arbolPermisos.dadoDeBaja": "deactivated",

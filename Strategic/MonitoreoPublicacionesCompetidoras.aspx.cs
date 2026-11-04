@@ -2,6 +2,7 @@
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 namespace Strategic
 {
     // CU-007-037 - Gestionar Monitoreo de publicaciones competidoras
-    public partial class MonitoreoPublicacionesCompetidoras : PaginaBase
+    public partial class MonitoreoPublicacionesCompetidoras : PaginaSegura
     {
         private const string MensajeSinResultados = "comun.sinResultadosFiltros";
 
@@ -41,15 +42,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador, igual que el resto de la gestion de competencia
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarPantalla();

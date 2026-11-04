@@ -1,8 +1,12 @@
 ﻿using BE;
+using BE.Composite;
 using BLL;
 using Services;
+using Strategic.Componentes;
 using Strategic.Seguridad;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -40,6 +44,12 @@ namespace Strategic
             {
                 ddlRol.Items[0].Text = Traductor.T("usuario.seleccioneRol");
             }
+
+            // Con el idioma cambiado se vuelve a armar el resumen del rol elegido
+            if (IsPostBack && ObtenerRolElegido() > 0)
+            {
+                MostrarPermisosDelRol();
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -48,6 +58,11 @@ namespace Strategic
             {
                 CargarRoles();
             }
+        }
+
+        protected void ddlRol_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MostrarPermisosDelRol();
         }
 
         protected void btnCrear_Click(object sender, EventArgs e)
@@ -117,6 +132,54 @@ namespace Strategic
             txtApellido.Text = string.Empty;
             txtEmail.Text = string.Empty;
             ddlRol.SelectedIndex = 0;
+            pnlPermisosRol.Visible = false;
+        }
+
+        // Muestra el arbol del rol elegido: sus familias, con los permisos de
+        // cada una, y los permisos que tiene asignados en forma particular
+        private void MostrarPermisosDelRol()
+        {
+            int codRol = ObtenerRolElegido();
+
+            pnlPermisosRol.Visible = false;
+
+            if (codRol <= 0)
+            {
+                return;
+            }
+
+            try
+            {
+                BERol rol = bllRol.TraerRolConComponentes(codRol);
+
+                if (rol == null)
+                {
+                    lblError.Text = Traductor.T("rol.noEncontrado");
+                    return;
+                }
+
+                List<BEComponente> asignados = rol.Componentes.ObtenerHijos();
+                List<BEComponente> familias = asignados.Where(c => c.EsFamilia).ToList();
+                List<BEComponente> sueltos = asignados.Where(c => !c.EsFamilia).ToList();
+
+                lblResumenRol.Text = Server.HtmlEncode(Traductor.T("altaUsuario.resumenRol", rol.Nombre, rol.ObtenerPermisosSimples().Count));
+
+                divFamilias.InnerHtml = ArbolPermisos.Renderizar(familias);
+                divFamilias.Visible = familias.Count > 0;
+                lblSinFamilias.Text = Traductor.T("consultarArbolPermisos.sinFamilias");
+                lblSinFamilias.Visible = familias.Count == 0;
+
+                divSueltos.InnerHtml = ArbolPermisos.Renderizar(sueltos);
+                divSueltos.Visible = sueltos.Count > 0;
+                lblSinSueltos.Text = Traductor.T("consultarArbolPermisos.sinPermisosSueltos");
+                lblSinSueltos.Visible = sueltos.Count == 0;
+
+                pnlPermisosRol.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = Server.HtmlEncode(ex.Message);
+            }
         }
 
         private void CargarRoles()

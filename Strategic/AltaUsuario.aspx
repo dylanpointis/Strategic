@@ -27,7 +27,7 @@
 
                     <div class="campo">
                         <asp:Label ID="lblRol" runat="server" AssociatedControlID="ddlRol" CssClass="form-label"></asp:Label>
-                        <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select"></asp:DropDownList>
+                        <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="ddlRol_SelectedIndexChanged"></asp:DropDownList>
                         <asp:RequiredFieldValidator ID="valRol" runat="server" ControlToValidate="ddlRol" InitialValue="" Display="Dynamic" CssClass="campo-error" ValidationGroup="Alta"></asp:RequiredFieldValidator>
                     </div>
 
@@ -53,6 +53,20 @@
                         <p class="campo-ayuda"><%: Traductor.T("altaUsuario.ayudaClave") %></p>
                     </div>
                 </div>
+
+                <%-- Al elegir el rol se ve a que familias pertenece, sus permisos y los permisos sueltos --%>
+                <asp:Panel ID="pnlPermisosRol" runat="server" Visible="false">
+                    <h3 class="subtitulo-seccion"><%: Traductor.T("altaUsuario.permisosDelRol") %></h3>
+                    <asp:Label ID="lblResumenRol" runat="server" CssClass="campo-ayuda"></asp:Label>
+
+                    <h3 class="subtitulo-seccion"><%: Traductor.T("consultarArbolPermisos.familias") %></h3>
+                    <div id="divFamilias" runat="server" class="arbol-permisos"></div>
+                    <asp:Label ID="lblSinFamilias" runat="server" CssClass="campo-ayuda"></asp:Label>
+
+                    <h3 class="subtitulo-seccion"><%: Traductor.T("consultarArbolPermisos.permisosSueltos") %></h3>
+                    <div id="divSueltos" runat="server" class="arbol-permisos"></div>
+                    <asp:Label ID="lblSinSueltos" runat="server" CssClass="campo-ayuda"></asp:Label>
+                </asp:Panel>
 
                 <div class="formulario-acciones">
                     <asp:Button ID="btnCrear" runat="server" CssClass="btn btn-strategic" ValidationGroup="Alta" OnClick="btnCrear_Click" />

@@ -24,6 +24,8 @@
   "altaUsuario.creado": "Usuario creado",
   "altaUsuario.crear": "Crear usuario",
   "altaUsuario.crearOtro": "Crear otro usuario",
+  "altaUsuario.permisosDelRol": "Permisos del rol elegido",
+  "altaUsuario.resumenRol": "El rol {0} habilita {1} pantallas.",
   "altaUsuario.subtitulo": "Registro de un usuario del sistema.",
   "altaUsuario.titulo": "Nuevo usuario",
   "arbolPermisos.dadoDeBaja": "dado de baja",

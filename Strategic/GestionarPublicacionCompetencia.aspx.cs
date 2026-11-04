@@ -1,14 +1,21 @@
-using BE;
+﻿using BE;
 using BLL;
 using Services;
 using Strategic.Componentes;
+using Strategic.Seguridad;
 using System;
 
 namespace Strategic
 {
     // CU-007-037, pasos 5 a 8: confirmacion de Pausar / Reactivar / Desactivar
-    public partial class GestionarPublicacionCompetencia : PaginaBase
+    public partial class GestionarPublicacionCompetencia : PaginaSegura
     {
+        // Es un paso de Monitoreo: no tiene permiso propio, usa el de esa pantalla
+        protected override string PermisoRequerido
+        {
+            get { return "MonitoreoPublicacionesCompetidoras"; }
+        }
+
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
         
@@ -43,15 +50,6 @@ namespace Strategic
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Solo WebMaster y Administrador, igual que el resto de la gestion de competencia
-            BEUsuario usuario = SessionManager.UsuarioActual;
-
-            if (usuario == null || (usuario.CodRol != 1 && usuario.CodRol != 2))
-            {
-                Response.Redirect("~/Login.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarPublicacion(Request.QueryString["id"], Request.QueryString["accion"]);

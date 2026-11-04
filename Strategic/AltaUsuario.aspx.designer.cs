@@ -49,6 +49,18 @@ namespace Strategic
         
         protected global::System.Web.UI.WebControls.DropDownList ddlRol;
 
+        protected global::System.Web.UI.WebControls.Panel pnlPermisosRol;
+
+        protected global::System.Web.UI.WebControls.Label lblResumenRol;
+
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFamilias;
+
+        protected global::System.Web.UI.WebControls.Label lblSinFamilias;
+
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSueltos;
+
+        protected global::System.Web.UI.WebControls.Label lblSinSueltos;
+
         
         /// Control valRol.
         
