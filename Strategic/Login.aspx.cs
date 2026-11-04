@@ -48,7 +48,7 @@ namespace Strategic
                 BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), txtClave.Text);
 
                 // Con la suscripcion vencida solo se puede renovar
-                if (!bllSuscripcion.TieneServicioActivo())
+                if (!bllSuscripcion.TieneSuscripcionActiva())
                 {
                     if (!TienePermiso(usuario, "RenovarSuscripcion"))
                     {

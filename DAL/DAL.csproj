@@ -46,6 +46,7 @@
     <Compile Include="DALPermiso.cs" />
     <Compile Include="DALProducto.cs" />
     <Compile Include="DALRecomendacion.cs" />
+    <Compile Include="DALAutomatizacion.cs" />
     <Compile Include="DALSuscripcion.cs" />
     <Compile Include="DALIntegracion.cs" />
     <Compile Include="DALRol.cs" />

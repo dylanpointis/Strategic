@@ -497,8 +497,8 @@ GO
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] ON
 INSERT INTO [dbo].[CatalogoAutomatizacion] ([IdCatalogoAutomatizacion], [Nombre], [Tipo], [Descripcion]) VALUES
 (1, 'Ajustar precio', 'AjustarPrecio', 'Ajusta el precio del producto cuando la diferencia con el competidor supera el umbral configurado'),
-(2, 'Pausar venta', 'PausarVenta', 'Pausa la publicacion del producto cuando el stock disponible llega a cero'),
-(3, 'Alerta de stock', 'AlertaStock', 'Genera una alerta cuando el stock del producto queda por debajo del stock minimo definido')
+(2, 'Pausar venta', 'PausarVenta', 'Pausa la publicacion del producto cuando el stock disponible llega al limite configurado'),
+(3, 'Alerta de stock', 'AlertaStock', 'Genera una recomendacion y avisa por mail al WebMaster cuando el stock llega al minimo definido mas el margen configurado')
 SET IDENTITY_INSERT [dbo].[CatalogoAutomatizacion] OFF
 GO
 
@@ -2718,5 +2718,144 @@ BEGIN
     WHERE P.BorradoLogico = 0
       AND (@Categoria IS NULL OR P.Categoria = @Categoria)
     ORDER BY P.Nombre ASC
+END
+GO
+
+/* ============================================================
+   003. Automatizaciones
+   CU-003-009 Consultar Automatizaciones
+   CU-003-010 Pausar o Reactivar Automatizacion
+   CU-003-011 Modificar parametro de Automatizacion
+   CU-003-012 Ver Historial de Automatizaciones Ejecutadas
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[TraerListaAutomatizaciones]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        A.IdAutomatizacion,
+        A.IdCatalogoAutomatizacion,
+        C.Nombre,
+        C.Tipo,
+        C.Descripcion,
+        A.Parametros,
+        A.Estado,
+        A.FechaAlta,
+        A.FechaUltimaEjecucion
+    FROM [dbo].[Automatizacion] A
+    INNER JOIN [dbo].[CatalogoAutomatizacion] C ON C.IdCatalogoAutomatizacion = A.IdCatalogoAutomatizacion
+    ORDER BY A.IdAutomatizacion ASC
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarEstadoAutomatizacion]
+    @IdAutomatizacion INT,
+    @Estado NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Automatizacion]
+    SET [Estado] = @Estado
+    WHERE [IdAutomatizacion] = @IdAutomatizacion
+END
+GO
+
+CREATE PROCEDURE [dbo].[ModificarParametrosAutomatizacion]
+    @IdAutomatizacion INT,
+    @Parametros NVARCHAR(MAX)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Automatizacion]
+    SET [Parametros] = @Parametros
+    WHERE [IdAutomatizacion] = @IdAutomatizacion
+END
+GO
+
+CREATE PROCEDURE [dbo].[ActualizarFechaEjecucionAutomatizacion]
+    @IdAutomatizacion INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Automatizacion]
+    SET [FechaUltimaEjecucion] = GETDATE()
+    WHERE [IdAutomatizacion] = @IdAutomatizacion
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarHistorialAutomatizacion]
+    @IdProducto INT,
+    @IdAutomatizacion INT,
+    @AccionEjecutada NVARCHAR(255),
+    @ValorAnterior NVARCHAR(100) = NULL,
+    @ValorNuevo NVARCHAR(100) = NULL,
+    @Estado NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[HistorialAutomatizacion]
+        ([IdProducto], [IdAutomatizacion], [AccionEjecutada], [ValorAnterior], [ValorNuevo], [Estado])
+    VALUES
+        (@IdProducto, @IdAutomatizacion, @AccionEjecutada, @ValorAnterior, @ValorNuevo, @Estado)
+END
+GO
+
+CREATE PROCEDURE [dbo].[TraerHistorialAutomatizaciones]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        H.IdHistorial,
+        H.IdProducto,
+        P.Nombre AS NombreProducto,
+        H.IdAutomatizacion,
+        C.Nombre AS NombreAutomatizacion,
+        H.AccionEjecutada,
+        H.ValorAnterior,
+        H.ValorNuevo,
+        H.Estado,
+        H.FechaEjecucion
+    FROM [dbo].[HistorialAutomatizacion] H
+    INNER JOIN [dbo].[Producto] P ON P.IdProducto = H.IdProducto
+    INNER JOIN [dbo].[Automatizacion] A ON A.IdAutomatizacion = H.IdAutomatizacion
+    INNER JOIN [dbo].[CatalogoAutomatizacion] C ON C.IdCatalogoAutomatizacion = A.IdCatalogoAutomatizacion
+    ORDER BY H.FechaEjecucion DESC, H.IdHistorial DESC
+END
+GO
+
+-- AjustarPrecio: el precio nuevo tambien queda en el historial de precios
+CREATE PROCEDURE [dbo].[AjustarPrecioProducto]
+    @IdProducto INT,
+    @Precio DECIMAL(10,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Producto]
+    SET [Precio] = @Precio
+    WHERE [IdProducto] = @IdProducto
+
+    INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha])
+    VALUES (@IdProducto, @Precio, GETDATE())
+END
+GO
+
+-- PausarVenta
+CREATE PROCEDURE [dbo].[PausarProducto]
+    @IdProducto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[Producto]
+    SET [Estado] = N'Pausado'
+    WHERE [IdProducto] = @IdProducto
 END
 GO

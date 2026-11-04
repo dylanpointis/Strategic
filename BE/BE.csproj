@@ -46,6 +46,9 @@
     <Compile Include="DigitoVerificador\BEDigitoVerificadorColumna.cs" />
     <Compile Include="DigitoVerificador\BEInconsistenciaDV.cs" />
     <Compile Include="BEPublicacionCompetencia.cs" />
+    <Compile Include="BEAutomatizacion.cs" />
+    <Compile Include="BEHistorialAutomatizacion.cs" />
+    <Compile Include="BEParametroAutomatizacion.cs" />
     <Compile Include="BEComparacionPrecio.cs" />
     <Compile Include="BEHistorialPrecioCompetencia.cs" />
     <Compile Include="BEResumenComparacion.cs" />

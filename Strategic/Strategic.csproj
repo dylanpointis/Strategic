@@ -202,6 +202,10 @@
     <Content Include="Recomendaciones.aspx" />
     <Content Include="ConfigurarIntegracion.aspx" />
     <Content Include="ImportarDatos.aspx" />
+    <Content Include="ConsultarAutomatizaciones.aspx" />
+    <Content Include="PausarReactivarAutomatizacion.aspx" />
+    <Content Include="ModificarParametroAutomatizacion.aspx" />
+    <Content Include="HistorialAutomatizaciones.aspx" />
     <Content Include="HistorialSincronizaciones.aspx" />
     <Content Include="EstadisticasVentas.asmx" />
     <Content Include="EstadisticasStock.asmx" />
@@ -538,6 +542,34 @@
     </Compile>
     <Compile Include="BajaRol.aspx.designer.cs">
       <DependentUpon>BajaRol.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConsultarAutomatizaciones.aspx.cs">
+      <DependentUpon>ConsultarAutomatizaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConsultarAutomatizaciones.aspx.designer.cs">
+      <DependentUpon>ConsultarAutomatizaciones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PausarReactivarAutomatizacion.aspx.cs">
+      <DependentUpon>PausarReactivarAutomatizacion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PausarReactivarAutomatizacion.aspx.designer.cs">
+      <DependentUpon>PausarReactivarAutomatizacion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarParametroAutomatizacion.aspx.cs">
+      <DependentUpon>ModificarParametroAutomatizacion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarParametroAutomatizacion.aspx.designer.cs">
+      <DependentUpon>ModificarParametroAutomatizacion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HistorialAutomatizaciones.aspx.cs">
+      <DependentUpon>HistorialAutomatizaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HistorialAutomatizaciones.aspx.designer.cs">
+      <DependentUpon>HistorialAutomatizaciones.aspx</DependentUpon>
     </Compile>
     <Compile Include="BajaCompetidor.aspx.cs">
       <DependentUpon>BajaCompetidor.aspx</DependentUpon>

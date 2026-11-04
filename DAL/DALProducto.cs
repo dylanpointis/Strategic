@@ -108,6 +108,29 @@ namespace DAL
             return historial;
         }
 
+        // Automatizacion AjustarPrecio
+        public void AjustarPrecio(int idProducto, decimal precio)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto),
+                new SqlParameter("@Precio", precio)
+            };
+
+            dalCon.EjecutarProcAlmacenado("AjustarPrecioProducto", parametros);
+        }
+
+        // Automatizacion PausarVenta
+        public void PausarProducto(int idProducto)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto)
+            };
+
+            dalCon.EjecutarProcAlmacenado("PausarProducto", parametros);
+        }
+
         private List<BEProducto> MapearProductos(DataTable tabla)
         {
             List<BEProducto> productos = new List<BEProducto>();

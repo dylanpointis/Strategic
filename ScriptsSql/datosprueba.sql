@@ -11,6 +11,11 @@
    (primero las tablas hijas, despues las padres).
 
    Cubre:
+     003. Automatizaciones
+          CU-003-009 Consultar Automatizaciones
+          CU-003-010 Pausar o Reactivar Automatizacion
+          CU-003-011 Modificar parametro de Automatizacion
+          CU-003-012 Ver Historial de Automatizaciones Ejecutadas
      004. Catalogo Sincronizado
           CU-004-013 Ver Productos Sincronizados
           CU-004-014 Ver Historial de Precios
@@ -78,6 +83,12 @@ GO
 
 DELETE FROM [dbo].[ProductoCompetencia]
 WHERE [IdProducto] IN (SELECT [IdProducto] FROM [dbo].[Producto] WHERE [Codigo] LIKE 'SKU-1%')
+GO
+
+DELETE FROM [dbo].[HistorialAutomatizacion]
+GO
+
+DELETE FROM [dbo].[Automatizacion]
 GO
 
 DELETE FROM [dbo].[Recomendacion]
@@ -521,6 +532,38 @@ VALUES
     ('2026-09-02T08:30:00', '2026-09-04T09:05:00', '2026-10-04T09:05:00', N'Vencida', N'Max',        736800.00, N'8a1FJr+g4+9iuQn/1tH1oTBNBvKhUY3V7XGZy9b5C60='),
     ('2026-10-01T19:10:00', '2026-10-04T09:05:00', '2026-11-04T09:05:00', N'Activa',  N'Max',        736800.00, N'CLaaW8lfalIv9dLX/hwMQNI4ule3DFvg8DohM4AHviA=')
 GO
+
+/* ------------------------------------------------------------
+   003. Automatizaciones
+   Las tres del catalogo, activas, con sus parametros en JSON.
+   Al ejecutarlas con estos datos:
+     - AjustarPrecio baja SKU-1007 y SKU-1008 (mas de 15% sobre la
+       competencia)
+     - PausarVenta no actua: el unico producto sin stock ya esta
+       pausado. Se ve subiendo el parametro stock a 3 (SKU-1002)
+     - AlertaStock avisa por SKU-1002 y SKU-1004
+   ------------------------------------------------------------ */
+
+SET IDENTITY_INSERT [dbo].[Automatizacion] ON
+
+INSERT INTO [dbo].[Automatizacion]
+    ([IdAutomatizacion], [IdCatalogoAutomatizacion], [Parametros], [Estado], [FechaAlta], [FechaUltimaEjecucion])
+VALUES
+    (1, 1, N'{"umbral":15,"ajuste":5}', N'Activa', '2026-08-01T09:00:00', '2026-09-08T06:30:00'),
+    (2, 2, N'{"stock":0}',              N'Activa', '2026-08-01T09:00:00', '2026-09-08T06:30:00'),
+    (3, 3, N'{"margen":0}',             N'Activa', '2026-08-01T09:00:00', '2026-09-08T06:30:00')
+
+SET IDENTITY_INSERT [dbo].[Automatizacion] OFF
+GO
+
+INSERT INTO [dbo].[HistorialAutomatizacion]
+    ([IdProducto], [IdAutomatizacion], [AccionEjecutada], [ValorAnterior], [ValorNuevo], [Estado], [FechaEjecucion])
+VALUES
+    (4, 2, N'Venta pausada por falta de stock', N'Activo', N'Pausado', N'Exitosa', '2026-09-05T06:30:00'),
+    (2, 3, N'Recomendación generada y aviso enviado al WebMaster', NULL, N'Stock: 3 (mínimo: 10)', N'Exitosa', '2026-09-08T06:30:00'),
+    (7, 1, N'No se pudo actualizar el precio del producto', N'78000,00', NULL, N'ConError', '2026-09-08T06:30:00')
+GO
+
 
 /* ------------------------------------------------------------
    Integraciones (modulo 006)

@@ -32,12 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLLAutomatizacion.cs" />
+    <Compile Include="BLLEjecucionAutomatizaciones.cs" />
     <Compile Include="BLLEvento.cs" />
     <Compile Include="BLLDashboard.cs" />
     <Compile Include="BLLCompetencia.cs" />
@@ -53,6 +58,10 @@
     <Compile Include="BLLVenta.cs" />
     <Compile Include="BLLReporte.cs" />
     <Compile Include="BLLUsuario.cs" />
+    <Compile Include="Strategy\AjustarPrecioStrategy.cs" />
+    <Compile Include="Strategy\AlertaStockStrategy.cs" />
+    <Compile Include="Strategy\IAutomatizacionStrategy.cs" />
+    <Compile Include="Strategy\PausarVentaStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

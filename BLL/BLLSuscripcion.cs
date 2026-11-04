@@ -59,7 +59,7 @@ namespace BLL
 
         // Hay servicio mientras el ultimo periodo pagado no haya terminado. Una
         // suscripcion cancelada sigue andando hasta su vencimiento (CU-009-043)
-        public bool TieneServicioActivo()
+        public bool TieneSuscripcionActiva()
         {
             BESuscripcion actual = TraerSuscripcionActual(TraerListaSuscripciones());
 
