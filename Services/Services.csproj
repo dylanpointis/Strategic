@@ -121,6 +121,8 @@
 
   <ItemGroup>
     <Compile Include="ClavePorDefecto.cs" />
+    <Compile Include="ConsultorPreciosSimulado.cs" />
+    <Compile Include="UsuarioEmergencia.cs" />
     <Compile Include="DatosInsuficientesException.cs" />
     <Compile Include="Encriptacion.cs" />
     <Compile Include="Evento.cs" />

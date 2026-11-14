@@ -17,6 +17,7 @@ namespace Strategic
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             SchedulerAutomatizaciones.Iniciar();
+            SchedulerMonitoreo.Iniciar();
         }
     }
 }

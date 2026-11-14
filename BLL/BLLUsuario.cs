@@ -41,6 +41,11 @@ namespace BLL
 
         public BEUsuario Login(string nombreUsuario, string clave)
         {
+            if (UsuarioEmergencia.EsUsuarioEmergencia(nombreUsuario))
+            {
+                return LoginEmergencia(nombreUsuario, clave);
+            }
+
             BEUsuario usuario = ValidarUsuario(nombreUsuario, string.Empty);
 
             if (usuario == null)
@@ -91,6 +96,31 @@ namespace BLL
         }
 
         
+        // El usuario del Web.config no depende de la tabla Usuario, por eso no
+        // tiene bloqueo por intentos: cada ingreso o fallo queda como evento grave
+        private BEUsuario LoginEmergencia(string nombreUsuario, string clave)
+        {
+            if (!UsuarioEmergencia.VerificarClave(clave))
+            {
+                bllEvento.RegistrarEvento(new Evento(nombreUsuario, ModuloSesiones, "Clave incorrecta", CriticidadGrave));
+                throw new Exception(Traductor.T("error.credencialesInvalidas"));
+            }
+
+            bllEvento.RegistrarEvento(new Evento(nombreUsuario, ModuloSesiones, "Inicio sesion", CriticidadGrave));
+
+            BEUsuario usuario = UsuarioEmergencia.Crear();
+            List<BEInconsistenciaDV> inconsistencias = bllDigitoVerificador.CompararDV();
+
+            if (inconsistencias.Count > 0)
+            {
+                RegistrarInconsistencias(nombreUsuario, inconsistencias);
+
+                throw new InconsistenciaDVException(usuario, inconsistencias);
+            }
+
+            return usuario;
+        }
+
         // Un evento por cada registro alterado: tabla, clave, tipo de cambio y campos.
         private void RegistrarInconsistencias(string nombreUsuario, List<BEInconsistenciaDV> inconsistencias)
         {

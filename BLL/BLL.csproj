@@ -58,6 +58,11 @@
     <Compile Include="BLLVenta.cs" />
     <Compile Include="BLLReporte.cs" />
     <Compile Include="BLLUsuario.cs" />
+    <Compile Include="State\EstadoPublicacion.cs" />
+    <Compile Include="State\PublicacionActiva.cs" />
+    <Compile Include="State\PublicacionFinalizada.cs" />
+    <Compile Include="State\PublicacionMonitoreada.cs" />
+    <Compile Include="State\PublicacionPausada.cs" />
     <Compile Include="Strategy\AjustarPrecioStrategy.cs" />
     <Compile Include="Strategy\AlertaStockStrategy.cs" />
     <Compile Include="Strategy\IAutomatizacionStrategy.cs" />

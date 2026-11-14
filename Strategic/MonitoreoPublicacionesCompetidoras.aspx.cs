@@ -36,6 +36,7 @@ namespace Strategic
             ddlEstado.Items[4].Text = Traductor.T("publicacion.estado.noEncontrada");
             ddlEstado.Items[5].Text = Traductor.T("publicacion.estado.error");
             btnFiltrar.Text = Traductor.T("comun.filtrar");
+            btnMonitorear.Text = Traductor.T("monitoreo.monitorearAhora");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
             MostrarCantidad();
         }
@@ -45,6 +46,22 @@ namespace Strategic
             if (!IsPostBack)
             {
                 CargarPantalla();
+            }
+        }
+
+        // Consulta en el momento lo mismo que el proceso programado
+        protected void btnMonitorear_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int consultadas = bllCompetencia.MonitorearPublicaciones(SessionManager.UsuarioActual.NombreUsuario);
+
+                lblExito.Text = Server.HtmlEncode(Traductor.T("monitoreo.monitoreoRealizado", consultadas));
+                Consultar(false);
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = Server.HtmlEncode(ex.Message);
             }
         }
 

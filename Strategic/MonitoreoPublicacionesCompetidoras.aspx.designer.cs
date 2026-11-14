@@ -61,6 +61,8 @@ namespace Strategic
         
         protected global::System.Web.UI.WebControls.Label lblCantidad;
 
+        protected global::System.Web.UI.WebControls.Button btnMonitorear;
+
         /// Control grillaPublicaciones.
         
         protected global::Strategic.Componentes.GrillaGenerica grillaPublicaciones;

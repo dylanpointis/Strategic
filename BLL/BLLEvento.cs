@@ -24,10 +24,23 @@ namespace BLL
 
         private const string FormatoFecha = "yyyy-MM-dd";
 
+        // Largo de la columna Eventos.Evento
+        private const int LargoDescripcion = 100;
+
         private readonly DALEvento dalEvento = new DALEvento();
 
         public void RegistrarEvento(Evento evento)
         {
+            // Eventos.NombreUsuario es FK de Usuario, y el usuario de emergencia no
+            // esta en esa tabla: va sin usuario y se aclara en la descripcion
+            if (UsuarioEmergencia.EsUsuarioEmergencia(evento.NombreUsuario))
+            {
+                string descripcion = "Emergencia: " + evento.Descripcion;
+
+                evento.NombreUsuario = null;
+                evento.Descripcion = descripcion.Length > LargoDescripcion ? descripcion.Substring(0, LargoDescripcion) : descripcion;
+            }
+
             evento.Fecha = DateTime.Today.ToString(FormatoFecha);
             evento.Hora = DateTime.Now.ToString("HH:mm");
             dalEvento.RegistrarEvento(evento);

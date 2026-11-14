@@ -11,6 +11,9 @@ namespace BLL
         private const string ModuloCompetencia = "Competencia";
         private const int CriticidadCambio = 2;
 
+        // El boton y el scheduler pueden coincidir: un monitoreo espera al otro
+        private static readonly object BloqueoMonitoreo = new object();
+
         private readonly DALCompetencia dalCompetencia = new DALCompetencia();
         private readonly BLLEvento bllEvento = new BLLEvento();
         private readonly BLLDigitoVerificador bllDigitoVerificador = new BLLDigitoVerificador();
@@ -334,6 +337,36 @@ namespace BLL
             }
         }
 
+        // Consulta el precio de las publicaciones. No pregunta el estado: cada
+        // publicacion responde segun el suyo. Devuelve cuantas se consultaron.
+        // El usuario es null cuando lo dispara el scheduler
+        public int MonitorearPublicaciones(string nombreUsuarioEnSesion)
+        {
+            lock (BloqueoMonitoreo)
+            {
+                int consultadas = 0;
+
+                foreach (BEPublicacionCompetencia publicacion in dalCompetencia.TraerListaPublicacionesMonitoreo())
+                {
+                    if (new PublicacionMonitoreada(publicacion).Monitorear())
+                    {
+                        consultadas++;
+                    }
+                }
+
+                if (consultadas > 0)
+                {
+                    // El DV se recalcula una sola vez al final
+                    bllDigitoVerificador.PersistirDV("HistorialPrecioCompetencia");
+                    bllDigitoVerificador.PersistirDV("ProductoCompetencia");
+
+                    RegistrarEvento(nombreUsuarioEnSesion, "Monitoreo de publicaciones", consultadas + " consultadas");
+                }
+
+                return consultadas;
+            }
+        }
+
         private string Normalizar(string valor)
         {
             return string.IsNullOrWhiteSpace(valor) ? null : valor.Trim();
@@ -385,53 +418,14 @@ namespace BLL
                 throw new Exception(Traductor.T("error.publicacionNoEncontrada"));
             }
 
-            string nuevoEstado = CalcularNuevoEstado(publicacion.Estado, accion);
+            // Patron State: el estado actual valida la accion y decide el siguiente
+            PublicacionMonitoreada contexto = new PublicacionMonitoreada(publicacion);
+            contexto.AplicarAccion(accion);
 
-            dalCompetencia.ModificarEstadoPublicacion(idProductoCompetencia, nuevoEstado);
+            dalCompetencia.ModificarEstadoPublicacion(idProductoCompetencia, contexto.Estado);
             bllDigitoVerificador.PersistirDV("ProductoCompetencia");
 
-            RegistrarEvento(
-                nombreUsuarioEnSesion,
-                string.Format("{0} de publicacion monitoreada", accion),
-                string.Format("{0} - {1}", publicacion.NombreProducto, publicacion.NombreCompetidor));
-        }
-
-        private string CalcularNuevoEstado(string estadoActual, string accion)
-        {
-            switch (accion)
-            {
-                case "Pausar":
-                    if (estadoActual != "Activa")
-                    {
-                        throw new Exception(Traductor.T("error.soloPausarActiva"));
-                    }
-
-                    return "Pausada";
-
-                case "Reactivar":
-                    if (estadoActual == "Activa")
-                    {
-                        throw new Exception(Traductor.T("error.publicacionYaActiva"));
-                    }
-
-                    if (estadoActual == "Finalizada")
-                    {
-                        throw new Exception(Traductor.T("error.noReactivarDesactivada"));
-                    }
-
-                    return "Activa";
-
-                case "Desactivar":
-                    if (estadoActual == "Finalizada")
-                    {
-                        throw new Exception(Traductor.T("error.publicacionYaDesactivada"));
-                    }
-
-                    return "Finalizada";
-
-                default:
-                    throw new Exception(Traductor.T("error.accionNoReconocida"));
-            }
+            RegistrarEvento(nombreUsuarioEnSesion,string.Format("{0} de publicacion monitoreada", accion),  string.Format("{0} - {1}", publicacion.NombreProducto, publicacion.NombreCompetidor));
         }
 
         #endregion

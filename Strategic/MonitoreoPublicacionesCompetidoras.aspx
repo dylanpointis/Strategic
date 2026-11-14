@@ -72,6 +72,7 @@
                     <h2><%: Traductor.T("monitoreo.publicacionesMapeadas") %></h2>
                     <div class="strategic-card-acciones">
                         <asp:Label ID="lblCantidad" runat="server" CssClass="strategic-card-meta"></asp:Label>
+                        <asp:Button ID="btnMonitorear" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnMonitorear_Click" />
                     </div>
                 </div>
 

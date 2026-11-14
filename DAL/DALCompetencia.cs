@@ -300,6 +300,17 @@ namespace DAL
             dalCon.EjecutarProcAlmacenado("ModificarEstadoPublicacion", parametros);
         }
 
+        public void RegistrarPrecioCompetencia(int idProductoCompetencia, decimal precioCompetencia)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProductoCompetencia", idProductoCompetencia),
+                new SqlParameter("@PrecioCompetencia", precioCompetencia)
+            };
+
+            dalCon.EjecutarProcAlmacenado("RegistrarPrecioCompetencia", parametros);
+        }
+
         private List<BEPublicacionCompetencia> MapearPublicaciones(DataTable tabla)
         {
             List<BEPublicacionCompetencia> publicaciones = new List<BEPublicacionCompetencia>();

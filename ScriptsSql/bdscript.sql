@@ -2859,3 +2859,33 @@ BEGIN
     WHERE [IdProducto] = @IdProducto
 END
 GO
+
+/* ============================================================
+   007. Gestionar Competencia - CU-007-037 Monitoreo de publicaciones
+   ------------------------------------------------------------
+   Registra el precio consultado de una publicacion activa, junto
+   con el precio propio del producto en ese momento, y actualiza
+   la fecha de la ultima verificacion.
+   ============================================================ */
+
+CREATE PROCEDURE [dbo].[RegistrarPrecioCompetencia]
+    @IdProductoCompetencia INT,
+    @PrecioCompetencia DECIMAL(10,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    DECLARE @Ahora DATETIME = GETDATE()
+
+    INSERT INTO [dbo].[HistorialPrecioCompetencia] ([IdProductoCompetencia], [PrecioCompetencia], [PrecioPropio], [FechaConsulta])
+    SELECT PC.[IdProductoCompetencia], @PrecioCompetencia, P.[Precio], @Ahora
+    FROM [dbo].[ProductoCompetencia] PC
+    INNER JOIN [dbo].[Producto] P ON P.[IdProducto] = PC.[IdProducto]
+    WHERE PC.[IdProductoCompetencia] = @IdProductoCompetencia
+
+    UPDATE [dbo].[ProductoCompetencia]
+    SET [FechaUltimaVerificacion] = @Ahora
+    WHERE [IdProductoCompetencia] = @IdProductoCompetencia
+END
+GO

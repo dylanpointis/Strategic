@@ -47,8 +47,9 @@ namespace Strategic
                 // Intenta realizar el inicio de sesión y redirige al menú principal si es exitoso
                 BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), txtClave.Text);
 
-                // Con la suscripcion vencida solo se puede renovar
-                if (!bllSuscripcion.TieneSuscripcionActiva())
+                // Con la suscripcion vencida solo se puede renovar. El usuario de
+                // emergencia entra igual: tiene que poder reparar el sistema
+                if (!UsuarioEmergencia.EsUsuarioEmergencia(usuario.NombreUsuario) && !bllSuscripcion.TieneSuscripcionActiva())
                 {
                     if (!TienePermiso(usuario, "RenovarSuscripcion"))
                     {
