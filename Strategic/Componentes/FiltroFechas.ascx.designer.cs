@@ -15,6 +15,9 @@ namespace Strategic.Componentes
     {
 
         
+        /// Control lblTitulo.
+        protected global::System.Web.UI.WebControls.Label lblTitulo;
+
         /// Control lblDesde.
         
         protected global::System.Web.UI.WebControls.Label lblDesde;

@@ -17,57 +17,21 @@ namespace Strategic
         
         /// Control lblClaveActual.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblClaveActual;
-
         
         /// Control txtClaveActual.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtClaveActual;
-
         
         /// Control lblClaveNueva.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblClaveNueva;
-
         
         /// Control txtClaveNueva.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtClaveNueva;
-
         
         /// Control lblConfirmarClave.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblConfirmarClave;
-
         
         /// Control txtConfirmarClave.
         
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtConfirmarClave;
-
         
         /// Control btnGuardar.
         
@@ -75,6 +39,10 @@ namespace Strategic
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
+        protected global::Strategic.Componentes.CampoClave campoClaveActual;
+
+        protected global::Strategic.Componentes.CampoClave campoClaveNueva;
+
         protected global::System.Web.UI.WebControls.Button btnGuardar;
 
         
@@ -85,19 +53,6 @@ namespace Strategic
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelar;
-
-        /// Control rfvClaveActual.
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvClaveActual;
-
-        /// Control rfvClaveNueva.
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvClaveNueva;
-
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revClaveNueva;
-
-        /// Control rfvConfirmarClave.
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvConfirmarClave;
-
-        protected global::System.Web.UI.WebControls.CompareValidator cvConfirmarClave;
 
         /// Control lblError.
         protected global::System.Web.UI.WebControls.Label lblError;

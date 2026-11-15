@@ -15,14 +15,6 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("cambiarClave.titulo");
-            lblClaveActual.Text = Traductor.T("cambiarClave.claveActual");
-            rfvClaveActual.ErrorMessage = Traductor.T("cambiarClave.claveActualRequerida");
-            lblClaveNueva.Text = Traductor.T("cambiarClave.claveNueva");
-            rfvClaveNueva.ErrorMessage = Traductor.T("cambiarClave.claveNuevaRequerida");
-            revClaveNueva.ErrorMessage = Traductor.T("cambiarClave.claveNuevaFormato");
-            lblConfirmarClave.Text = Traductor.T("cambiarClave.confirmarClave");
-            rfvConfirmarClave.ErrorMessage = Traductor.T("cambiarClave.confirmarClaveRequerida");
-            cvConfirmarClave.ErrorMessage = Traductor.T("error.claveConfirmacion");
             btnGuardar.Text = Traductor.T("comun.guardar");
             btnCancelar.Text = Traductor.T("comun.cancelar");
         }
@@ -46,9 +38,9 @@ namespace Strategic
             {
                 BEUsuario usuario = bllUsuario.CambiarClave(
                     SessionManager.UsuarioActual.NombreUsuario,
-                    txtClaveActual.Text,
-                    txtClaveNueva.Text,
-                    txtConfirmarClave.Text);
+                    campoClaveActual.Clave,
+                    campoClaveNueva.Clave,
+                    campoClaveNueva.Confirmacion);
 
                 // La sesion se queda con la clave y la sal nuevas
                 SessionManager.UsuarioActual.Clave = usuario.Clave;

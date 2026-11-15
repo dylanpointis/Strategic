@@ -43,6 +43,7 @@ namespace Strategic
             ddlEstado.Items[2].Text = Traductor.T("comun.todos");
             btnFiltrar.Text = Traductor.T("comun.filtrar");
             btnLimpiar.Text = Traductor.T("comun.limpiarFiltros");
+            btnExportarXml.Text = Traductor.T("consultarRoles.exportarXml");
             btnNuevo.Text = Traductor.T("consultarRoles.nuevo");
             btnModificar.Text = Traductor.T("comun.modificar");
             btnCerrarDetalle.Text = Traductor.T("comun.cerrar");
@@ -77,6 +78,32 @@ namespace Strategic
 
             OcultarDetalle();
             Consultar(false);
+        }
+
+        // Descarga los roles que cumplen los filtros cargados, con su arbol de permisos
+        protected void btnExportarXml_Click(object sender, EventArgs e)
+        {
+            byte[] archivo;
+
+            try
+            {
+                archivo = bllRol.ExportarRolesXml(txtNombre.Text, ObtenerEstadoElegido(),
+                    SessionManager.UsuarioActual.NombreUsuario);
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = Server.HtmlEncode(ex.Message);
+                return;
+            }
+
+            Response.Clear();
+            Response.ContentType = "application/xml";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + bllRol.NombreArchivoExportacion());
+            Response.AppendHeader("Content-Length", archivo.Length.ToString());
+            Response.BinaryWrite(archivo);
+            Response.Flush();
+            Response.SuppressContent = true;
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         protected void btnNuevo_Click(object sender, EventArgs e)

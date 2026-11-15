@@ -34,6 +34,7 @@
                 <div class="filtros-acciones">
                     <asp:Button ID="btnFiltrar" runat="server" CssClass="btn btn-strategic" OnClick="btnFiltrar_Click" />
                     <asp:Button ID="btnLimpiar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnLimpiar_Click" />
+                    <asp:Button ID="btnExportarXml" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnExportarXml_Click" />
                 </div>
 
                 <asp:Label ID="lblError" runat="server" CssClass="mensaje-error" EnableViewState="false"></asp:Label>

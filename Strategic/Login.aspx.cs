@@ -17,8 +17,6 @@ namespace Strategic
             Title = Traductor.T("login.titulo");
             lblNombreUsuario.Text = Traductor.T("login.usuario");
             rfvNombreUsuario.ErrorMessage = Traductor.T("login.usuarioRequerido");
-            lblClave.Text = Traductor.T("login.clave");
-            rfvClave.ErrorMessage = Traductor.T("login.claveRequerida");
             btnLogin.Text = Traductor.T("login.ingresar");
         }
 
@@ -45,7 +43,7 @@ namespace Strategic
             try
             {
                 // Intenta realizar el inicio de sesión y redirige al menú principal si es exitoso
-                BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), txtClave.Text);
+                BEUsuario usuario = bllUsuario.Login(txtNombreUsuario.Text.Trim(), campoClave.Clave);
 
                 // Con la suscripcion vencida solo se puede renovar. El usuario de
                 // emergencia entra igual: tiene que poder reparar el sistema

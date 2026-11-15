@@ -22,8 +22,6 @@ namespace Strategic
         public override void ActualizarIdioma()
         {
             Title = Traductor.T("bajaSuscripcion.titulo");
-            lblClave.Text = Traductor.T("bajaSuscripcion.clave");
-            valClave.ErrorMessage = Traductor.T("error.debeCompletar", Traductor.T("campo.laClave"));
             btnConfirmar.Text = Traductor.T("bajaSuscripcion.confirmar");
             btnCancelar.Text = Traductor.T("comun.cancelar");
             btnVolver.Text = Traductor.T("bajaSuscripcion.volver");
@@ -46,7 +44,7 @@ namespace Strategic
 
             try
             {
-                finDeAcceso = bllSuscripcion.CancelarSuscripcion(txtClave.Text, enSesion.NombreUsuario);
+                finDeAcceso = bllSuscripcion.CancelarSuscripcion(campoClave.Clave, enSesion.NombreUsuario);
             }
             catch (Exception ex)
             {

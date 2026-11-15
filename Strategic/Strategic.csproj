@@ -215,6 +215,8 @@
     <Content Include="ProductosSincronizados.aspx" />
     <Content Include="Scripts\strategic-graficos.js" />
     <Content Include="Scripts\strategic-selector.js" />
+    <Content Include="Scripts\strategic-selector-permisos.js" />
+    <Content Include="Scripts\strategic-campo-clave.js" />
     <Content Include="Content\images\Strategic_ISOTIPO_PNG.ico" />
     <Content Include="Content\images\Strategic_ISOTIPO_PNG.png" />
     <Content Include="Content\images\Strategic_LOGO_PNG.png" />
@@ -304,6 +306,7 @@
     <Content Include="Componentes\SelectorCompetidor.ascx" />
     <Content Include="Componentes\SelectorPermisos.ascx" />
     <Content Include="Componentes\SelectorProducto.ascx" />
+    <Content Include="Componentes\CampoClave.ascx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -708,6 +711,13 @@
     </Compile>
     <Compile Include="Componentes\SelectorCompetidor.ascx.designer.cs">
       <DependentUpon>SelectorCompetidor.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Componentes\CampoClave.ascx.cs">
+      <DependentUpon>CampoClave.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Componentes\CampoClave.ascx.designer.cs">
+      <DependentUpon>CampoClave.ascx</DependentUpon>
     </Compile>
     <Compile Include="Componentes\SelectorProducto.ascx.cs">
       <DependentUpon>SelectorProducto.ascx</DependentUpon>

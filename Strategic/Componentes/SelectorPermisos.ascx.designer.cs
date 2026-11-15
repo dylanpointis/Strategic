@@ -15,6 +15,9 @@ namespace Strategic.Componentes
     {
 
         
+        /// Control lblTitulo.
+        protected global::System.Web.UI.WebControls.Label lblTitulo;
+
         /// Control lblTituloDisponibles.
         
         protected global::System.Web.UI.WebControls.Label lblTituloDisponibles;
@@ -30,6 +33,9 @@ namespace Strategic.Componentes
         protected global::System.Web.UI.WebControls.Label lblAyudaDisponibles;
 
         
+        /// Control divDetalleFamilia.
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDetalleFamilia;
+
         /// Control btnAgregar.
         
         protected global::System.Web.UI.WebControls.Button btnAgregar;

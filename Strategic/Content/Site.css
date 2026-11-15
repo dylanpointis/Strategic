@@ -1184,6 +1184,155 @@ textarea {
     }
 }
 
+/* ---------- Componentes de usuario (FiltroFechas, SelectorPermisos) ---------- */
+
+/* Un control de usuario se marca con su titulo arriba y una linea inferior
+   que abarca todos sus campos, para que se lea como una sola pieza */
+.componente-grupo {
+    margin-top: 22px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0c5e2;
+}
+
+.componente-titulo {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #c6128f;
+}
+
+/* Dentro de la grilla de filtros el rango ocupa dos columnas, y sus dos
+   campos se reparten todo ese ancho: la linea mide lo mismo que ellos */
+.componente-fechas {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+    align-items: end;
+    margin-top: 0;
+    margin-bottom: -14px;
+}
+
+    .componente-fechas .componente-titulo,
+    .componente-fechas .filtro-error {
+        grid-column: 1 / -1;
+    }
+
+    .componente-fechas .filtro-accion {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+    }
+
+    .componente-fechas .filtro-error {
+        margin-top: 10px;
+    }
+
+@media screen and (max-width: 575.98px) {
+    .componente-fechas {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Contenido de la familia elegida en el SelectorPermisos */
+.selector-detalle-familia {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background-color: #ffffff;
+    border: 1px solid #f0c5e2;
+    border-radius: 8px;
+}
+
+.selector-detalle-titulo {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #8a6d80;
+}
+
+/* ---------- CampoClave ---------- */
+
+/* El boton para mostrar la clave va dentro del campo, a la derecha */
+.campo-clave-entrada {
+    position: relative;
+}
+
+    .campo-clave-entrada .form-control {
+        padding-right: 78px;
+    }
+
+.campo-clave-ver {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    padding: 3px 8px;
+    border: 0;
+    border-radius: 6px;
+    background-color: transparent;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+    .campo-clave-ver:hover {
+        color: #343a40;
+        background-color: #f1f3f5;
+    }
+
+.campo-clave-requisitos {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #8a6d80;
+}
+
+    .campo-clave-requisitos ul {
+        list-style: none;
+        margin: 4px 0 0;
+        padding: 0;
+    }
+
+    .campo-clave-requisitos li::before {
+        content: "\25CB";
+        display: inline-block;
+        width: 16px;
+    }
+
+    /* Requisito cumplido: lo marca el script mientras se escribe */
+    .campo-clave-requisitos li.cumple {
+        color: #1f8a4c;
+    }
+
+        .campo-clave-requisitos li.cumple::before {
+            content: "\2713";
+        }
+
+.campo-clave-requisitos-titulo {
+    font-weight: 600;
+}
+
+.campo-clave-confirmacion {
+    margin-top: 16px;
+}
+
+.campo-clave-coincide {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+    .campo-clave-coincide.coinciden {
+        color: #1f8a4c;
+    }
+
+    .campo-clave-coincide.no-coinciden {
+        color: #b02a52;
+    }
+
 /* ---------- Arbol de componentes ---------- */
 
 .arbol-permisos ul {

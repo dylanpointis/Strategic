@@ -15,9 +15,7 @@ namespace Strategic
     {
         protected global::System.Web.UI.WebControls.Panel pnlConfirmacion;
         protected global::System.Web.UI.WebControls.Label lblAdvertencia;
-        protected global::System.Web.UI.WebControls.Label lblClave;
-        protected global::System.Web.UI.WebControls.TextBox txtClave;
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator valClave;
+        protected global::Strategic.Componentes.CampoClave campoClave;
         protected global::System.Web.UI.WebControls.Button btnConfirmar;
         protected global::System.Web.UI.WebControls.Button btnCancelar;
         protected global::System.Web.UI.WebControls.Label lblError;

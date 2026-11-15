@@ -19,6 +19,8 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
+
+        protected global::System.Web.UI.WebControls.Button btnExportarXml;
         protected global::System.Web.UI.WebControls.Label lblError;
         protected global::System.Web.UI.WebControls.Label lblExito;
         protected global::System.Web.UI.WebControls.Label lblAvisoFiltros;

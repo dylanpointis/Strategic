@@ -19,9 +19,7 @@
 
                 <div class="formulario-grid">
                     <div class="campo">
-                        <asp:Label ID="lblClave" runat="server" AssociatedControlID="txtClave" CssClass="form-label"></asp:Label>
-                        <asp:TextBox ID="txtClave" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100" autocomplete="current-password"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="valClave" runat="server" ControlToValidate="txtClave" Display="Dynamic" CssClass="campo-error" ValidationGroup="Baja"></asp:RequiredFieldValidator>
+                        <sc:CampoClave ID="campoClave" runat="server" Etiqueta="bajaSuscripcion.clave" ValidationGroup="Baja" />
                     </div>
                 </div>
 

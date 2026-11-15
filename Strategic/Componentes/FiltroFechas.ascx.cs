@@ -164,6 +164,7 @@ namespace Strategic.Componentes
 
         protected override void OnPreRender(EventArgs e)
         {
+            lblTitulo.Text = Traductor.T("filtroFechas.titulo");
             lblDesde.Text = Traductor.T(EtiquetaDesde);
             lblHasta.Text = Traductor.T(EtiquetaHasta);
             btnAplicar.Text = Traductor.T(TextoBoton);

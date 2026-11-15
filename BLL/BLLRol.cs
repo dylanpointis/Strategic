@@ -4,6 +4,9 @@ using DAL;
 using Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
 
 namespace BLL
 {
@@ -72,6 +75,119 @@ namespace BLL
             }
 
             return roles;
+        }
+
+        #endregion
+
+        #region Exportacion XML - CU-005-021
+
+        // Los roles que cumplen los filtros de la consulta, cada uno con su
+        // arbol completo. El XML queda anidado igual que el Composite: una
+        // familia contiene permisos y otras familias
+        public byte[] ExportarRolesXml(string nombre, bool? activo, string nombreUsuarioEnSesion)
+        {
+            List<BERol> roles = new List<BERol>();
+
+            foreach (BERol rol in FiltrarRoles(nombre, activo))
+            {
+                BERol conComponentes = dalRol.TraerRolConComponentes(rol.CodRol);
+
+                if (conComponentes != null)
+                {
+                    roles.Add(conComponentes);
+                }
+            }
+
+            // Alternativa 10.1 [#ERR013]: no se exporta un archivo vacio
+            if (roles.Count == 0)
+            {
+                throw new Exception(Traductor.T("comun.sinResultadosFiltros"));
+            }
+
+            // Alternativa 10.2 [#ERR020]
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    // Se escribe en forma secuencial: encabezado y cada rol con su arbol
+                    XmlTextWriter escritor = new XmlTextWriter(stream, new UTF8Encoding(false));
+                    escritor.Formatting = Formatting.Indented;
+
+                    escritor.WriteStartDocument();
+                    escritor.WriteStartElement("RolesYPermisos");
+
+                    escritor.WriteStartElement("Encabezado");
+                    escritor.WriteElementString("FechaGeneracion", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"));
+                    escritor.WriteElementString("GeneradoPor", nombreUsuarioEnSesion);
+                    escritor.WriteElementString("CantidadRoles", roles.Count.ToString());
+
+                    // Los filtros vacios quedan como nodos vacios: significan "todos"
+                    escritor.WriteStartElement("Filtros");
+                    escritor.WriteElementString("Nombre", string.IsNullOrWhiteSpace(nombre) ? string.Empty : nombre.Trim());
+                    escritor.WriteElementString("Estado", activo.HasValue ? (activo.Value ? "Activos" : "Inactivos") : string.Empty);
+                    escritor.WriteEndElement();
+
+                    escritor.WriteEndElement();
+
+                    escritor.WriteStartElement("Roles");
+
+                    foreach (BERol rol in roles)
+                    {
+                        escritor.WriteStartElement("Rol");
+                        escritor.WriteAttributeString("Codigo", rol.CodRol.ToString());
+                        escritor.WriteAttributeString("Nombre", rol.Nombre);
+                        escritor.WriteAttributeString("Activo", rol.Activo ? "true" : "false");
+                        escritor.WriteAttributeString("UsuariosActivos", rol.UsuariosActivos.ToString());
+                        escritor.WriteAttributeString("PantallasHabilitadas", rol.ObtenerPermisosSimples().Count.ToString());
+
+                        foreach (BEComponente componente in rol.Componentes.ObtenerHijos())
+                        {
+                            EscribirComponente(escritor, componente);
+                        }
+
+                        escritor.WriteEndElement();
+                    }
+
+                    escritor.WriteEndElement();
+                    escritor.WriteEndElement();
+                    escritor.WriteEndDocument();
+
+                    escritor.Flush();
+
+                    return stream.ToArray();
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception(Traductor.T("error.exportarReporte"));
+            }
+        }
+
+        public string NombreArchivoExportacion()
+        {
+            return "Roles-" + DateTime.Now.ToString("yyyyMMdd-HHmm") + ".xml";
+        }
+
+        // Mismo recorrido para hojas y familias: una hoja no tiene hijos y la
+        // recursion corta sola
+        private void EscribirComponente(XmlTextWriter escritor, BEComponente componente)
+        {
+            escritor.WriteStartElement(componente.EsFamilia ? "Familia" : "Permiso");
+            escritor.WriteAttributeString("Codigo", componente.CodPermiso.ToString());
+            escritor.WriteAttributeString("Nombre", componente.Nombre);
+            escritor.WriteAttributeString("Activo", componente.Activo ? "true" : "false");
+
+            if (componente.EsFamilia)
+            {
+                escritor.WriteAttributeString("PantallasHabilitadas", componente.CantidadPermisosSimples.ToString());
+            }
+
+            foreach (BEComponente hijo in componente.ObtenerHijos())
+            {
+                EscribirComponente(escritor, hijo);
+            }
+
+            escritor.WriteEndElement();
         }
 
         #endregion

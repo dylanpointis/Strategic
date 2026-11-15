@@ -2,6 +2,8 @@
 using Services;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -47,6 +49,7 @@ namespace Strategic.Componentes
 
         public void ActualizarIdioma()
         {
+            lblTitulo.Text = Traductor.T("selectorPermisos.titulo");
             lblTituloDisponibles.Text = Traductor.T("selectorPermisos.disponibles");
             lblAyudaDisponibles.Text = Traductor.T("selectorPermisos.ayuda");
             lblTituloSeleccionados.Text = Traductor.T("selectorPermisos.composicion");
@@ -182,7 +185,10 @@ namespace Strategic.Componentes
                 return;
             }
 
+            // El item llega marcado como seleccionado: si la otra lista ya
+            // tenia uno elegido quedarian dos y la ListBox en modo Single falla
             lstDisponibles.Items.Remove(elegido);
+            lstSeleccionados.ClearSelection();
             lstSeleccionados.Items.Add(elegido);
 
             ActualizarResumen();
@@ -203,6 +209,7 @@ namespace Strategic.Componentes
             // Vuelve a la lista de disponibles solo si sigue estando vigente
             if (Catalogo.ContainsKey(Convert.ToInt32(elegido.Value)))
             {
+                lstDisponibles.ClearSelection();
                 lstDisponibles.Items.Add(elegido);
             }
 
@@ -236,6 +243,51 @@ namespace Strategic.Componentes
             }
 
             return null;
+        }
+
+        // Deja armado el contenido de cada familia del catalogo, oculto. Al
+        // elegir una familia en cualquiera de las dos listas, el script muestra
+        // el suyo sin volver al servidor
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+
+            StringBuilder html = new StringBuilder();
+
+            foreach (BEComponente componente in Catalogo.Values)
+            {
+                if (!componente.EsFamilia)
+                {
+                    continue;
+                }
+
+                html.AppendFormat("<div class=\"selector-detalle-familia\" data-codigo=\"{0}\" hidden>", componente.CodPermiso);
+                html.AppendFormat("<span class=\"selector-detalle-titulo\">{0}</span>",
+                    HttpUtility.HtmlEncode(Traductor.T("selectorPermisos.contenidoFamilia", componente.Nombre)));
+
+                List<BEComponente> hijos = componente.ObtenerHijos();
+
+                if (hijos.Count == 0)
+                {
+                    html.AppendFormat("<span class=\"campo-ayuda\">{0}</span>",
+                        HttpUtility.HtmlEncode(Traductor.T("selectorPermisos.familiaVacia")));
+                }
+                else
+                {
+                    html.AppendFormat("<div class=\"arbol-permisos\">{0}</div>", ArbolPermisos.Renderizar(hijos));
+                }
+
+                html.Append("</div>");
+            }
+
+            divDetalleFamilia.InnerHtml = html.ToString();
+
+            Page.ClientScript.RegisterClientScriptInclude(typeof(SelectorPermisos), "strategic-selector-permisos",
+                Page.ResolveUrl("~/Scripts/strategic-selector-permisos.js"));
+
+            Page.ClientScript.RegisterStartupScript(typeof(SelectorPermisos), ClientID,
+                string.Format("Strategic.selectorPermisos.iniciar('{0}', '{1}', '{2}');",
+                    lstDisponibles.ClientID, lstSeleccionados.ClientID, divDetalleFamilia.ClientID), true);
         }
 
         private ListItem CrearItem(BEComponente componente)

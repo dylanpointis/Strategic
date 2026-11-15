@@ -42,9 +42,7 @@
             </div>
 
             <div class="mb-3">
-                <asp:Label ID="lblClave" runat="server" AssociatedControlID="txtClave" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txtClave" runat="server" TextMode="Password" CssClass="form-control" MaxLength="100"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvClave" runat="server" ControlToValidate="txtClave" CssClass="text-danger" Display="Dynamic"></asp:RequiredFieldValidator>
+                <sc:CampoClave ID="campoClave" runat="server" ClaseError="text-danger" />
             </div>
 
             <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-strategic w-100" OnClick="btnLogin_Click" />
