@@ -240,6 +240,7 @@
     <Content Include="Default.aspx" />
     <Content Include="App_Data\Idiomas\en.json" />
     <Content Include="App_Data\Idiomas\es.json" />
+    <Content Include="App_Data\Idiomas\pt.json" />
     <Content Include="App_Data\Plantillas\FacturaSuscripcion.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

@@ -118,6 +118,8 @@
                                 <asp:LinkButton ID="lnkEspanolPublico" runat="server" CausesValidation="false" OnClick="lnkEspanol_Click">ES</asp:LinkButton>
                                 <span>|</span>
                                 <asp:LinkButton ID="lnkInglesPublico" runat="server" CausesValidation="false" OnClick="lnkIngles_Click">EN</asp:LinkButton>
+                                <span>|</span>
+                                <asp:LinkButton ID="lnkPortuguesPublico" runat="server" CausesValidation="false" OnClick="lnkPortugues_Click">PT</asp:LinkButton>
                             </span>
                         </li>
                         <li id="navLogin" runat="server" class="nav-item"><a class="nav-link" runat="server" href="~/Login"><%: Traductor.T("master.ingresar") %></a></li>
@@ -139,6 +141,8 @@
                                         <asp:LinkButton ID="lnkEspanol" runat="server" CausesValidation="false" OnClick="lnkEspanol_Click">ES</asp:LinkButton>
                                         <span>|</span>
                                         <asp:LinkButton ID="lnkIngles" runat="server" CausesValidation="false" OnClick="lnkIngles_Click">EN</asp:LinkButton>
+                                        <span>|</span>
+                                        <asp:LinkButton ID="lnkPortugues" runat="server" CausesValidation="false" OnClick="lnkPortugues_Click">PT</asp:LinkButton>
                                     </span>
                                 </li>
                                 <li id="navCambiarClave" runat="server"><a class="dropdown-item" runat="server" href="~/CambiarClave"><%: Traductor.T("master.cambiarClave") %></a></li>

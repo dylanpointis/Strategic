@@ -24,6 +24,7 @@ namespace Services
     {
         public const string Espanol = "es";
         public const string Ingles = "en";
+        public const string Portugues = "pt";
 
         private const string NombreCookie = "idioma";
         private const string ClaveIdioma = "Traductor.Idioma";
@@ -49,7 +50,12 @@ namespace Services
                     idioma = cookie != null ? cookie.Value : Espanol;
                 }
 
-                return idioma == Ingles ? Ingles : Espanol;
+                if (idioma == Ingles || idioma == Portugues)
+                {
+                    return idioma;
+                }
+
+                return Espanol;
             }
         }
 

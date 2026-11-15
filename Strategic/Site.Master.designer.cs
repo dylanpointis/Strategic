@@ -101,5 +101,11 @@ namespace Strategic
 
         // Control lnkInglesPublico.
         protected global::System.Web.UI.WebControls.LinkButton lnkInglesPublico;
+
+        // Control lnkPortugues.
+        protected global::System.Web.UI.WebControls.LinkButton lnkPortugues;
+
+        // Control lnkPortuguesPublico.
+        protected global::System.Web.UI.WebControls.LinkButton lnkPortuguesPublico;
     }
 }

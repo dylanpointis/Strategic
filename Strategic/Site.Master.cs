@@ -44,14 +44,21 @@ namespace Strategic
             Traductor.CambiarIdioma(Traductor.Ingles);
         }
 
+        protected void lnkPortugues_Click(object sender, EventArgs e)
+        {
+            Traductor.CambiarIdioma(Traductor.Portugues);
+        }
+
         // Los textos del menu estan en el markup y se resuelven solos al
         // dibujar; aca van los que se arman desde codigo
         public void ActualizarIdioma()
         {
             lnkEspanol.CssClass = Traductor.IdiomaActual == Traductor.Espanol ? "idioma-actual" : string.Empty;
             lnkIngles.CssClass = Traductor.IdiomaActual == Traductor.Ingles ? "idioma-actual" : string.Empty;
+            lnkPortugues.CssClass = Traductor.IdiomaActual == Traductor.Portugues ? "idioma-actual" : string.Empty;
             lnkEspanolPublico.CssClass = lnkEspanol.CssClass;
             lnkInglesPublico.CssClass = lnkIngles.CssClass;
+            lnkPortuguesPublico.CssClass = lnkPortugues.CssClass;
 
             BEUsuario usuario = SessionManager.UsuarioActual;
 
