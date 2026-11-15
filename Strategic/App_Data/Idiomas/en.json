@@ -865,6 +865,8 @@
   "recomendaciones.descripcion": "Description",
   "recomendaciones.guardada": "Saved",
   "recomendaciones.guardadaOk": "The recommendation was saved successfully",
+  "recomendaciones.eliminar": "Delete recommendation",
+  "recomendaciones.eliminadaOk": "The recommendation was deleted successfully",
   "recomendaciones.guardar": "Save recommendation",
   "recomendaciones.justificacion": "Rationale",
   "recomendaciones.listado": "Generated recommendations",

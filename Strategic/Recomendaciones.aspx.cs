@@ -128,6 +128,32 @@ namespace Strategic
             }
         }
 
+        protected void btnEliminar_Click(object sender, EventArgs e)
+        {
+            BERecomendacion recomendacion = Buscar(NumeroSeleccionado);
+
+            if (recomendacion == null)
+            {
+                OcultarDetalle();
+                lblError.Text = Server.HtmlEncode(Traductor.T("recomendaciones.noEncontrada"));
+                return;
+            }
+
+            try
+            {
+                bllRecomendacion.EliminarRecomendacion(recomendacion, UsuarioEnSesion.NombreUsuario);
+
+                Consultar(false);
+                MostrarDetalle(recomendacion.Numero);
+
+                lblExito.Text = Server.HtmlEncode(Traductor.T("recomendaciones.eliminadaOk"));
+            }
+            catch (Exception ex)
+            {
+                lblErrorDetalle.Text = Server.HtmlEncode(ex.Message);
+            }
+        }
+
         protected void btnCerrarDetalle_Click(object sender, EventArgs e)
         {
             OcultarDetalle();
@@ -291,6 +317,10 @@ namespace Strategic
             btnGuardar.Text = recomendacion.Guardada
                 ? Traductor.T("recomendaciones.guardada")
                 : Traductor.T("recomendaciones.guardar");
+
+            // Solo se puede eliminar una recomendacion ya guardada
+            btnEliminar.Visible = recomendacion.Guardada;
+            btnEliminar.Text = Traductor.T("recomendaciones.eliminar");
 
             pnlDetalle.Visible = true;
         }

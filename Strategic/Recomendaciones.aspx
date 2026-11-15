@@ -157,6 +157,7 @@
 
                         <div class="detalle-acciones">
                             <asp:Button ID="btnGuardar" runat="server" CssClass="btn btn-strategic" CausesValidation="false" OnClick="btnGuardar_Click" />
+                            <asp:Button ID="btnEliminar" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnEliminar_Click" />
                             <asp:Button ID="btnCerrarDetalle" runat="server" CssClass="btn btn-strategic-outline" CausesValidation="false" OnClick="btnCerrarDetalle_Click" />
                         </div>
                     </div>

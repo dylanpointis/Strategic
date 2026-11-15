@@ -44,6 +44,7 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Label lblErrorDetalle;
         protected global::System.Web.UI.WebControls.Label lblExito;
         protected global::System.Web.UI.WebControls.Button btnGuardar;
+        protected global::System.Web.UI.WebControls.Button btnEliminar;
         protected global::System.Web.UI.WebControls.Button btnCerrarDetalle;
     }
 }

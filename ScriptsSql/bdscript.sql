@@ -2267,6 +2267,22 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [dbo].[EliminarRecomendacion]
+    @IdProducto INT,
+    @Regla NVARCHAR(30),
+    @Fecha DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Misma clave que ExisteRecomendacionGuardada: regla, producto y dia
+    DELETE FROM [dbo].[Recomendacion]
+    WHERE [IdProducto] = @IdProducto
+      AND [Regla] = @Regla
+      AND CONVERT(DATE, [FechaGeneracion]) = @Fecha
+END
+GO
+
 /* ============================================================
    009. Suscripciones - CU-009-042 Renovar Suscripcion
                         CU-009-043 Baja Suscripcion

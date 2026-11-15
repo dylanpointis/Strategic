@@ -511,6 +511,26 @@ namespace BLL
                 CriticidadCambio));
         }
 
+        public void EliminarRecomendacion(BERecomendacion recomendacion, string nombreUsuario)
+        {
+            if (recomendacion == null || !recomendacion.Guardada)
+            {
+                throw new Exception(Traductor.T("error.seleccioneRecomendacion"));
+            }
+
+            dalRecomendacion.EliminarRecomendacion(recomendacion.IdProducto, recomendacion.Regla, recomendacion.FechaGeneracion);
+            recomendacion.Guardada = false;
+            recomendacion.IdRecomendacion = 0;
+
+            bllDigitoVerificador.PersistirDV("Recomendacion");
+
+            bllEvento.RegistrarEvento(new Evento(
+                nombreUsuario,
+                ModuloRecomendaciones,
+                string.Format("Recomendacion eliminada: {0} - {1}", recomendacion.Regla, recomendacion.NombreProducto),
+                CriticidadCambio));
+        }
+
         #endregion
     }
 }

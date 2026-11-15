@@ -35,6 +35,18 @@ namespace DAL
             return 0;
         }
 
+        public void EliminarRecomendacion(int idProducto, string regla, DateTime fecha)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@IdProducto", idProducto),
+                new SqlParameter("@Regla", regla),
+                new SqlParameter("@Fecha", fecha.Date)
+            };
+
+            dalCon.EjecutarProcAlmacenado("EliminarRecomendacion", parametros);
+        }
+
         // Recomendaciones de la misma regla para el producto ya guardadas ese dia
         public int ContarRecomendacionesGuardadas(int idProducto, string regla, DateTime fecha)
         {

@@ -865,6 +865,8 @@
   "recomendaciones.descripcion": "Descripción",
   "recomendaciones.guardada": "Guardada",
   "recomendaciones.guardadaOk": "La recomendación se guardó correctamente",
+  "recomendaciones.eliminar": "Eliminar recomendación",
+  "recomendaciones.eliminadaOk": "La recomendación se eliminó correctamente",
   "recomendaciones.guardar": "Guardar recomendación",
   "recomendaciones.justificacion": "Justificación",
   "recomendaciones.listado": "Recomendaciones generadas",
