@@ -91,6 +91,7 @@ namespace BLL
                 throw new Exception(Traductor.T("backup.archivoNoEncontrado"));
             }
 
+            // [#ERR025]: solo se aceptan archivos .bak
             if (!string.Equals(Path.GetExtension(ruta), Extension, StringComparison.OrdinalIgnoreCase))
             {
                 throw new Exception(Traductor.T("restore.extensionInvalida"));

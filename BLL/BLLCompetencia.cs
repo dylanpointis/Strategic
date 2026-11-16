@@ -45,6 +45,7 @@ namespace BLL
         {
             ValidarDatos(competidor);
 
+            // Alternativa 4.2 del CU-007-033 [#ERR031]
             if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, null) > 0)
             {
                 throw new Exception(Traductor.T("error.competidorDuplicado"));
@@ -74,6 +75,7 @@ namespace BLL
                 throw new Exception(Traductor.T("error.competidorNoEncontrado"));
             }
 
+            // Alternativa 4.2 del CU-007-035 [#ERR031]
             if (dalCompetencia.ContarCompetidoresConNombre(competidor.Nombre, competidor.IdCompetencia) > 0)
             {
                 throw new Exception(Traductor.T("error.competidorDuplicado"));
@@ -199,6 +201,7 @@ namespace BLL
                 throw new Exception(Traductor.T("error.competidorNoEncontrado"));
             }
 
+            // Alternativa 4.2 del CU-007-036 [#ERR031]
             if (dalCompetencia.ContarMapeosProductoCompetidor(idProducto, idCompetencia) > 0)
             {
                 throw new Exception(Traductor.T("error.mapeoDuplicado"));

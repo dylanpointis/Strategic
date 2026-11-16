@@ -48,11 +48,13 @@ namespace BLL
 
             BEUsuario usuario = ValidarUsuario(nombreUsuario, string.Empty);
 
+            // Alternativa 4.3 [#ERR003]
             if (usuario == null)
             {
                 throw new Exception(Traductor.T("error.usuarioInexistente"));
             }
 
+            // Alternativa 4.4 [#ERR004]
             if (usuario.Bloqueado || !usuario.Activo)
             {
                 throw new Exception(Traductor.T("error.usuarioBloqueado"));
@@ -63,6 +65,7 @@ namespace BLL
                 int intentosFallidos = usuario.ContFallidos + 1;
                 ModificarContFallido(usuario.NombreUsuario, intentosFallidos);
 
+                // Alternativa 4.6 [#ERR006]
                 if (intentosFallidos >= IntentosAntesDeBloquear)
                 {
                     ModificarBloqueo(usuario.NombreUsuario, true);
@@ -70,6 +73,7 @@ namespace BLL
                     throw new Exception(Traductor.T("error.usuarioBloqueadoIntentos"));
                 }
 
+                // Alternativa 4.5 [#ERR005]
                 throw new Exception(Traductor.T("error.credencialesInvalidas"));
             }
 
