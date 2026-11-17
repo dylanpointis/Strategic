@@ -20,6 +20,7 @@ namespace Strategic
             Title = Traductor.T("mapearProductos.titulo");
             lblUrl.Text = Traductor.T("mapearProductos.url");
             valUrl.ErrorMessage = Traductor.T("mapearProductos.urlRequerida");
+            valFormatoUrl.ErrorMessage = Traductor.T("error.urlInvalida");
             btnMapear.Text = Traductor.T("mapearProductos.mapear");
             btnLimpiar.Text = Traductor.T("comun.limpiar");
         }

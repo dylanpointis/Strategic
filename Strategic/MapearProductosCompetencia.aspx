@@ -30,6 +30,7 @@
                         <asp:Label ID="lblUrl" runat="server" AssociatedControlID="txtUrl" CssClass="form-label"></asp:Label>
                         <asp:TextBox ID="txtUrl" runat="server" CssClass="form-control" MaxLength="500" placeholder="https://www.mercadolibre.com.ar/..."></asp:TextBox>
                         <asp:RequiredFieldValidator ID="valUrl" runat="server" ControlToValidate="txtUrl" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RequiredFieldValidator>
+                        <asp:RegularExpressionValidator ID="valFormatoUrl" runat="server" ControlToValidate="txtUrl" ValidationExpression="^\s*[Hh][Tt][Tt][Pp][Ss]?://[^\s/]+\S*\s*$" Display="Dynamic" CssClass="campo-error" ValidationGroup="Mapeo"></asp:RegularExpressionValidator>
                     </div>
                 </div>
 

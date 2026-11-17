@@ -37,6 +37,8 @@ namespace Strategic
         
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valUrl;
 
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valFormatoUrl;
+
         /// Control btnMapear.
         
         protected global::System.Web.UI.WebControls.Button btnMapear;

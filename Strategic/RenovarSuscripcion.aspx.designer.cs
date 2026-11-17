@@ -37,6 +37,7 @@ namespace Strategic
         protected global::System.Web.UI.WebControls.Label lblNumeroOperacion;
         protected global::System.Web.UI.WebControls.TextBox txtNumeroOperacion;
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valNumeroOperacion;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valFormatoNumeroOperacion;
         protected global::System.Web.UI.WebControls.Button btnConfirmar;
         protected global::System.Web.UI.WebControls.Button btnCancelar;
         protected global::System.Web.UI.WebControls.Label lblErrorRenovacion;

@@ -31,6 +31,7 @@ namespace Strategic
             btnDarDeBaja.Text = Traductor.T("renovarSuscripcion.darDeBaja");
             lblNumeroOperacion.Text = Traductor.T("suscripcion.numeroOperacion");
             valNumeroOperacion.ErrorMessage = Traductor.T("error.debeCompletar", Traductor.T("campo.elNumeroOperacion"));
+            valFormatoNumeroOperacion.ErrorMessage = Traductor.T("error.numeroOperacionInvalido");
             btnConfirmar.Text = Traductor.T("renovarSuscripcion.confirmarPago");
             btnCancelar.Text = Traductor.T("comun.cancelar");
             lblSinSuscripcion.Text = Traductor.T("error.sinSuscripcion");

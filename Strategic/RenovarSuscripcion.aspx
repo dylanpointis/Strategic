@@ -107,6 +107,7 @@
                             <asp:Label ID="lblNumeroOperacion" runat="server" AssociatedControlID="txtNumeroOperacion" CssClass="form-label"></asp:Label>
                             <asp:TextBox ID="txtNumeroOperacion" runat="server" CssClass="form-control" MaxLength="30" autocomplete="off"></asp:TextBox>
                             <asp:RequiredFieldValidator ID="valNumeroOperacion" runat="server" ControlToValidate="txtNumeroOperacion" Display="Dynamic" CssClass="campo-error" ValidationGroup="Renovacion"></asp:RequiredFieldValidator>
+                            <asp:RegularExpressionValidator ID="valFormatoNumeroOperacion" runat="server" ControlToValidate="txtNumeroOperacion" ValidationExpression="^\s*[A-Za-z0-9-]{4,30}\s*$" Display="Dynamic" CssClass="campo-error" ValidationGroup="Renovacion"></asp:RegularExpressionValidator>
                         </div>
                     </div>
 
