@@ -101,7 +101,7 @@ DELETE FROM [dbo].[Producto] WHERE [Codigo] LIKE 'SKU-1%'
 GO
 
 DELETE FROM [dbo].[Competencia]
-WHERE [Nombre] IN (N'TecnoStore Online', N'MegaCompu', N'Gamer Point', N'Insumos del Sur')
+WHERE [Nombre] IN (N'TecnoStore Online', N'MegaCompu', N'Gamer Point', N'Insumos del Sur', N'ElectroMundo')
 GO
 
 -- La suscripcion de la instancia solo tiene los periodos de prueba
@@ -172,7 +172,16 @@ VALUES
     -- SKU-1007 y SKU-1008 quedan mas de un 15% por encima de la competencia
     -- para las recomendaciones de precio (CU-002-005)
     (7, N'SKU-1007', N'Parlante portátil Bluetooth 20W', N'Activo',  78000.00,  10,  40,  5, N'Audio',       0, '2026-09-05T03:00:00', N'JBL'),
-    (8, N'SKU-1008', N'Silla gamer ergonómica',          N'Activo', 210000.00,   6,  20,  3, N'Gaming',      0, '2026-09-05T03:00:00', N'Corsair')
+    (8, N'SKU-1008', N'Silla gamer ergonómica',          N'Activo', 210000.00,   6,  20,  3, N'Gaming',      0, '2026-09-05T03:00:00', N'Corsair'),
+    -- SKU-1009 a SKU-1014 completan 14 productos para ver el paginado de
+    -- las grillas. Tienen stock sobre el minimo, ventas parejas y precios
+    -- cerca de la competencia: no suman recomendaciones ni automatizaciones
+    (9,  N'SKU-1009', N'Disco SSD NVMe 1TB',               N'Activo',  95000.00,  14,  40,  4, N'Almacenamiento', 0, '2026-09-05T03:00:00', N'Kingston'),
+    (10, N'SKU-1010', N'Memoria RAM 16GB DDR4',            N'Activo',  52000.00,  20,  60,  6, N'Componentes',    0, '2026-09-05T03:00:00', N'Kingston'),
+    (11, N'SKU-1011', N'Impresora multifunción WiFi',      N'Activo', 280000.00,   5,  15,  2, N'Impresión',      0, '2026-09-05T03:00:00', N'HP'),
+    (12, N'SKU-1012', N'Router WiFi 6 doble banda',        N'Activo',  89000.00,   9,  30,  3, N'Redes',          0, '2026-09-05T03:00:00', N'TP-Link'),
+    (13, N'SKU-1013', N'Tablet 10" 64GB',                  N'Activo', 410000.00,   6,  18,  2, N'Tablets',        0, '2026-09-05T03:00:00', N'Samsung'),
+    (14, N'SKU-1014', N'Smartwatch deportivo',             N'Activo', 135000.00,  11,  30,  3, N'Wearables',      0, '2026-09-05T03:00:00', N'Xiaomi')
 
 SET IDENTITY_INSERT [dbo].[Producto] OFF
 GO
@@ -465,6 +474,136 @@ GO
 
 
 /* ------------------------------------------------------------
+   Productos SKU-1009 a SKU-1014
+   Historial de precios y de stock de enero a septiembre, ventas de
+   enero a junio y una venta en cada periodo de las recomendaciones.
+   Esas ventas son la excepcion a no cargar ventas entre el 08/07 y
+   el 05/09: sin ventas en esos periodos, cada producto nuevo sumaria
+   una recomendacion de sobrestock. Venden las mismas unidades en los
+   dos periodos y su stock no supera tres meses de venta, asi que no
+   cambian las recomendaciones del CU-002-005.
+   ------------------------------------------------------------ */
+
+INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha])
+VALUES
+    (9,   84000.00, '2026-01-10T09:00:00'),
+    (9,   88000.00, '2026-04-10T09:00:00'),
+    (9,   92000.00, '2026-07-01T09:00:00'),
+    (9,   95000.00, '2026-09-01T09:00:00'),
+    (10,  46000.00, '2026-01-10T09:00:00'),
+    (10,  48500.00, '2026-04-10T09:00:00'),
+    (10,  50500.00, '2026-07-01T09:00:00'),
+    (10,  52000.00, '2026-09-01T09:00:00'),
+    (11, 245000.00, '2026-01-10T09:00:00'),
+    (11, 260000.00, '2026-04-10T09:00:00'),
+    (11, 272000.00, '2026-07-01T09:00:00'),
+    (11, 280000.00, '2026-09-01T09:00:00'),
+    (12,  78000.00, '2026-01-10T09:00:00'),
+    (12,  82000.00, '2026-04-10T09:00:00'),
+    (12,  86500.00, '2026-07-01T09:00:00'),
+    (12,  89000.00, '2026-09-01T09:00:00'),
+    (13, 360000.00, '2026-01-10T09:00:00'),
+    (13, 380000.00, '2026-04-10T09:00:00'),
+    (13, 398000.00, '2026-07-01T09:00:00'),
+    (13, 410000.00, '2026-09-01T09:00:00'),
+    (14, 118000.00, '2026-01-10T09:00:00'),
+    (14, 125000.00, '2026-04-10T09:00:00'),
+    (14, 131000.00, '2026-07-01T09:00:00'),
+    (14, 135000.00, '2026-09-01T09:00:00')
+GO
+
+INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha])
+VALUES
+    (9,  30, '2026-01-10T09:00:00'),
+    (9,  24, '2026-04-10T09:00:00'),
+    (9,  19, '2026-07-01T09:00:00'),
+    (9,  14, '2026-09-05T09:00:00'),
+    (10, 45, '2026-01-10T09:00:00'),
+    (10, 36, '2026-04-10T09:00:00'),
+    (10, 27, '2026-07-01T09:00:00'),
+    (10, 20, '2026-09-05T09:00:00'),
+    (11, 12, '2026-01-10T09:00:00'),
+    (11,  9, '2026-04-10T09:00:00'),
+    (11,  7, '2026-07-01T09:00:00'),
+    (11,  5, '2026-09-05T09:00:00'),
+    (12, 22, '2026-01-10T09:00:00'),
+    (12, 17, '2026-04-10T09:00:00'),
+    (12, 13, '2026-07-01T09:00:00'),
+    (12,  9, '2026-09-05T09:00:00'),
+    (13, 14, '2026-01-10T09:00:00'),
+    (13, 11, '2026-04-10T09:00:00'),
+    (13,  9, '2026-07-01T09:00:00'),
+    (13,  6, '2026-09-05T09:00:00'),
+    (14, 25, '2026-01-10T09:00:00'),
+    (14, 20, '2026-04-10T09:00:00'),
+    (14, 15, '2026-07-01T09:00:00'),
+    (14, 11, '2026-09-05T09:00:00')
+GO
+
+SET IDENTITY_INSERT [dbo].[Venta] ON
+
+INSERT INTO [dbo].[Venta] ([IdVenta], [NroVenta], [Fecha], [MontoTotal], [Estado])
+VALUES
+    -- Enero a junio
+    (120, N'V-2026-0120', '2026-01-20T10:30:00',  168000.00, N'Completada'),
+    (121, N'V-2026-0121', '2026-04-15T15:10:00',  264000.00, N'Completada'),
+    (122, N'V-2026-0122', '2026-02-10T11:45:00',  184000.00, N'Completada'),
+    (123, N'V-2026-0123', '2026-05-12T09:50:00',  242500.00, N'Completada'),
+    (124, N'V-2026-0124', '2026-03-18T17:20:00',  245000.00, N'Completada'),
+    (125, N'V-2026-0125', '2026-06-08T12:35:00',  520000.00, N'Completada'),
+    (126, N'V-2026-0126', '2026-02-25T10:05:00',  156000.00, N'Completada'),
+    (127, N'V-2026-0127', '2026-05-20T16:30:00',  246000.00, N'Completada'),
+    (128, N'V-2026-0128', '2026-03-09T13:15:00',  360000.00, N'Completada'),
+    (129, N'V-2026-0129', '2026-06-15T09:25:00',  760000.00, N'Completada'),
+    (130, N'V-2026-0130', '2026-01-28T18:00:00',  236000.00, N'Completada'),
+    (131, N'V-2026-0131', '2026-04-27T11:40:00',  375000.00, N'Completada'),
+    -- Mes anterior (08/07 al 06/08) y mes actual (07/08 al 05/09) de las recomendaciones
+    (29, N'V-2026-0029', '2026-07-16T10:00:00',  460000.00, N'Completada'),
+    (30, N'V-2026-0030', '2026-08-24T10:00:00',  460000.00, N'Completada'),
+    (31, N'V-2026-0031', '2026-07-17T11:00:00',  353500.00, N'Completada'),
+    (32, N'V-2026-0032', '2026-08-25T11:00:00',  353500.00, N'Completada'),
+    (33, N'V-2026-0033', '2026-07-21T12:00:00',  544000.00, N'Completada'),
+    (34, N'V-2026-0034', '2026-08-26T12:00:00',  544000.00, N'Completada'),
+    (35, N'V-2026-0035', '2026-07-22T15:00:00',  346000.00, N'Completada'),
+    (36, N'V-2026-0036', '2026-08-27T15:00:00',  346000.00, N'Completada'),
+    (37, N'V-2026-0037', '2026-07-24T16:00:00', 1194000.00, N'Completada'),
+    (38, N'V-2026-0038', '2026-08-28T16:00:00', 1194000.00, N'Completada'),
+    (39, N'V-2026-0039', '2026-07-28T17:00:00',  524000.00, N'Completada'),
+    (40, N'V-2026-0040', '2026-08-31T17:00:00',  524000.00, N'Completada')
+
+SET IDENTITY_INSERT [dbo].[Venta] OFF
+GO
+
+INSERT INTO [dbo].[ItemVenta] ([IdVenta], [IdProducto], [Cantidad], [PrecioVenta])
+VALUES
+    (120,  9, 2,  84000.00),
+    (121,  9, 3,  88000.00),
+    (122, 10, 4,  46000.00),
+    (123, 10, 5,  48500.00),
+    (124, 11, 1, 245000.00),
+    (125, 11, 2, 260000.00),
+    (126, 12, 2,  78000.00),
+    (127, 12, 3,  82000.00),
+    (128, 13, 1, 360000.00),
+    (129, 13, 2, 380000.00),
+    (130, 14, 2, 118000.00),
+    (131, 14, 3, 125000.00),
+    (29,   9, 5,  92000.00),
+    (30,   9, 5,  92000.00),
+    (31,  10, 7,  50500.00),
+    (32,  10, 7,  50500.00),
+    (33,  11, 2, 272000.00),
+    (34,  11, 2, 272000.00),
+    (35,  12, 4,  86500.00),
+    (36,  12, 4,  86500.00),
+    (37,  13, 3, 398000.00),
+    (38,  13, 3, 398000.00),
+    (39,  14, 4, 131000.00),
+    (40,  14, 4, 131000.00)
+GO
+
+
+/* ------------------------------------------------------------
    Ventas recientes, calculadas con la fecha en que se corre el script
    Una venta cada 4 dias desde el 08/09 hasta el mes anterior, y 12
    ventas repartidas dentro del mes en curso: el Dashboard abre con
@@ -539,13 +678,13 @@ WHERE V.[NroVenta] LIKE 'V-2026-2%'
 INSERT INTO [dbo].[HistorialPrecioProducto] ([IdProducto], [Precio], [Fecha])
 SELECT [IdProducto], [Precio], DATEADD(DAY, -3, @Ahora)
 FROM [dbo].[Producto]
-WHERE [IdProducto] IN (1, 2, 3, 5, 7, 8)
+WHERE [IdProducto] IN (1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14)
 
 INSERT INTO [dbo].[HistorialStock] ([IdProducto], [Stock], [Fecha])
 SELECT P.[IdProducto], P.[Stock] + D.[Extra], DATEADD(DAY, D.[Dias], @Ahora)
 FROM [dbo].[Producto] P
 CROSS JOIN (VALUES (-40, 6), (-15, 3), (-1, 0)) D ([Dias], [Extra])
-WHERE P.[IdProducto] IN (1, 2, 3, 5, 7, 8)
+WHERE P.[IdProducto] IN (1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14)
 GO
 
 
@@ -564,7 +703,8 @@ VALUES
     (1, N'TecnoStore Online', N'MercadoLibre', N'Tienda oficial de periféricos y accesorios', N'Activo'),
     (2, N'MegaCompu',         N'MercadoLibre', N'Mayorista de notebooks y monitores',        N'Activo'),
     (3, N'Gamer Point',       N'MercadoLibre', N'Tienda especializada en gaming',            N'Activo'),
-    (4, N'Insumos del Sur',   N'MercadoLibre', N'Competidor que dejó de operar',             N'Inactivo')
+    (4, N'Insumos del Sur',   N'MercadoLibre', N'Competidor que dejó de operar',             N'Inactivo'),
+    (5, N'ElectroMundo',      N'MercadoLibre', N'Tienda de tecnología, redes y electrónica', N'Activo')
 
 SET IDENTITY_INSERT [dbo].[Competencia] OFF
 GO
@@ -600,7 +740,13 @@ VALUES
     (8, 2, 2, N'https://articulo.mercadolibre.com.ar/MLA-1108-mouse-inalambrico-oficina-_JM',       N'Finalizada', '2026-07-15T09:00:00', '2026-09-05T06:00:00'),
     (9, 6, 1, N'https://articulo.mercadolibre.com.ar/MLA-1109-webcam-hd-720p-_JM',                  N'Activa',     '2026-06-20T09:00:00', '2026-07-01T06:00:00'),
     (10, 7, 1, N'https://articulo.mercadolibre.com.ar/MLA-1110-parlante-bluetooth-20w-_JM',         N'Activa',     '2026-07-20T09:00:00', '2026-09-05T06:00:00'),
-    (11, 8, 3, N'https://articulo.mercadolibre.com.ar/MLA-1111-silla-gamer-ergonomica-_JM',         N'Activa',     '2026-07-20T09:05:00', '2026-09-05T06:00:00')
+    (11, 8, 3, N'https://articulo.mercadolibre.com.ar/MLA-1111-silla-gamer-ergonomica-_JM',         N'Activa',     '2026-07-20T09:05:00', '2026-09-05T06:00:00'),
+    (12,  9, 5, N'https://articulo.mercadolibre.com.ar/MLA-1112-disco-ssd-nvme-1tb-_JM',            N'Activa',     '2026-08-10T09:00:00', '2026-09-05T06:00:00'),
+    (13, 10, 5, N'https://articulo.mercadolibre.com.ar/MLA-1113-memoria-ram-16gb-ddr4-_JM',         N'Activa',     '2026-08-10T09:05:00', '2026-09-05T06:00:00'),
+    (14, 11, 2, N'https://articulo.mercadolibre.com.ar/MLA-1114-impresora-multifuncion-wifi-_JM',   N'Activa',     '2026-08-10T09:10:00', '2026-09-05T06:00:00'),
+    (15, 12, 5, N'https://articulo.mercadolibre.com.ar/MLA-1115-router-wifi-6-doble-banda-_JM',     N'Activa',     '2026-08-10T09:15:00', '2026-09-05T06:00:00'),
+    (16, 13, 2, N'https://articulo.mercadolibre.com.ar/MLA-1116-tablet-10-64gb-_JM',                N'Activa',     '2026-08-10T09:20:00', '2026-09-05T06:00:00'),
+    (17, 14, 5, N'https://articulo.mercadolibre.com.ar/MLA-1117-smartwatch-deportivo-_JM',          N'Activa',     '2026-08-10T09:25:00', '2026-09-05T06:00:00')
 
 SET IDENTITY_INSERT [dbo].[ProductoCompetencia] OFF
 GO
@@ -653,7 +799,21 @@ VALUES
     (10,  64000.00,  78000.00, '2026-09-05T06:00:00'),
 
     (11, 182000.00, 205000.00, '2026-08-20T06:00:00'),
-    (11, 175000.00, 210000.00, '2026-09-05T06:00:00')
+    (11, 175000.00, 210000.00, '2026-09-05T06:00:00'),
+
+    -- Mapeos 12 a 17: precios cercanos al propio, por encima o por debajo
+    (12,  90000.00,  92000.00, '2026-08-20T06:00:00'),
+    (12,  93500.00,  95000.00, '2026-09-05T06:00:00'),
+    (13,  52000.00,  50500.00, '2026-08-20T06:00:00'),
+    (13,  51000.00,  52000.00, '2026-09-05T06:00:00'),
+    (14, 279000.00, 272000.00, '2026-08-20T06:00:00'),
+    (14, 289000.00, 280000.00, '2026-09-05T06:00:00'),
+    (15,  85000.00,  86500.00, '2026-08-20T06:00:00'),
+    (15,  87000.00,  89000.00, '2026-09-05T06:00:00'),
+    (16, 405000.00, 398000.00, '2026-08-20T06:00:00'),
+    (16, 399000.00, 410000.00, '2026-09-05T06:00:00'),
+    (17, 129000.00, 131000.00, '2026-08-20T06:00:00'),
+    (17, 138000.00, 135000.00, '2026-09-05T06:00:00')
 GO
 
 
@@ -675,7 +835,7 @@ GO
 
 /* ------------------------------------------------------------
    Control: los mapeos activos de productos vigentes son los que
-   se ven en Comparar Precios. El conteo tiene que dar 9.
+   se ven en Comparar Precios. El conteo tiene que dar 15.
    ------------------------------------------------------------ */
 
 SELECT COUNT(*) AS MapeosComparables

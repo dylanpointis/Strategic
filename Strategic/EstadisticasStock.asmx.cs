@@ -12,6 +12,9 @@ namespace Strategic
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     public class EstadisticasStock : WebService
     {
+        // Largo de la columna Producto.Categoria
+        private const int LargoMaximoCategoria = 100;
+
         private readonly BLLDashboard bllDashboard = new BLLDashboard();
 
         [WebMethod(Description = "Retorna los productos cuyo stock es menor o igual al stock minimo.")]
@@ -22,7 +25,20 @@ namespace Strategic
                 throw new SoapException("El servicio solo atiende pedidos locales.", SoapException.ClientFaultCode);
             }
 
-            return bllDashboard.TraerProductosBajoStock(categoria);
+            // Sin categoria se consultan todas
+            string valor = string.Empty;
+
+            if (categoria != null)
+            {
+                valor = categoria.Trim();
+            }
+
+            if (valor.Length > LargoMaximoCategoria)
+            {
+                throw new SoapException("La categoria no puede superar los " + LargoMaximoCategoria + " caracteres.", SoapException.ClientFaultCode);
+            }
+
+            return bllDashboard.TraerProductosBajoStock(valor);
         }
     }
 }

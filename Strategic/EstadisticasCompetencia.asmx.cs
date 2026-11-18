@@ -13,6 +13,9 @@ namespace Strategic
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     public class EstadisticasCompetencia : WebService
     {
+        // Largo de la columna Producto.Categoria
+        private const int LargoMaximoCategoria = 100;
+
         private readonly BLLCompetencia bllCompetencia = new BLLCompetencia();
 
         [WebMethod(Description = "Retorna la comparacion de precios entre productos propios y productos competidores.")]
@@ -21,6 +24,28 @@ namespace Strategic
             if (!Context.Request.IsLocal)
             {
                 throw new SoapException("El servicio solo atiende pedidos locales.", SoapException.ClientFaultCode);
+            }
+
+            if (idProducto < 0)
+            {
+                throw new SoapException("El parametro idProducto no puede ser negativo.", SoapException.ClientFaultCode);
+            }
+
+            if (idCompetencia < 0)
+            {
+                throw new SoapException("El parametro idCompetencia no puede ser negativo.", SoapException.ClientFaultCode);
+            }
+
+            string valorCategoria = string.Empty;
+
+            if (categoria != null)
+            {
+                valorCategoria = categoria.Trim();
+            }
+
+            if (valorCategoria.Length > LargoMaximoCategoria)
+            {
+                throw new SoapException("La categoria no puede superar los " + LargoMaximoCategoria + " caracteres.", SoapException.ClientFaultCode);
             }
 
             int? producto = null;
@@ -36,7 +61,7 @@ namespace Strategic
                 competencia = idCompetencia;
             }
 
-            return bllCompetencia.FiltrarComparacionPrecios(producto,categoria,competencia);
+            return bllCompetencia.FiltrarComparacionPrecios(producto, valorCategoria, competencia);
         }
     }
 }
